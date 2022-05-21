@@ -25,6 +25,11 @@ public class Flock : MonoBehaviour
     public float boundsDistance = 100;
     public float boundsWeight = 15;
 
+    [Range(0, 1)]
+    [SerializeField] public float mutualAttraction = 0;
+    public float organicSeekWeight = 1;
+    public float shadowSeekWeight = 1;
+
     public int worldYear = 0;
     public int foodSize = 5;
 
@@ -82,7 +87,7 @@ public class Flock : MonoBehaviour
     //public List<OSCMessage> OscFood = new List<OSCMessage>();
     public List<Vector3> OscFood = new List<Vector3>();
 
-    public Boolean mutualAttraction = false;
+
 
     [Header("OSC Properties")]
     public OSCTransmitter transmitter;
@@ -176,13 +181,13 @@ public class Flock : MonoBehaviour
 
             }
 
-            if (mutualAttraction == true)
+            if (mutualAttraction != 0)
             {
                 foreach (FlockUnit shadow in ShadowBoids)
                 {
                     Vector3 force = shadow.Attract(boidPosition);
                     Transform shadowPosition = shadow.transform;
-                    boid.ApplyAttractionForce(force, shadowPosition);
+                    boid.ApplyAttractionForce(force * organicSeekWeight * mutualAttraction, shadowPosition);
                 }
 
 
@@ -205,13 +210,13 @@ public class Flock : MonoBehaviour
             }
             //shadow.MoveUnit();
 
-            if (mutualAttraction == true)
+            if (mutualAttraction != 0)
             {
                 foreach (FlockUnit boid in Boids)
                 {
                     Vector3 force = boid.Attract(shadowPosition);
                     Transform boidPosition = shadow.transform;
-                    shadow.ApplyAttractionForce(force, boidPosition);
+                    shadow.ApplyAttractionForce(force * shadowSeekWeight * mutualAttraction, boidPosition);
                 }
 
 
@@ -628,8 +633,6 @@ public class Flock : MonoBehaviour
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
     {
-        Debug.Log("BoidDead");
-
 
         if (e.BreedObject == "organic")
         {
