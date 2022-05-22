@@ -19,7 +19,7 @@ public class Flock : MonoBehaviour
     [SerializeField] private FlockUnit shadowUnitPrefab;
     public GameObject organicFolder;
     public GameObject shadowFolder;
-    public GameObject foodPrefab;
+    //public GameObject foodPrefab;
     //[SerializeField] private int flockSize;
     [SerializeField] private Vector3 spawnBounds;
     //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
@@ -31,9 +31,9 @@ public class Flock : MonoBehaviour
     public float organicSeekWeight = 1;
     public float shadowSeekWeight = 1;
 
+    public Food food;
 
-
-    public int foodSize = 5;
+    //public int foodSize = 5;
 
 
     [Header("Speed Setup")]
@@ -79,21 +79,21 @@ public class Flock : MonoBehaviour
 
     [Header("Agents ")]
 
-    public List<FoodUnit> Foods = new List<FoodUnit>();
+    //public List<FoodUnit> Foods = new List<FoodUnit>();
     public List<FlockUnit> Boids = new List<FlockUnit>();
     public List<FlockUnit> ShadowBoids = new List<FlockUnit>();
     public List<int> BoidsIndex;
     public List<int> ShadowBoidsIndex;
-    public List<int> FoodsIndex;
+    //public List<int> FoodsIndex;
     //public List<OSCMessage> OscFood = new List<OSCMessage>();
-    public List<Vector3> OscFood = new List<Vector3>();
+    //public List<Vector3> OscFood = new List<Vector3>();
 
 
 
     [Header("OSC Properties")]
     public OSCTransmitter transmitter;
 
-    public OSCReceiver oscReceiver;
+    //public OSCReceiver oscReceiver;
     public OSCMessage messageAddress2;
     public OSCMessage messageAddress3;
     public OSCMessage initMessage;
@@ -123,7 +123,7 @@ public class Flock : MonoBehaviour
 
         ShadowBoidsIndex = new List<int>() { 0 };
         BoidsIndex = new List<int>() { 0 };
-        FoodsIndex = new List<int>() { 1 };
+        //FoodsIndex = new List<int>() { 1 };
         zeroVector = new Vector3(0, 0, 0);
 
 
@@ -131,9 +131,9 @@ public class Flock : MonoBehaviour
         //transmitter.RemotePort = 7000;
         //transmitter.RemotePort = 57120;
 
-        oscReceiver = gameObject.AddComponent<OSCReceiver>();
-        oscReceiver.LocalPort = 7500;
-        oscReceiver.Bind("/flucoma/xyz", MessageReceived);
+        //oscReceiver = gameObject.AddComponent<OSCReceiver>();
+        //oscReceiver.LocalPort = 7500;
+        //oscReceiver.Bind("/flucoma/xyz", MessageReceived);
 
 
         //StopCoroutine(OSCInit());
@@ -153,8 +153,8 @@ public class Flock : MonoBehaviour
 
         }
 
-        //StartCoroutine(OSCInit());
-        //StopCoroutine(OSCInit());
+        StartCoroutine(OSCInit());
+        StopCoroutine(OSCInit());
         //GenerateUnits();
         // GenerateFoods();
 
@@ -173,8 +173,8 @@ public class Flock : MonoBehaviour
 
             //boid.MoveUnit();
             Transform boidPosition = boid.myTransform;
-            //  enumeration error
-            foreach (FoodUnit food in Foods)
+
+            foreach (FoodUnit food in food.Foods)
             {
                 Vector3 force = food.Attract(boidPosition.position);
                 Transform foodTransform = food.transform;
@@ -202,14 +202,14 @@ public class Flock : MonoBehaviour
         {
 
             Transform shadowPosition = shadow.myTransform;
-            foreach (FoodUnit food in Foods)
+            foreach (FoodUnit food in food.Foods)
             {
                 Vector3 force = food.Attract(shadowPosition.position);
                 Transform foodPosition = food.transform;
                 shadow.ApplyAttractionForce(force, foodPosition);
                 //food.FixedUpdate();
             }
-            //shadow.MoveUnit();
+
 
             if (mutualAttraction != 0)
             {
@@ -334,10 +334,10 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        //messageAddress3 = new OSCMessage("/play/");
-        //messageAddress3.AddValue(OSCValue.Float(1));
-        //Debug.Log(messageAddress3);
-        //transmitter.Send(messageAddress3);
+        messageAddress3 = new OSCMessage("/play/");
+        messageAddress3.AddValue(OSCValue.Float(1));
+        Debug.Log(messageAddress3);
+        transmitter.Send(messageAddress3);
     }
 
     //private void OSCInit()
@@ -439,29 +439,29 @@ public class Flock : MonoBehaviour
     //}
 
 
-    protected void MessageReceived(OSCMessage message)
-    {
+    //protected void MessageReceived(OSCMessage message)
+    //{
 
-        //OscFood.Add(message);
-        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
-        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
-        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
-        Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
-        OscFood.Add(newFood);
-        if (OscFood.Count < foodSize)
-        {
-            var random = new System.Random();
-            int index = random.Next(OscFood.Count);
-            GenerateFood(OscFood[index]);
-        }
-        // Debug.Log(newFoodY);
-        //GenerateFood(newFoodX, newFoodY);
-        //if (message.ToFloat(out var value))
-        //{
-        //    // Any code...
-        //    Debug.Log(value);
-        //}
-    }
+    //    //OscFood.Add(message);
+    //    var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
+    //    var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
+    //    var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
+    //    Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
+    //    OscFood.Add(newFood);
+    //    if (OscFood.Count < foodSize)
+    //    {
+    //        var random = new System.Random();
+    //        int index = random.Next(OscFood.Count);
+    //        GenerateFood(OscFood[index]);
+    //    }
+    //    // Debug.Log(newFoodY);
+    //    //GenerateFood(newFoodX, newFoodY);
+    //    //if (message.ToFloat(out var value))
+    //    //{
+    //    //    // Any code...
+    //    //    Debug.Log(value);
+    //    //}
+    //}
 
 
     public void GenerateAgent(List<FlockUnit> agentFlock, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
@@ -543,31 +543,31 @@ public class Flock : MonoBehaviour
     }
 
 
-    private void GenerateFood(Vector3 position)
-    {
+    //private void GenerateFood(Vector3 position)
+    //{
 
-        var food = Instantiate(foodPrefab, position, Quaternion.identity);
-        var foodScript = food.GetComponent<FoodUnit>();
-        foodScript.Death += OnFoodDeath;
-        Foods.Add(food.GetComponent<FoodUnit>());
+    //    var food = Instantiate(foodPrefab, position, Quaternion.identity);
+    //    var foodScript = food.GetComponent<FoodUnit>();
+    //    foodScript.Death += OnFoodDeath;
+    //    Foods.Add(food.GetComponent<FoodUnit>());
 
-    }
-
-
-    public void OnFoodDeath(object sender, FoodDeathEventArgs e)
-    {
-
-        Foods.Remove(e.FoodObject);
+    //}
 
 
-        var random = new System.Random();
-        int index = random.Next(OscFood.Count);
+    //public void OnFoodDeath(object sender, FoodDeathEventArgs e)
+    //{
 
-        //if (season == "spring" || season == "summer")
-        //{
-        //    GenerateFood(OscFood[index]);
-        //}
-    }
+    //    Foods.Remove(e.FoodObject);
+
+
+    //    var random = new System.Random();
+    //    int index = random.Next(OscFood.Count);
+
+    //    //if (season == "spring" || season == "summer")
+    //    //{
+    //    //    GenerateFood(OscFood[index]);
+    //    //}
+    //}
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
     {
