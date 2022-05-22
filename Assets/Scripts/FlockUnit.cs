@@ -571,19 +571,19 @@ public class FlockUnit : MonoBehaviour
         return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;
     }
 
-    public void ApplyAttractionForce(Vector3 force, Transform foodPosition)
+    public void ApplyAttractionForce(Vector3 force, Transform foodTransform)
     {
         // rb.AddForce(force, ForceMode.Force);
         attractionForce += force;
         attractionForce = Vector3.ClampMagnitude(attractionForce, attractForceMagnitude);
-        Eater(foodPosition);
+        Eater(foodTransform);
 
 
     }
 
-    public void Eater(Transform foodPosition)
+    public void Eater(Transform foodTransform)
     {
-        Vector3 force = myTransform.position - foodPosition.position;
+        Vector3 force = myTransform.position - foodTransform.position;
         float distance = force.magnitude;
 
         foodForce = force;

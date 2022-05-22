@@ -14,6 +14,7 @@ public class Flock : MonoBehaviour
 
 
     [Header("Spawn Setup")]
+    [SerializeField] private Helpers helper;
     [SerializeField] private FlockUnit flockUnitPrefab;
     [SerializeField] private FlockUnit shadowUnitPrefab;
     public GameObject organicFolder;
@@ -30,7 +31,7 @@ public class Flock : MonoBehaviour
     public float organicSeekWeight = 1;
     public float shadowSeekWeight = 1;
 
-    [SerializeField] public Helpers helper;
+
 
     public int foodSize = 5;
 
@@ -96,7 +97,7 @@ public class Flock : MonoBehaviour
     public OSCMessage messageAddress2;
     public OSCMessage messageAddress3;
     public OSCMessage initMessage;
-    public Boolean initialized;
+
 
     Vector3 randomVector;
     Vector3 zeroVector;
@@ -126,16 +127,16 @@ public class Flock : MonoBehaviour
         zeroVector = new Vector3(0, 0, 0);
 
 
-        transmitter.RemoteHost = "127.0.0.1";
+        //transmitter.RemoteHost = "127.0.0.1";
         //transmitter.RemotePort = 7000;
-        transmitter.RemotePort = 57120;
+        //transmitter.RemotePort = 57120;
 
         oscReceiver = gameObject.AddComponent<OSCReceiver>();
         oscReceiver.LocalPort = 7500;
         oscReceiver.Bind("/flucoma/xyz", MessageReceived);
 
-        StartCoroutine(OSCInit());
-        StopCoroutine(OSCInit());
+
+        //StopCoroutine(OSCInit());
 
     }
 
@@ -152,6 +153,8 @@ public class Flock : MonoBehaviour
 
         }
 
+        //StartCoroutine(OSCInit());
+        //StopCoroutine(OSCInit());
         //GenerateUnits();
         // GenerateFoods();
 
@@ -173,9 +176,12 @@ public class Flock : MonoBehaviour
             //  enumeration error
             foreach (FoodUnit food in Foods)
             {
-                Vector3 force = food.Attract(boidPosition);
-                Transform foodPosition = food.transform;
-                boid.ApplyAttractionForce(force, foodPosition);
+                Vector3 force = food.Attract(boidPosition.position);
+                Transform foodTransform = food.transform;
+
+                //Debug.Log("Force" + force);
+
+                boid.ApplyAttractionForce(force, foodTransform);
                 //food.FixedUpdate();
 
             }
@@ -189,10 +195,6 @@ public class Flock : MonoBehaviour
                     boid.ApplyAttractionForce(force * organicSeekWeight * mutualAttraction, shadowPosition);
                 }
 
-
-                //}
-                //boid.MoveUnit();
-
             }
         }
 
@@ -202,7 +204,7 @@ public class Flock : MonoBehaviour
             Transform shadowPosition = shadow.myTransform;
             foreach (FoodUnit food in Foods)
             {
-                Vector3 force = food.Attract(shadowPosition);
+                Vector3 force = food.Attract(shadowPosition.position);
                 Transform foodPosition = food.transform;
                 shadow.ApplyAttractionForce(force, foodPosition);
                 //food.FixedUpdate();
@@ -217,10 +219,6 @@ public class Flock : MonoBehaviour
                     Transform boidPosition = shadow.transform;
                     shadow.ApplyAttractionForce(force * shadowSeekWeight * mutualAttraction, boidPosition);
                 }
-
-
-                //}
-                //boid.MoveUnit();
 
             }
 
@@ -248,6 +246,8 @@ public class Flock : MonoBehaviour
 
     private IEnumerator OSCInit()
     {
+
+
 
         for (int i = 1; i <= flockSize; i++)
         {
@@ -334,6 +334,10 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
+        //messageAddress3 = new OSCMessage("/play/");
+        //messageAddress3.AddValue(OSCValue.Float(1));
+        //Debug.Log(messageAddress3);
+        //transmitter.Send(messageAddress3);
     }
 
     //private void OSCInit()
@@ -439,9 +443,9 @@ public class Flock : MonoBehaviour
     {
 
         //OscFood.Add(message);
-        var newFoodX = helper.scale(message.Values[0].FloatValue, 0, 1, -20, 20);
-        var newFoodY = helper.scale(message.Values[1].FloatValue, 0, 1, -20, 20);
-        var newFoodZ = helper.scale(message.Values[2].FloatValue, 0, 1, -20, 20);
+        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
+        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
+        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
         Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
         OscFood.Add(newFood);
         if (OscFood.Count < foodSize)

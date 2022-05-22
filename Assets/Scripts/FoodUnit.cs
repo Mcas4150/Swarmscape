@@ -19,16 +19,16 @@ public class FoodUnit : MonoBehaviour
 
 
     [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
-    public float boidMass => GameManager.Instance.boidMass;
+    public float BoidMass => GameManager.Instance.boidMass;
 
     [SerializeField] private GameObject food;
     public Rigidbody body;
 
-    [Range(5, 50)]
-    [SerializeField]
-    public float G = 9.8f;
+
+    private float G = 9.8f;
     private float radius;
     public float mass;
+    public float foodAttractMultiple => GameManager.Instance.foodAttractMultiple;
 
     [Header("OSC Properties")]
     public OSCReceiver oscReceiver;
@@ -121,9 +121,9 @@ public class FoodUnit : MonoBehaviour
     //    //}
     //}
 
-    public Vector3 Attract(Transform m)
+    public Vector3 Attract(Vector3 targetPosition)
     {
-        Vector3 force = body.position - m.position;
+        Vector3 force = body.position - targetPosition;
         float distance = force.magnitude;
 
         Eaten(distance);
@@ -131,12 +131,17 @@ public class FoodUnit : MonoBehaviour
         distance = Mathf.Clamp(distance, 5f, 25f);
 
         force.Normalize();
+
         // float strength =  G * (body.mass * m.mass) / (distance * distance);
         //float strength =  G * (body.mass * 1.5f) / (distance * distance);
-        float strength = G * (body.mass * boidMass) / (distance * distance);
+        float strength = G * (body.mass * BoidMass) / (distance * distance);
+        //force *= strength * foodAttractMultiple;
+
         force *= strength;
+
         force = Vector3.ClampMagnitude(force, foodForceMagnitude);
         return force;
+
     }
 
     public void Eaten(float distance)
