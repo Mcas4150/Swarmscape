@@ -44,35 +44,35 @@ public class Flock : MonoBehaviour
     [SerializeField] public float _maxSpeed;
     public float maxSpeed { get { return _maxSpeed; } }
 
-    [Header("Detection Distances")]
+    //[Header("Detection Distances")]
 
-    [Range(0, 10)]
-    [SerializeField] public float _cohesionDistance;
-    public float cohesionDistance { get { return _cohesionDistance; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _cohesionDistance;
+    //public float cohesionDistance { get { return _cohesionDistance; } }
 
-    [Range(0, 10)]
-    [SerializeField] public float _avoidanceDistance;
-    public float avoidanceDistance { get { return _avoidanceDistance; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _avoidanceDistance;
+    //public float avoidanceDistance { get { return _avoidanceDistance; } }
 
-    [Range(0, 10)]
-    [SerializeField] public float _alignmentDistance;
-    public float alignmentDistance { get { return _alignmentDistance; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _alignmentDistance;
+    //public float alignmentDistance { get { return _alignmentDistance; } }
 
 
 
-    [Header("Behavior Weights")]
+    //[Header("Behavior Weights")]
 
-    [Range(0, 10)]
-    [SerializeField] public float _cohesionWeight;
-    public float cohesionWeight { get { return _cohesionWeight; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _cohesionWeight;
+    //public float cohesionWeight { get { return _cohesionWeight; } }
 
-    [Range(0, 10)]
-    [SerializeField] public float _avoidanceWeight;
-    public float avoidanceWeight { get { return _avoidanceWeight; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _avoidanceWeight;
+    //public float avoidanceWeight { get { return _avoidanceWeight; } }
 
-    [Range(0, 10)]
-    [SerializeField] public float _alignmentWeight;
-    public float alignmentWeight { get { return _alignmentWeight; } }
+    //[Range(0, 10)]
+    //[SerializeField] public float _alignmentWeight;
+    //public float alignmentWeight { get { return _alignmentWeight; } }
 
 
 
