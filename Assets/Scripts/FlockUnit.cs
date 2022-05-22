@@ -9,15 +9,6 @@ public class FlockUnit : MonoBehaviour
 {
 
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-
-    public Flock assignedFlock;
-    [SerializeField] private float FOVAngle;
-    //[SerializeField] private float smoothDamp;
-    public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
-    public List<FlockUnit> alignmentNeighbors = new List<FlockUnit>();
-    public List<FlockUnit> avoidanceNeighbors = new List<FlockUnit>();
-
-
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
     [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
     [SerializeField] public float respawnTime => GameManager.Instance.respawnTime;
@@ -35,10 +26,18 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float avoidanceWeight => GameManager.Instance.avoidanceWeight;
     [SerializeField] public float shadowProb => GameManager.Instance.shadowProb;
 
-    public float boidMass => GameManager.Instance.boidMass;
+    [SerializeField] public float boidMass => GameManager.Instance.boidMass;
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
     [SerializeField] public float trailTime => GameManager.Instance.trailTime;
+    [SerializeField] private float FOVAngle;
+
+
+    public Flock assignedFlock;
+
+    public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
+    public List<FlockUnit> alignmentNeighbors = new List<FlockUnit>();
+    public List<FlockUnit> avoidanceNeighbors = new List<FlockUnit>();
 
 
     [Header("Vector Values")]
@@ -83,26 +82,12 @@ public class FlockUnit : MonoBehaviour
     public float dnaAvoidanceWeight;
     public float foodDistance;
     public Vector3 foodForce;
-
     public float G = 9.8f;
 
     DNAboid dna;
 
-    //private float maxSpeed = 4f;
-    //private float maxForce = 0.1f;
-    //private float boidMass = 5.0f;
-
     public event EventHandler<BoidDeathEventArgs> Death;
 
-    float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
-    {
-
-        float OldRange = (OldMax - OldMin);
-        float NewRange = (NewMax - NewMin);
-        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-
-        return (NewValue);
-    }
 
     private void Awake()
     {
@@ -187,24 +172,19 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(respawnTime * UnityEngine.Random.Range(0f, 3f));
 
-
             //if (health > 50)
             //if (health > starterHealth * 1.5)
             if (breed == "organic")
             {
-
-
                 //if (age == UnityEngine.Random.Range(2, 7) )
                 //if (age > 2 && age < 7)
                 //{
                 var allUnits = assignedFlock.Boids;
 
-
                 if (allUnits.Count < flockSize)
                 {
                     currentPosition = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z);
                     var breedChance = UnityEngine.Random.Range(0f, 1f);
-
 
                     if (breedChance <= shadowProb)
                     {
@@ -215,18 +195,10 @@ public class FlockUnit : MonoBehaviour
                     {
                         assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
                     }
-
-
-
                     health *= 0.5f;
 
                 }
-
-
-
-                //}
             }
-
         }
     }
 
@@ -266,11 +238,8 @@ public class FlockUnit : MonoBehaviour
                 health -= deathMultiplier * Time.deltaTime;
             }
 
-
-
             if (Dead())
             {
-
 
                 // FIX THIS 
                 messageAddress = new OSCMessage("/" + breed + "/" + oscNumber);
@@ -291,9 +260,6 @@ public class FlockUnit : MonoBehaviour
                 Destroy(gameObject, 0.05f);
 
             }
-
-
-
         }
     }
 
@@ -613,6 +579,17 @@ public class FlockUnit : MonoBehaviour
         //size = ExtensionMethods.map(dna.genes[0], 0, 1, 0, 2);
 
         //gameObject.transform.localScale *= size;
+    }
+
+
+    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
+    {
+
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
     }
 }
 

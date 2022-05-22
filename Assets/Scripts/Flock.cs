@@ -12,25 +12,18 @@ public class Flock : MonoBehaviour
     [SerializeField] private Helpers helper;
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
     [SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
-
+    [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
+    [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
     [SerializeField] public int startAmount;
 
-
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
 
-
-    [SerializeField] private Vector3 spawnBounds;
-
-    public float boundsDistance = 100;
-    public float boundsWeight = 15;
-
     public float seekWeight = 1;
-
 
     [Header("Speed Setup")]
     [Range(0, 30)]
@@ -80,15 +73,7 @@ public class Flock : MonoBehaviour
     [Header("OSC Properties")]
     public OSCTransmitter transmitter;
 
-    //public OSCReceiver oscReceiver;
-    public OSCMessage messageAddress2;
-    public OSCMessage messageAddress3;
-    public OSCMessage initMessage;
-
-
-    Vector3 randomVector;
     Vector3 zeroVector;
-    Vector3 spawnPosition;
     Quaternion rotation;
 
     DNAboid starterDna;
@@ -141,20 +126,10 @@ public class Flock : MonoBehaviour
 
     }
 
-    //private IEnumerator OSCPlay()
-    //{
-    //    var initMessage = new OSCMessage("/new/");
-    //    initMessage.AddValue(OSCValue.Float(1f));
-    //    transmitter.Send(initMessage);
-    //    Debug.Log(initMessage);
-    //    yield return null;
-    //}
-
     private IEnumerator OSCInit()
     {
         for (int i = 1; i <= flockSize; i++)
         {
-            //var breed = "organic";
             var oscNumber = i;
 
             OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + i);
@@ -179,7 +154,6 @@ public class Flock : MonoBehaviour
 
             velocityMessage.AddValue(OSCValue.Float(0));
 
-            //Debug.Log(message_resetPosition);
             transmitter.Send(message_resetPositionX);
             transmitter.Send(message_resetPositionY);
             transmitter.Send(message_resetPositionZ);
@@ -193,109 +167,11 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        messageAddress3 = new OSCMessage("/play/");
-        messageAddress3.AddValue(OSCValue.Float(1));
-        Debug.Log(messageAddress3);
-        transmitter.Send(messageAddress3);
+        OSCMessage initPlayMessage = new OSCMessage("/play/");
+        initPlayMessage.AddValue(OSCValue.Float(1));
+        Debug.Log(initPlayMessage);
+        transmitter.Send(initPlayMessage);
     }
-
-    //private void OSCInit()
-    //{
-
-    //    Debug.Log("start");
-
-    //    //for (int i = 1; i <= flockSize; i++)
-    //    //{
-    //    //    var breed = "organic";
-    //    //    var oscNumber = i;
-
-    //    //    OSCMessage message_resetPositionX = new OSCMessage("/organic/position/x/" + i);
-    //    //    OSCMessage message_resetPositionY = new OSCMessage("/organic/position/y/" + i);
-    //    //    OSCMessage message_resetPositionZ = new OSCMessage("/organic/position/z/" + i);
-
-    //    //    OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-    //    //    OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
-    //    //    OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
-
-    //    //    OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
-    //    //    message_resetPositionX.AddValue(OSCValue.Float(0));
-    //    //    message_resetPositionY.AddValue(OSCValue.Float(0));
-    //    //    message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-    //    //    midiNoteMessage.AddValue(OSCValue.Float(0));
-    //    //    midiPlayMessage.AddValue(OSCValue.Float(0));
-    //    //    healthMessage.AddValue(OSCValue.Float(0));
-
-
-    //    //    velocityMessage.AddValue(OSCValue.Float(0));
-
-    //    //    //Debug.Log(message_resetPosition);
-    //    //    transmitter.Send(message_resetPositionX);
-    //    //    transmitter.Send(message_resetPositionY);
-    //    //    transmitter.Send(message_resetPositionZ);
-
-    //    //    transmitter.Send(midiNoteMessage);
-    //    //    transmitter.Send(midiPlayMessage);
-    //    //    transmitter.Send(healthMessage);
-
-    //    //    transmitter.Send(velocityMessage);
-
-
-
-    //    //    //yield return null;
-    //    //}
-
-    //    //for (int i = 1; i <= flockSize; i++)
-    //    //{
-    //    //    var breed = "shadow";
-    //    //    var oscNumber = i;
-
-    //    //    OSCMessage message_resetPositionX = new OSCMessage("/shadow/position/x/" + i);
-    //    //    OSCMessage message_resetPositionY = new OSCMessage("/shadow/position/y/" + i);
-    //    //    OSCMessage message_resetPositionZ = new OSCMessage("/shadow/position/z/" + i);
-
-    //    //    OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-    //    //    OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
-    //    //    OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
-
-    //    //    OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
-
-    //    //    message_resetPositionX.AddValue(OSCValue.Float(0));
-    //    //    message_resetPositionY.AddValue(OSCValue.Float(0));
-    //    //    message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-    //    //    midiNoteMessage.AddValue(OSCValue.Float(0));
-    //    //    midiPlayMessage.AddValue(OSCValue.Float(0));
-    //    //    healthMessage.AddValue(OSCValue.Float(0));
-
-    //    //    velocityMessage.AddValue(OSCValue.Float(0));
-
-
-
-    //    //    transmitter.Send(message_resetPositionX);
-    //    //    transmitter.Send(message_resetPositionY);
-    //    //    transmitter.Send(message_resetPositionZ);
-
-    //    //    transmitter.Send(midiNoteMessage);
-    //    //    transmitter.Send(midiPlayMessage);
-    //    //    transmitter.Send(healthMessage);
-
-    //    //    transmitter.Send(velocityMessage);
-
-    //    //    //yield return null;
-    //    //}
-
-    //    messageAddress3 = new OSCMessage("/play/");
-    //    messageAddress3.AddValue(OSCValue.Float(1));
-    //    Debug.Log(messageAddress3);
-    //    transmitter.Send(messageAddress3);
-
-
-    //}
 
     private void GenerateUnits()
     {
@@ -314,7 +190,7 @@ public class Flock : MonoBehaviour
         childDNA.mutate(0.2f);
 
 
-        spawnPosition = transform.position + position;
+        var spawnPosition = transform.position + position;
         rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
@@ -365,10 +241,5 @@ public class Flock : MonoBehaviour
         return indexValue;
     }
 
-    //public void SendOSC(string instName, float x, float y, float z, int oscNumber)
-    //{
-    //    var NoteEncode = new List<float> {x, y, z};
-    //    OSCHandler.Instance.SendMessageToClient(("Max" + (oscNumber + 1)) , instName, NoteEncode);
-    //}
 }
 
