@@ -214,10 +214,6 @@ public class FlockUnit : MonoBehaviour
                     var breedChance = UnityEngine.Random.Range(0f, 1f);
 
 
-
-                    //assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
-
-
                     if (breedChance <= shadowProb)
                     {
                         assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, "shadow", currentPosition, dna);
