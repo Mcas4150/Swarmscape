@@ -153,16 +153,13 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
 
-
             message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
             message_newPositionY.AddValue(OSCValue.Float(myTransform.position.y));
             message_newPositionZ.AddValue(OSCValue.Float(myTransform.position.z));
 
-
             midiNoteMessage.AddValue(OSCValue.Float(midiNote));
             midiPlayMessage.AddValue(OSCValue.Float(eatingState));
             healthMessage.AddValue(OSCValue.Float(health));
-
 
             velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
 
@@ -177,11 +174,6 @@ public class FlockUnit : MonoBehaviour
             transmitter.Send(message_newPositionZ);
 
             transmitter.Send(velocityMessage);
-
-
-
-
-
 
         }
     }
@@ -307,26 +299,7 @@ public class FlockUnit : MonoBehaviour
 
     void Update()
     {
-
-
-        //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
-        //message_newPositionY.AddValue(OSCValue.Float(myTransform.position.y));
-        //message_newPositionZ.AddValue(OSCValue.Float(myTransform.position.z));
-
-
-        //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
-        //midiPlayMessage.AddValue(OSCValue.Float(eatingState));
-        //healthMessage.AddValue(OSCValue.Float(health));
-
-
-        //velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
-
-
         MoveUnit();
-
-
-
-
     }
 
 
@@ -400,10 +373,6 @@ public class FlockUnit : MonoBehaviour
         alignmentNeighbors.Clear();
         avoidanceNeighbors.Clear();
         var allUnits = assignedFlock.Boids;
-        //if (breed == "shadow")
-        //{
-        //    allUnits = assignedFlock.ShadowBoids;
-        //}
 
         foreach (FlockUnit boid in allUnits)
         {
@@ -564,7 +533,6 @@ public class FlockUnit : MonoBehaviour
         attractionForce += force;
         attractionForce = Vector3.ClampMagnitude(attractionForce, attractForceMagnitude);
         Eater(foodTransform);
-
 
     }
 

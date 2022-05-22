@@ -29,10 +29,7 @@ public class Flock : MonoBehaviour
     public float boundsDistance = 100;
     public float boundsWeight = 15;
 
-    //[Range(0, 1)]
-    //[SerializeField] public float mutualAttraction = 0;
     public float seekWeight = 1;
-    //public float shadowSeekWeight = 1;
 
 
     [Header("Speed Setup")]
@@ -75,11 +72,9 @@ public class Flock : MonoBehaviour
     //public float alignmentWeight { get { return _alignmentWeight; } }
 
 
-
     [Header("Agents ")]
     public List<FlockUnit> Boids = new List<FlockUnit>();
     public List<int> BoidsIndex;
-
 
 
     [Header("OSC Properties")]
@@ -99,17 +94,11 @@ public class Flock : MonoBehaviour
     DNAboid starterDna;
 
 
-
     private void Awake()
     {
         starterDna = new DNAboid();
-
-        //ShadowBoidsIndex = new List<int>() { 0 };
         BoidsIndex = new List<int>() { 0 };
         zeroVector = new Vector3(0, 0, 0);
-
-        //StopCoroutine(OSCInit());
-
     }
 
     private void Start()
@@ -117,14 +106,10 @@ public class Flock : MonoBehaviour
         _minSpeed = 6f;
         _maxSpeed = 100f;
 
-
         GenerateUnits();
 
         StartCoroutine(OSCInit());
         StopCoroutine(OSCInit());
-
-        //randomVector = UnityEngine.Random.insideUnitSphere;
-        //randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.y, randomVector.z * spawnBounds.z);
 
     }
 
@@ -133,7 +118,6 @@ public class Flock : MonoBehaviour
         foreach (FlockUnit boid in Boids)
         {
 
-            //boid.MoveUnit();
             Transform boidPosition = boid.myTransform;
 
             foreach (FoodUnit food in food.Foods)
@@ -155,33 +139,7 @@ public class Flock : MonoBehaviour
             }
         }
 
-        //foreach (FlockUnit shadow in ShadowBoids)
-        //{
-
-        //    Transform shadowPosition = shadow.myTransform;
-        //    foreach (FoodUnit food in food.Foods)
-        //    {
-        //        Vector3 force = food.Attract(shadowPosition.position);
-        //        Transform foodPosition = food.transform;
-        //        shadow.ApplyAttractionForce(force, foodPosition);
-        //    }
-
-
-        //    if (mutualAttraction != 0)
-        //    {
-        //        foreach (FlockUnit boid in Boids)
-        //        {
-        //            Vector3 force = boid.Attract(shadowPosition);
-        //            Transform boidPosition = shadow.transform;
-        //            shadow.ApplyAttractionForce(force * shadowSeekWeight * mutualAttraction, boidPosition);
-        //        }
-
-        //    }
-
-        //}
-
     }
-
 
     //private IEnumerator OSCPlay()
     //{
@@ -194,9 +152,6 @@ public class Flock : MonoBehaviour
 
     private IEnumerator OSCInit()
     {
-
-
-
         for (int i = 1; i <= flockSize; i++)
         {
             //var breed = "organic";
@@ -235,52 +190,8 @@ public class Flock : MonoBehaviour
 
             transmitter.Send(velocityMessage);
 
-
-
             yield return null;
         }
-
-        //for (int i = 1; i <= flockSize; i++)
-        //{
-        //    var breed = "shadow";
-        //    var oscNumber = i;
-
-        //    OSCMessage message_resetPositionX = new OSCMessage("/shadow/position/x/" + i);
-        //    OSCMessage message_resetPositionY = new OSCMessage("/shadow/position/y/" + i);
-        //    OSCMessage message_resetPositionZ = new OSCMessage("/shadow/position/z/" + i);
-
-        //    OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-        //    OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
-        //    OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
-
-        //    OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
-
-        //    message_resetPositionX.AddValue(OSCValue.Float(0));
-        //    message_resetPositionY.AddValue(OSCValue.Float(0));
-        //    message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-        //    midiNoteMessage.AddValue(OSCValue.Float(0));
-        //    midiPlayMessage.AddValue(OSCValue.Float(0));
-        //    healthMessage.AddValue(OSCValue.Float(0));
-
-        //    velocityMessage.AddValue(OSCValue.Float(0));
-
-
-
-        //    transmitter.Send(message_resetPositionX);
-        //    transmitter.Send(message_resetPositionY);
-        //    transmitter.Send(message_resetPositionZ);
-
-        //    transmitter.Send(midiNoteMessage);
-        //    transmitter.Send(midiPlayMessage);
-        //    transmitter.Send(healthMessage);
-
-        //    transmitter.Send(velocityMessage);
-
-        //    yield return null;
-        //}
 
         messageAddress3 = new OSCMessage("/play/");
         messageAddress3.AddValue(OSCValue.Float(1));
@@ -386,14 +297,12 @@ public class Flock : MonoBehaviour
 
     //}
 
-
     private void GenerateUnits()
     {
         Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 0; i < startAmount; i++)
         {
             GenerateAgent(this, Boids, BoidsIndex, breed, zeroVector, starterDna);
-
         }
 
     }
@@ -401,19 +310,12 @@ public class Flock : MonoBehaviour
     public void GenerateAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
 
-
         DNAboid childDNA = parentDNA.copy(); // make a copy of the DNA
         childDNA.mutate(0.2f);
 
 
         spawnPosition = transform.position + position;
         rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
-
-        //var agentPrefab = flockUnitPrefab;
-        //if (agentBreed == "shadow")
-        //{
-        //    agentPrefab = shadowUnitPrefab;
-        //}
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
 
@@ -429,45 +331,15 @@ public class Flock : MonoBehaviour
         newAgent.NumberParticle(agentNumber);
         newAgent.setDNA(childDNA);
 
-        //newAgent.InitializeSpeed(agentSpeed);
-        //newAgent.setDNA(new DNAboid());
-        //var agentSpeed = UnityEngine.Random.Range(_minSpeed, _maxSpeed);
-        //var indexList = unitIndex;
-        //agentFlock.Add(newAgent.GetComponent<FlockUnit>());
-
-
         unitIndex.Add(agentNumber);
         agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
         newAgent.transform.parent = this.transform;
-
-        //if (agentBreed == "shadow")
-        //{
-        //    ShadowBoidsIndex.Add(agentNumber);
-        //    ShadowBoids.Add(newAgent.GetComponent<FlockUnit>());
-        //    newAgent.transform.parent = shadowFolder.transform;
-
-        //}
-        //else if (agentBreed == "organic")
-        //{
-        //    BoidsIndex.Add(agentNumber);
-        //    Boids.Add(newAgent.GetComponent<FlockUnit>());
-        //    newAgent.transform.parent = organicFolder.transform;
-        //}
     }
 
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
     {
         Boids.Remove(e.BoidObject);
-        //if (e.BreedObject == "organic")
-        //{
-        //    Boids.Remove(e.BoidObject);
-        //}
-        //else if (e.BreedObject == "shadow")
-        //{
-        //    ShadowBoids.Remove(e.BoidObject);
-        //}
-
     }
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
