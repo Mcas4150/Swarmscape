@@ -461,16 +461,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 10
+  startAmount: 0
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
+  EnemyFlock: {fileID: 1229929646}
   food: {fileID: 1876838923}
   spawnBounds: {x: 0, y: 0, z: 0}
   boundsDistance: 100
   boundsWeight: 15
-  mutualAttraction: 0
-  organicSeekWeight: 1
-  shadowSeekWeight: 1
+  seekWeight: 1
   _minSpeed: 0
   _maxSpeed: 100
   Boids: []
@@ -779,13 +778,12 @@ MonoBehaviour:
   breed: organic
   startAmount: 10
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
+  EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
   spawnBounds: {x: 0, y: 0, z: 0}
   boundsDistance: 100
   boundsWeight: 15
-  mutualAttraction: 0
-  organicSeekWeight: 1
-  shadowSeekWeight: 1
+  seekWeight: 1
   _minSpeed: 2.8
   _maxSpeed: 100
   Boids: []
@@ -836,6 +834,7 @@ MonoBehaviour:
   driftX: 0
   driftY: 0
   driftZ: 0
+  mutualAttraction: 0
   trailTime: 2
   transmitter: {fileID: 1576914203}
   oscReceiver: {fileID: 1576914204}

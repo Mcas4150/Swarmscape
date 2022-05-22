@@ -215,25 +215,21 @@ public class FlockUnit : MonoBehaviour
 
 
 
-                    assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
-
-                    //if (breedChance <= shadowProb){ breedType = "shadow"; }
+                    //assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
 
 
-                    //if (breedChance <= shadowProb)
-                    //{
+                    if (breedChance <= shadowProb)
+                    {
+                        assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, "shadow", currentPosition, dna);
 
-                    //    assignedFlock.GenerateAgent(assignedFlock.ShadowBoids, assignedFlock.ShadowBoidsIndex, "shadow", currentPosition, dna);
-
-                    //}
-                    //else if (breedChance > shadowProb)
-                    //{
-
-                    //    assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
-                    //}
+                    }
+                    else if (breedChance > shadowProb)
+                    {
+                        assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
+                    }
 
 
-                    //assignedFlock.GenerateAgent(allUnits, unitIndex, breedType, currentPosition, dna);
+
                     health *= 0.5f;
 
                 }
@@ -300,18 +296,7 @@ public class FlockUnit : MonoBehaviour
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
 
-
                 assignedFlock.BoidsIndex.Remove(oscNumber);
-
-                //if (breed == "organic")
-                //{
-                //    assignedFlock.BoidsIndex.Remove(oscNumber);
-                //}
-                //else
-                //{
-                //    assignedFlock.ShadowBoidsIndex.Remove(oscNumber);
-                //}
-
 
                 gameObject.SetActive(false);
                 Destroy(this, 0.05f);

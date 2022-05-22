@@ -11,6 +11,7 @@ public class Flock : MonoBehaviour
 {
     [SerializeField] private Helpers helper;
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
+    [SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
 
 
     [Header("Spawn Setup")]
@@ -19,20 +20,19 @@ public class Flock : MonoBehaviour
 
 
     [SerializeField] private FlockUnit flockUnitPrefab;
-    //[SerializeField] private FlockUnit shadowUnitPrefab;
+    public Flock EnemyFlock;
     public Food food;
 
-    //public GameObject organicFolder;
-    //public GameObject shadowFolder;
+
     [SerializeField] private Vector3 spawnBounds;
 
     public float boundsDistance = 100;
     public float boundsWeight = 15;
 
-    [Range(0, 1)]
-    [SerializeField] public float mutualAttraction = 0;
-    public float organicSeekWeight = 1;
-    public float shadowSeekWeight = 1;
+    //[Range(0, 1)]
+    //[SerializeField] public float mutualAttraction = 0;
+    public float seekWeight = 1;
+    //public float shadowSeekWeight = 1;
 
 
     [Header("Speed Setup")]
@@ -77,11 +77,9 @@ public class Flock : MonoBehaviour
 
 
     [Header("Agents ")]
-
     public List<FlockUnit> Boids = new List<FlockUnit>();
-    //public List<FlockUnit> ShadowBoids = new List<FlockUnit>();
     public List<int> BoidsIndex;
-    //public List<int> ShadowBoidsIndex;
+
 
 
     [Header("OSC Properties")]
@@ -145,16 +143,16 @@ public class Flock : MonoBehaviour
                 boid.ApplyAttractionForce(force, foodTransform);
             }
 
-            //if (mutualAttraction != 0)
-            //{
-            //    foreach (FlockUnit shadow in ShadowBoids)
-            //    {
-            //        Vector3 force = shadow.Attract(boidPosition);
-            //        Transform shadowPosition = shadow.transform;
-            //        boid.ApplyAttractionForce(force * organicSeekWeight * mutualAttraction, shadowPosition);
-            //    }
+            if (mutualAttraction != 0)
+            {
+                foreach (FlockUnit enemy in EnemyFlock.Boids)
+                {
+                    Vector3 force = enemy.Attract(boidPosition);
+                    Transform shadowPosition = enemy.transform;
+                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force, shadowPosition);
+                }
 
-            //}
+            }
         }
 
         //foreach (FlockUnit shadow in ShadowBoids)
@@ -394,13 +392,13 @@ public class Flock : MonoBehaviour
         Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 0; i < startAmount; i++)
         {
-            GenerateAgent(Boids, BoidsIndex, breed, zeroVector, starterDna);
+            GenerateAgent(this, Boids, BoidsIndex, breed, zeroVector, starterDna);
 
         }
 
     }
 
-    public void GenerateAgent(List<FlockUnit> agentFlock, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
+    public void GenerateAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
 
 
@@ -425,7 +423,7 @@ public class Flock : MonoBehaviour
 
         newAgentScript.Death += OnBoidDeath;
 
-        newAgent.AssignFlock(this);
+        newAgent.AssignFlock(agentFlock);
         newAgent.breed = agentBreed;
 
         newAgent.NumberParticle(agentNumber);
@@ -438,8 +436,8 @@ public class Flock : MonoBehaviour
         //agentFlock.Add(newAgent.GetComponent<FlockUnit>());
 
 
-        BoidsIndex.Add(agentNumber);
-        Boids.Add(newAgent.GetComponent<FlockUnit>());
+        unitIndex.Add(agentNumber);
+        agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
         newAgent.transform.parent = this.transform;
 
         //if (agentBreed == "shadow")
