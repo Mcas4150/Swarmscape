@@ -17,12 +17,12 @@ public class Flock : MonoBehaviour
     [SerializeField] private Helpers helper;
     [SerializeField] private FlockUnit flockUnitPrefab;
     [SerializeField] private FlockUnit shadowUnitPrefab;
+    public Food food;
+
     public GameObject organicFolder;
     public GameObject shadowFolder;
-    //public GameObject foodPrefab;
-    //[SerializeField] private int flockSize;
     [SerializeField] private Vector3 spawnBounds;
-    //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
+
     public float boundsDistance = 100;
     public float boundsWeight = 15;
 
@@ -31,9 +31,6 @@ public class Flock : MonoBehaviour
     public float organicSeekWeight = 1;
     public float shadowSeekWeight = 1;
 
-    public Food food;
-
-    //public int foodSize = 5;
 
 
     [Header("Speed Setup")]
@@ -79,15 +76,10 @@ public class Flock : MonoBehaviour
 
     [Header("Agents ")]
 
-    //public List<FoodUnit> Foods = new List<FoodUnit>();
     public List<FlockUnit> Boids = new List<FlockUnit>();
     public List<FlockUnit> ShadowBoids = new List<FlockUnit>();
     public List<int> BoidsIndex;
     public List<int> ShadowBoidsIndex;
-    //public List<int> FoodsIndex;
-    //public List<OSCMessage> OscFood = new List<OSCMessage>();
-    //public List<Vector3> OscFood = new List<Vector3>();
-
 
 
     [Header("OSC Properties")]
@@ -119,22 +111,15 @@ public class Flock : MonoBehaviour
     private void Awake()
     {
         starterDna = new DNAboid();
-        //flockSize = 16;
 
         ShadowBoidsIndex = new List<int>() { 0 };
         BoidsIndex = new List<int>() { 0 };
-        //FoodsIndex = new List<int>() { 1 };
         zeroVector = new Vector3(0, 0, 0);
 
 
         //transmitter.RemoteHost = "127.0.0.1";
         //transmitter.RemotePort = 7000;
         //transmitter.RemotePort = 57120;
-
-        //oscReceiver = gameObject.AddComponent<OSCReceiver>();
-        //oscReceiver.LocalPort = 7500;
-        //oscReceiver.Bind("/flucoma/xyz", MessageReceived);
-
 
         //StopCoroutine(OSCInit());
 
@@ -145,8 +130,6 @@ public class Flock : MonoBehaviour
         //_minSpeed = 6f;
         //_maxSpeed = 15f;
 
-
-
         for (int i = 0; i < 2; i++)
         {
             GenerateAgent(Boids, BoidsIndex, "organic", zeroVector, starterDna);
@@ -156,13 +139,8 @@ public class Flock : MonoBehaviour
         StartCoroutine(OSCInit());
         StopCoroutine(OSCInit());
         //GenerateUnits();
-        // GenerateFoods();
-
         //randomVector = UnityEngine.Random.insideUnitSphere;
         //randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.y, randomVector.z * spawnBounds.z);
-
-
-
 
     }
 
@@ -178,12 +156,7 @@ public class Flock : MonoBehaviour
             {
                 Vector3 force = food.Attract(boidPosition.position);
                 Transform foodTransform = food.transform;
-
-                //Debug.Log("Force" + force);
-
                 boid.ApplyAttractionForce(force, foodTransform);
-                //food.FixedUpdate();
-
             }
 
             if (mutualAttraction != 0)
@@ -207,7 +180,6 @@ public class Flock : MonoBehaviour
                 Vector3 force = food.Attract(shadowPosition.position);
                 Transform foodPosition = food.transform;
                 shadow.ApplyAttractionForce(force, foodPosition);
-                //food.FixedUpdate();
             }
 
 
@@ -223,14 +195,6 @@ public class Flock : MonoBehaviour
             }
 
         }
-
-        //if (worldYear == 90)
-        //{setSeason("summer"); }
-        //else if (worldYear == 180)
-        //{ setSeason("fall"); }
-        //else if (worldYear == 270)
-        //{ setSeason("winter"); }
-
 
     }
 
@@ -439,29 +403,6 @@ public class Flock : MonoBehaviour
     //}
 
 
-    //protected void MessageReceived(OSCMessage message)
-    //{
-
-    //    //OscFood.Add(message);
-    //    var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
-    //    var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
-    //    var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
-    //    Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
-    //    OscFood.Add(newFood);
-    //    if (OscFood.Count < foodSize)
-    //    {
-    //        var random = new System.Random();
-    //        int index = random.Next(OscFood.Count);
-    //        GenerateFood(OscFood[index]);
-    //    }
-    //    // Debug.Log(newFoodY);
-    //    //GenerateFood(newFoodX, newFoodY);
-    //    //if (message.ToFloat(out var value))
-    //    //{
-    //    //    // Any code...
-    //    //    Debug.Log(value);
-    //    //}
-    //}
 
 
     public void GenerateAgent(List<FlockUnit> agentFlock, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
@@ -542,32 +483,6 @@ public class Flock : MonoBehaviour
 
     }
 
-
-    //private void GenerateFood(Vector3 position)
-    //{
-
-    //    var food = Instantiate(foodPrefab, position, Quaternion.identity);
-    //    var foodScript = food.GetComponent<FoodUnit>();
-    //    foodScript.Death += OnFoodDeath;
-    //    Foods.Add(food.GetComponent<FoodUnit>());
-
-    //}
-
-
-    //public void OnFoodDeath(object sender, FoodDeathEventArgs e)
-    //{
-
-    //    Foods.Remove(e.FoodObject);
-
-
-    //    var random = new System.Random();
-    //    int index = random.Next(OscFood.Count);
-
-    //    //if (season == "spring" || season == "summer")
-    //    //{
-    //    //    GenerateFood(OscFood[index]);
-    //    //}
-    //}
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
     {

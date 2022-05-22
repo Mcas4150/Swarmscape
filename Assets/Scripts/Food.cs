@@ -15,7 +15,7 @@ public class Food : MonoBehaviour
     public OSCReceiver oscReceiver;
 
     public int foodSize = 5;
-
+    //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
 
     //public FoodUnit[] allFoodUnits { get; set; }
     // Start is called before the first frame update
