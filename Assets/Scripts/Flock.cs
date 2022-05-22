@@ -9,18 +9,21 @@ using UnityEngine;
 
 public class Flock : MonoBehaviour
 {
-
+    [SerializeField] private Helpers helper;
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
 
 
     [Header("Spawn Setup")]
-    [SerializeField] private Helpers helper;
+    [SerializeField] public string breed;
+    [SerializeField] public int startAmount;
+
+
     [SerializeField] private FlockUnit flockUnitPrefab;
-    [SerializeField] private FlockUnit shadowUnitPrefab;
+    //[SerializeField] private FlockUnit shadowUnitPrefab;
     public Food food;
 
-    public GameObject organicFolder;
-    public GameObject shadowFolder;
+    //public GameObject organicFolder;
+    //public GameObject shadowFolder;
     [SerializeField] private Vector3 spawnBounds;
 
     public float boundsDistance = 100;
@@ -30,7 +33,6 @@ public class Flock : MonoBehaviour
     [SerializeField] public float mutualAttraction = 0;
     public float organicSeekWeight = 1;
     public float shadowSeekWeight = 1;
-
 
 
     [Header("Speed Setup")]
@@ -77,9 +79,9 @@ public class Flock : MonoBehaviour
     [Header("Agents ")]
 
     public List<FlockUnit> Boids = new List<FlockUnit>();
-    public List<FlockUnit> ShadowBoids = new List<FlockUnit>();
+    //public List<FlockUnit> ShadowBoids = new List<FlockUnit>();
     public List<int> BoidsIndex;
-    public List<int> ShadowBoidsIndex;
+    //public List<int> ShadowBoidsIndex;
 
 
     [Header("OSC Properties")]
@@ -98,28 +100,15 @@ public class Flock : MonoBehaviour
 
     DNAboid starterDna;
 
-    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
-    {
 
-        float OldRange = (OldMax - OldMin);
-        float NewRange = (NewMax - NewMin);
-        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-
-        return (NewValue);
-    }
 
     private void Awake()
     {
         starterDna = new DNAboid();
 
-        ShadowBoidsIndex = new List<int>() { 0 };
+        //ShadowBoidsIndex = new List<int>() { 0 };
         BoidsIndex = new List<int>() { 0 };
         zeroVector = new Vector3(0, 0, 0);
-
-
-        //transmitter.RemoteHost = "127.0.0.1";
-        //transmitter.RemotePort = 7000;
-        //transmitter.RemotePort = 57120;
 
         //StopCoroutine(OSCInit());
 
@@ -127,18 +116,15 @@ public class Flock : MonoBehaviour
 
     private void Start()
     {
-        //_minSpeed = 6f;
-        //_maxSpeed = 15f;
+        _minSpeed = 6f;
+        _maxSpeed = 100f;
 
-        for (int i = 0; i < 2; i++)
-        {
-            GenerateAgent(Boids, BoidsIndex, "organic", zeroVector, starterDna);
 
-        }
+        GenerateUnits();
 
         StartCoroutine(OSCInit());
         StopCoroutine(OSCInit());
-        //GenerateUnits();
+
         //randomVector = UnityEngine.Random.insideUnitSphere;
         //randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.y, randomVector.z * spawnBounds.z);
 
@@ -159,42 +145,42 @@ public class Flock : MonoBehaviour
                 boid.ApplyAttractionForce(force, foodTransform);
             }
 
-            if (mutualAttraction != 0)
-            {
-                foreach (FlockUnit shadow in ShadowBoids)
-                {
-                    Vector3 force = shadow.Attract(boidPosition);
-                    Transform shadowPosition = shadow.transform;
-                    boid.ApplyAttractionForce(force * organicSeekWeight * mutualAttraction, shadowPosition);
-                }
+            //if (mutualAttraction != 0)
+            //{
+            //    foreach (FlockUnit shadow in ShadowBoids)
+            //    {
+            //        Vector3 force = shadow.Attract(boidPosition);
+            //        Transform shadowPosition = shadow.transform;
+            //        boid.ApplyAttractionForce(force * organicSeekWeight * mutualAttraction, shadowPosition);
+            //    }
 
-            }
+            //}
         }
 
-        foreach (FlockUnit shadow in ShadowBoids)
-        {
+        //foreach (FlockUnit shadow in ShadowBoids)
+        //{
 
-            Transform shadowPosition = shadow.myTransform;
-            foreach (FoodUnit food in food.Foods)
-            {
-                Vector3 force = food.Attract(shadowPosition.position);
-                Transform foodPosition = food.transform;
-                shadow.ApplyAttractionForce(force, foodPosition);
-            }
+        //    Transform shadowPosition = shadow.myTransform;
+        //    foreach (FoodUnit food in food.Foods)
+        //    {
+        //        Vector3 force = food.Attract(shadowPosition.position);
+        //        Transform foodPosition = food.transform;
+        //        shadow.ApplyAttractionForce(force, foodPosition);
+        //    }
 
 
-            if (mutualAttraction != 0)
-            {
-                foreach (FlockUnit boid in Boids)
-                {
-                    Vector3 force = boid.Attract(shadowPosition);
-                    Transform boidPosition = shadow.transform;
-                    shadow.ApplyAttractionForce(force * shadowSeekWeight * mutualAttraction, boidPosition);
-                }
+        //    if (mutualAttraction != 0)
+        //    {
+        //        foreach (FlockUnit boid in Boids)
+        //        {
+        //            Vector3 force = boid.Attract(shadowPosition);
+        //            Transform boidPosition = shadow.transform;
+        //            shadow.ApplyAttractionForce(force * shadowSeekWeight * mutualAttraction, boidPosition);
+        //        }
 
-            }
+        //    }
 
-        }
+        //}
 
     }
 
@@ -215,12 +201,12 @@ public class Flock : MonoBehaviour
 
         for (int i = 1; i <= flockSize; i++)
         {
-            var breed = "organic";
+            //var breed = "organic";
             var oscNumber = i;
 
-            OSCMessage message_resetPositionX = new OSCMessage("/organic/position/x/" + i);
-            OSCMessage message_resetPositionY = new OSCMessage("/organic/position/y/" + i);
-            OSCMessage message_resetPositionZ = new OSCMessage("/organic/position/z/" + i);
+            OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + i);
+            OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + i);
+            OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + i);
 
             OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
             OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
@@ -256,47 +242,47 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        for (int i = 1; i <= flockSize; i++)
-        {
-            var breed = "shadow";
-            var oscNumber = i;
+        //for (int i = 1; i <= flockSize; i++)
+        //{
+        //    var breed = "shadow";
+        //    var oscNumber = i;
 
-            OSCMessage message_resetPositionX = new OSCMessage("/shadow/position/x/" + i);
-            OSCMessage message_resetPositionY = new OSCMessage("/shadow/position/y/" + i);
-            OSCMessage message_resetPositionZ = new OSCMessage("/shadow/position/z/" + i);
+        //    OSCMessage message_resetPositionX = new OSCMessage("/shadow/position/x/" + i);
+        //    OSCMessage message_resetPositionY = new OSCMessage("/shadow/position/y/" + i);
+        //    OSCMessage message_resetPositionZ = new OSCMessage("/shadow/position/z/" + i);
 
-            OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-            OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
-            OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
+        //    OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
+        //    OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
+        //    OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
 
-            OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
-
-            message_resetPositionX.AddValue(OSCValue.Float(0));
-            message_resetPositionY.AddValue(OSCValue.Float(0));
-            message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-            midiNoteMessage.AddValue(OSCValue.Float(0));
-            midiPlayMessage.AddValue(OSCValue.Float(0));
-            healthMessage.AddValue(OSCValue.Float(0));
-
-            velocityMessage.AddValue(OSCValue.Float(0));
+        //    OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
 
 
 
-            transmitter.Send(message_resetPositionX);
-            transmitter.Send(message_resetPositionY);
-            transmitter.Send(message_resetPositionZ);
+        //    message_resetPositionX.AddValue(OSCValue.Float(0));
+        //    message_resetPositionY.AddValue(OSCValue.Float(0));
+        //    message_resetPositionZ.AddValue(OSCValue.Float(0));
 
-            transmitter.Send(midiNoteMessage);
-            transmitter.Send(midiPlayMessage);
-            transmitter.Send(healthMessage);
+        //    midiNoteMessage.AddValue(OSCValue.Float(0));
+        //    midiPlayMessage.AddValue(OSCValue.Float(0));
+        //    healthMessage.AddValue(OSCValue.Float(0));
 
-            transmitter.Send(velocityMessage);
+        //    velocityMessage.AddValue(OSCValue.Float(0));
 
-            yield return null;
-        }
+
+
+        //    transmitter.Send(message_resetPositionX);
+        //    transmitter.Send(message_resetPositionY);
+        //    transmitter.Send(message_resetPositionZ);
+
+        //    transmitter.Send(midiNoteMessage);
+        //    transmitter.Send(midiPlayMessage);
+        //    transmitter.Send(healthMessage);
+
+        //    transmitter.Send(velocityMessage);
+
+        //    yield return null;
+        //}
 
         messageAddress3 = new OSCMessage("/play/");
         messageAddress3.AddValue(OSCValue.Float(1));
@@ -403,7 +389,16 @@ public class Flock : MonoBehaviour
     //}
 
 
+    private void GenerateUnits()
+    {
+        Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
+        for (int i = 0; i < startAmount; i++)
+        {
+            GenerateAgent(Boids, BoidsIndex, breed, zeroVector, starterDna);
 
+        }
+
+    }
 
     public void GenerateAgent(List<FlockUnit> agentFlock, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
@@ -416,16 +411,16 @@ public class Flock : MonoBehaviour
         spawnPosition = transform.position + position;
         rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
-        var agentPrefab = flockUnitPrefab;
-        if (agentBreed == "shadow")
-        {
-            agentPrefab = shadowUnitPrefab;
-        }
+        //var agentPrefab = flockUnitPrefab;
+        //if (agentBreed == "shadow")
+        //{
+        //    agentPrefab = shadowUnitPrefab;
+        //}
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
 
 
-        var newAgent = Instantiate(agentPrefab, spawnPosition, rotation);
+        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation);
         var newAgentScript = newAgent.GetComponent<FlockUnit>();
 
         newAgentScript.Death += OnBoidDeath;
@@ -443,19 +438,48 @@ public class Flock : MonoBehaviour
         //agentFlock.Add(newAgent.GetComponent<FlockUnit>());
 
 
-        if (agentBreed == "shadow")
-        {
-            ShadowBoidsIndex.Add(agentNumber);
-            ShadowBoids.Add(newAgent.GetComponent<FlockUnit>());
-            newAgent.transform.parent = shadowFolder.transform;
+        BoidsIndex.Add(agentNumber);
+        Boids.Add(newAgent.GetComponent<FlockUnit>());
+        newAgent.transform.parent = this.transform;
 
-        }
-        else if (agentBreed == "organic")
-        {
-            BoidsIndex.Add(agentNumber);
-            Boids.Add(newAgent.GetComponent<FlockUnit>());
-            newAgent.transform.parent = organicFolder.transform;
-        }
+        //if (agentBreed == "shadow")
+        //{
+        //    ShadowBoidsIndex.Add(agentNumber);
+        //    ShadowBoids.Add(newAgent.GetComponent<FlockUnit>());
+        //    newAgent.transform.parent = shadowFolder.transform;
+
+        //}
+        //else if (agentBreed == "organic")
+        //{
+        //    BoidsIndex.Add(agentNumber);
+        //    Boids.Add(newAgent.GetComponent<FlockUnit>());
+        //    newAgent.transform.parent = organicFolder.transform;
+        //}
+    }
+
+
+    public void OnBoidDeath(object sender, BoidDeathEventArgs e)
+    {
+        Boids.Remove(e.BoidObject);
+        //if (e.BreedObject == "organic")
+        //{
+        //    Boids.Remove(e.BoidObject);
+        //}
+        //else if (e.BreedObject == "shadow")
+        //{
+        //    ShadowBoids.Remove(e.BoidObject);
+        //}
+
+    }
+
+    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
+    {
+
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
     }
 
     public int FindOpenIndex(List<int> indexList, int listSize)
@@ -469,33 +493,6 @@ public class Flock : MonoBehaviour
         indexValue = Math.Clamp(indexValue, 1, listSize);
 
         return indexValue;
-    }
-
-
-    private void GenerateUnits()
-    {
-        Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
-        for (int i = 0; i < 2; i++)
-        {
-            GenerateAgent(Boids, BoidsIndex, "organic", zeroVector, starterDna);
-
-        }
-
-    }
-
-
-    public void OnBoidDeath(object sender, BoidDeathEventArgs e)
-    {
-
-        if (e.BreedObject == "organic")
-        {
-            Boids.Remove(e.BoidObject);
-        }
-        else if (e.BreedObject == "shadow")
-        {
-            ShadowBoids.Remove(e.BoidObject);
-        }
-
     }
 
     //public void SendOSC(string instName, float x, float y, float z, int oscNumber)

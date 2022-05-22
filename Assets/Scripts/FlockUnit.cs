@@ -215,20 +215,22 @@ public class FlockUnit : MonoBehaviour
 
 
 
+                    assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
+
                     //if (breedChance <= shadowProb){ breedType = "shadow"; }
 
 
-                    if (breedChance <= shadowProb)
-                    {
+                    //if (breedChance <= shadowProb)
+                    //{
 
-                        assignedFlock.GenerateAgent(assignedFlock.ShadowBoids, assignedFlock.ShadowBoidsIndex, "shadow", currentPosition, dna);
+                    //    assignedFlock.GenerateAgent(assignedFlock.ShadowBoids, assignedFlock.ShadowBoidsIndex, "shadow", currentPosition, dna);
 
-                    }
-                    else if (breedChance > shadowProb)
-                    {
+                    //}
+                    //else if (breedChance > shadowProb)
+                    //{
 
-                        assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
-                    }
+                    //    assignedFlock.GenerateAgent(assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", currentPosition, dna);
+                    //}
 
 
                     //assignedFlock.GenerateAgent(allUnits, unitIndex, breedType, currentPosition, dna);
@@ -297,14 +299,18 @@ public class FlockUnit : MonoBehaviour
                 transmitter.Send(messageAddress);
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
-                if (breed == "organic")
-                {
-                    assignedFlock.BoidsIndex.Remove(oscNumber);
-                }
-                else
-                {
-                    assignedFlock.ShadowBoidsIndex.Remove(oscNumber);
-                }
+
+
+                assignedFlock.BoidsIndex.Remove(oscNumber);
+
+                //if (breed == "organic")
+                //{
+                //    assignedFlock.BoidsIndex.Remove(oscNumber);
+                //}
+                //else
+                //{
+                //    assignedFlock.ShadowBoidsIndex.Remove(oscNumber);
+                //}
 
 
                 gameObject.SetActive(false);
@@ -413,10 +419,10 @@ public class FlockUnit : MonoBehaviour
         alignmentNeighbors.Clear();
         avoidanceNeighbors.Clear();
         var allUnits = assignedFlock.Boids;
-        if (breed == "shadow")
-        {
-            allUnits = assignedFlock.ShadowBoids;
-        }
+        //if (breed == "shadow")
+        //{
+        //    allUnits = assignedFlock.ShadowBoids;
+        //}
 
         foreach (FlockUnit boid in allUnits)
         {

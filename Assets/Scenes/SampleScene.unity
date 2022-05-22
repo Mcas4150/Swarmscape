@@ -425,6 +425,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 551930388}
+  - component: {fileID: 551930389}
   m_Layer: 0
   m_Name: Shadows
   m_TagString: Untagged
@@ -445,122 +446,36 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &790411623
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 790411625}
-  - component: {fileID: 790411624}
-  - component: {fileID: 790411627}
-  - component: {fileID: 790411626}
-  m_Layer: 0
-  m_Name: Flock
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &790411624
+--- !u!114 &551930389
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790411623}
+  m_GameObject: {fileID: 551930387}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
-  shadowUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
+  breed: shadow
+  startAmount: 10
+  flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
-  organicFolder: {fileID: 1229929643}
-  shadowFolder: {fileID: 551930387}
-  foodPrefab: {fileID: 6695371325389438217, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
-    type: 3}
-  spawnBounds: {x: 10, y: 10, z: 10}
+  food: {fileID: 1876838923}
+  spawnBounds: {x: 0, y: 0, z: 0}
   boundsDistance: 100
   boundsWeight: 15
   mutualAttraction: 0
   organicSeekWeight: 1
   shadowSeekWeight: 1
-  foodSize: 15
-  _minSpeed: 11.9
-  _maxSpeed: 91.7
-  Foods: []
+  _minSpeed: 0
+  _maxSpeed: 100
   Boids: []
-  ShadowBoids: []
-  BoidsIndex: 00000000
-  ShadowBoidsIndex: 00000000
-  FoodsIndex: 
-  OscFood: []
-  transmitter: {fileID: 790411626}
-  oscReceiver: {fileID: 790411627}
---- !u!4 &790411625
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790411623}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.02, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &790411626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790411623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localPortMode: 2
-  _localReceiver: {fileID: 0}
-  _localHost: 169.254.54.0
-  _localPort: 7000
-  _remoteHost: 192.168.2.22
-  _remotePort: 7121
-  _useBundle: 0
---- !u!114 &790411627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 790411623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbba286dc10e549b2bdec947ef8dbd3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localHost: 192.168.50.211
-  _localPort: 7600
+  BoidsIndex: 
+  transmitter: {fileID: 1229929645}
 --- !u!1 &816030520
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,6 +716,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1229929644}
+  - component: {fileID: 1229929646}
+  - component: {fileID: 1229929645}
   m_Layer: 0
   m_Name: Organics
   m_TagString: Untagged
@@ -821,8 +738,59 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1229929645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229929643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 169.254.54.0
+  _localPort: 7000
+  _remoteHost: 192.168.2.22
+  _remotePort: 7121
+  _useBundle: 0
+--- !u!114 &1229929646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229929643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breed: organic
+  startAmount: 10
+  flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
+  food: {fileID: 1876838923}
+  spawnBounds: {x: 0, y: 0, z: 0}
+  boundsDistance: 100
+  boundsWeight: 15
+  mutualAttraction: 0
+  organicSeekWeight: 1
+  shadowSeekWeight: 1
+  _minSpeed: 2.8
+  _maxSpeed: 100
+  Boids: []
+  BoidsIndex: 
+  transmitter: {fileID: 1229929645}
 --- !u!1 &1576914200
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,7 +933,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1646289880
 MonoBehaviour:
@@ -979,8 +947,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c98a757c06874ddb9476b0a610a5534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OrganicFlock: {fileID: 0}
-  ShadowFlock: {fileID: 0}
+  OrganicFlock: {fileID: 1229929646}
+  ShadowFlock: {fileID: 551930389}
   worldYear: 0
   season: spring
 --- !u!1 &1729901933
@@ -1016,4 +984,75 @@ Transform:
   - {fileID: 832575519}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1876838921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1876838924}
+  - component: {fileID: 1876838923}
+  - component: {fileID: 1876838922}
+  m_Layer: 0
+  m_Name: Food
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1876838922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876838921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbba286dc10e549b2bdec947ef8dbd3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localHost: 192.168.2.22
+  _localPort: 7600
+--- !u!114 &1876838923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876838921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4140e1bd3bc834d05ac20d7654bc404d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
+    type: 3}
+  Foods: []
+  FoodsIndex: 
+  OscFood: []
+  oscReceiver: {fileID: 1876838922}
+  foodSize: 15
+--- !u!4 &1876838924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876838921}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.881653, y: 7.08255, z: 18.751617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
