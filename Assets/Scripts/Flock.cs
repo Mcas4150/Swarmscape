@@ -30,10 +30,10 @@ public class Flock : MonoBehaviour
     public float organicSeekWeight = 1;
     public float shadowSeekWeight = 1;
 
-    public int worldYear = 0;
+    [SerializeField] public Helpers helper;
+
     public int foodSize = 5;
 
-    public string season = "spring";
 
     [Header("Speed Setup")]
     [Range(0, 30)]
@@ -105,8 +105,7 @@ public class Flock : MonoBehaviour
 
     DNAboid starterDna;
 
-
-    float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
+    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
 
         float OldRange = (OldMax - OldMin);
@@ -127,6 +126,13 @@ public class Flock : MonoBehaviour
         zeroVector = new Vector3(0, 0, 0);
 
 
+        transmitter.RemoteHost = "127.0.0.1";
+        //transmitter.RemotePort = 7000;
+        transmitter.RemotePort = 57120;
+
+        oscReceiver = gameObject.AddComponent<OSCReceiver>();
+        oscReceiver.LocalPort = 7500;
+        oscReceiver.Bind("/flucoma/xyz", MessageReceived);
 
         StartCoroutine(OSCInit());
         StopCoroutine(OSCInit());
@@ -138,22 +144,15 @@ public class Flock : MonoBehaviour
         //_minSpeed = 6f;
         //_maxSpeed = 15f;
 
-        setSeason("spring");
-
-        transmitter.RemoteHost = "127.0.0.1";
-        //transmitter.RemotePort = 7000;
-        transmitter.RemotePort = 57120;
-
-        oscReceiver = gameObject.AddComponent<OSCReceiver>();
-        oscReceiver.LocalPort = 7500;
-        oscReceiver.Bind("/flucoma/xyz", MessageReceived);
 
 
+        for (int i = 0; i < 2; i++)
+        {
+            GenerateAgent(Boids, BoidsIndex, "organic", zeroVector, starterDna);
 
-        StartCoroutine(FoodCounter());
-        StartCoroutine(CountWorldYear());
+        }
 
-        GenerateUnits();
+        //GenerateUnits();
         // GenerateFoods();
 
         //randomVector = UnityEngine.Random.insideUnitSphere;
@@ -335,12 +334,6 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        messageAddress3 = new OSCMessage("/play/");
-        messageAddress3.AddValue(OSCValue.Float(1));
-        Debug.Log(messageAddress3);
-        transmitter.Send(messageAddress3);
-
-
     }
 
     //private void OSCInit()
@@ -442,45 +435,13 @@ public class Flock : MonoBehaviour
     //}
 
 
-
-    private IEnumerator FoodCounter()
-    {
-        while (true)
-        {
-
-            yield return new WaitForSeconds(10f);
-            // foodSize *= 2;
-        }
-    }
-
-    private IEnumerator CountWorldYear()
-    {
-        while (true)
-        {
-
-            yield return new WaitForSeconds(1f);
-            worldYear += 1;
-
-            //if (worldYear == 90)
-            //{ setSeason("summer"); }
-            //else if (worldYear == 180)
-            //{ setSeason("fall"); }
-            //else if (worldYear == 270)
-            //{ setSeason("winter"); }
-
-        }
-    }
-
-
-
-
     protected void MessageReceived(OSCMessage message)
     {
 
         //OscFood.Add(message);
-        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -20, 20);
-        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -20, 20);
-        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -20, 20);
+        var newFoodX = helper.scale(message.Values[0].FloatValue, 0, 1, -20, 20);
+        var newFoodY = helper.scale(message.Values[1].FloatValue, 0, 1, -20, 20);
+        var newFoodZ = helper.scale(message.Values[2].FloatValue, 0, 1, -20, 20);
         Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
         OscFood.Add(newFood);
         if (OscFood.Count < foodSize)
@@ -498,18 +459,6 @@ public class Flock : MonoBehaviour
         //}
     }
 
-    public int FindOpenIndex(List<int> indexList, int listSize)
-    {
-        int indexValue;
-        int a = indexList.OrderBy(x => x).First();
-        int b = indexList.OrderBy(x => x).Last();
-        List<int> myList2 = Enumerable.Range(1, listSize).ToList();
-        List<int> remaining = myList2.Except(indexList).ToList();
-        indexValue = remaining.First();
-        indexValue = Math.Clamp(indexValue, 1, listSize);
-
-        return indexValue;
-    }
 
     public void GenerateAgent(List<FlockUnit> agentFlock, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
@@ -529,7 +478,6 @@ public class Flock : MonoBehaviour
         }
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
-
 
 
         var newAgent = Instantiate(agentPrefab, spawnPosition, rotation);
@@ -565,6 +513,19 @@ public class Flock : MonoBehaviour
         }
     }
 
+    public int FindOpenIndex(List<int> indexList, int listSize)
+    {
+        int indexValue;
+        int a = indexList.OrderBy(x => x).First();
+        int b = indexList.OrderBy(x => x).Last();
+        List<int> myList2 = Enumerable.Range(1, listSize).ToList();
+        List<int> remaining = myList2.Except(indexList).ToList();
+        indexValue = remaining.First();
+        indexValue = Math.Clamp(indexValue, 1, listSize);
+
+        return indexValue;
+    }
+
 
     private void GenerateUnits()
     {
@@ -588,33 +549,6 @@ public class Flock : MonoBehaviour
 
     }
 
-    public void setSeason(string newSeason)
-    {
-        switch (newSeason)
-        {
-            case "spring":
-                season = "spring";
-                //flockSize = 8;
-                break;
-
-            case "summer":
-                season = "summer";
-                // flockSize = 16;
-                break;
-
-            case "fall":
-                season = "fall";
-                break;
-
-            case "winter":
-                season = "winter";
-                break;
-        }
-
-
-
-    }
-
 
     public void OnFoodDeath(object sender, FoodDeathEventArgs e)
     {
@@ -625,10 +559,10 @@ public class Flock : MonoBehaviour
         var random = new System.Random();
         int index = random.Next(OscFood.Count);
 
-        if (season == "spring" || season == "summer")
-        {
-            GenerateFood(OscFood[index]);
-        }
+        //if (season == "spring" || season == "summer")
+        //{
+        //    GenerateFood(OscFood[index]);
+        //}
     }
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
