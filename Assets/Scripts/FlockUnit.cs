@@ -17,6 +17,8 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float driftY => GameManager.Instance.driftY;
     [SerializeField] public float driftZ => GameManager.Instance.driftZ;
 
+    [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
+    [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
     [SerializeField] public float cohesionDistance => GameManager.Instance.cohesionDistance;
     [SerializeField] public float alignmentDistance => GameManager.Instance.alignmentDistance;
@@ -139,6 +141,7 @@ public class FlockUnit : MonoBehaviour
         StartCoroutine(HealthSize());
         StartCoroutine(CountAge());
         StartCoroutine(CheckAgent());
+        StartCoroutine(CalcSlowStats());
 
     }
 
@@ -236,6 +239,17 @@ public class FlockUnit : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             age += 1;
+
+        }
+    }
+
+    private IEnumerator CalcSlowStats()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.25f);
+
+            currentAverageVelocity = AverageVelocity(currentVelocity);
 
         }
     }
@@ -341,9 +355,9 @@ public class FlockUnit : MonoBehaviour
         FindNeighbors();
         //  CalculateSpeed();
 
-        currentCohesionVector = CalculateCohesionVector() * (cohesionWeight + dnaCohesionWeight);
-        currentAvoidanceVector = CalculateAvoidanceVector() * (avoidanceWeight + dnaAvoidanceWeight);
-        currentAlignmentVector = CalculateAlignmentVector() * (alignmentWeight + dnaAlignmentWeight);
+        currentCohesionVector = CalculateCohesionVector() * ((cohesionWeight * generalWeight) + (dnaCohesionWeight * dnaWeight));
+        currentAvoidanceVector = CalculateAvoidanceVector() * ((avoidanceWeight * generalWeight) + (dnaAvoidanceWeight * dnaWeight));
+        currentAlignmentVector = CalculateAlignmentVector() * ((alignmentWeight * generalWeight) + (dnaAlignmentWeight * dnaWeight));
         currentBoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
         var driftVector = new Vector3(driftX, driftY, driftZ);
 
@@ -358,13 +372,11 @@ public class FlockUnit : MonoBehaviour
         //vector coloring
         // Color linecolor(string breed) => breed == "shadow" ? Color.cyan : Color.magenta;
         //Debug.DrawLine(myTransform.position, moveVector, linecolor(breed));
-
         currentMoveVector = moveVector;
 
         myTransform.position += (currentMoveVector + driftVector) * Time.deltaTime;
         //checkBounds(currentMoveVector);
         CalculateBoundaries(myTransform.position);
-        currentAverageVelocity = AverageVelocity(currentVelocity);
     }
 
     private void FindNeighbors()
@@ -384,15 +396,15 @@ public class FlockUnit : MonoBehaviour
 
                 //  Color linecolor(string breed) => breed == "shadow" ? Color.cyan : Color.magenta;
                 // Debug.DrawLine(myTransform.position, currentUnit.myTransform.position, linecolor(breed));
-                if (currentNeighborDistanceSqr <= (cohesionDistance * cohesionDistance + dnaCohesionDist * dnaCohesionDist))
+                if (currentNeighborDistanceSqr <= ((cohesionDistance * cohesionDistance * generalWeight) + (dnaCohesionDist * dnaCohesionDist * dnaWeight)))
                 {
                     cohesionNeighbors.Add(currentUnit);
                 }
-                if (currentNeighborDistanceSqr <= (avoidanceDistance * avoidanceDistance + dnaAvoidanceDist * dnaAvoidanceDist))
+                if (currentNeighborDistanceSqr <= ((avoidanceDistance * avoidanceDistance * generalWeight) + (dnaAvoidanceDist * dnaAvoidanceDist * dnaWeight)))
                 {
                     avoidanceNeighbors.Add(currentUnit);
                 }
-                if (currentNeighborDistanceSqr <= (alignmentDistance * alignmentDistance + dnaAlignmentDist * dnaAlignmentDist))
+                if (currentNeighborDistanceSqr <= ((alignmentDistance * alignmentDistance * generalWeight) + (dnaAlignmentDist * dnaAlignmentDist * dnaWeight)))
                 {
                     alignmentNeighbors.Add(currentUnit);
                 }
