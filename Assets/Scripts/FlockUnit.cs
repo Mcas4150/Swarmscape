@@ -371,6 +371,7 @@ public class FlockUnit : MonoBehaviour
 
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
         moveVector = moveVector.normalized * (speed + cohesionSpeed);
+
         if (moveVector == Vector3.zero)
             moveVector = transform.forward;
         myTransform.forward = moveVector;

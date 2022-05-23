@@ -914,22 +914,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flockSize: 16
   shadowProb: 0.5
-  smoothDamp: 1
-  attractForceMagnitude: 150
-  foodForceMagnitude: 75
-  attackForceMagnitude: 75
-  foodSeedMax: 4
-  foodAttractMultiple: 1
-  boidMass: 1.5
   respawnTime: 2
   deathMultiplier: 1
-  driftX: 0
-  driftY: 0
-  driftZ: 0
   mutualAttraction: 0
+  attractForceMagnitude: 25
+  foodForceMagnitude: 25
+  attackForceMagnitude: 25
+  boidMass: 1.5
+  smoothDamp: 1
   trailTime: 2
-  transmitter: {fileID: 1576914203}
-  oscReceiver: {fileID: 1576914204}
   boundsDistance: 100
   cohesionDistance: 20
   avoidanceDistance: 30
@@ -938,6 +931,14 @@ MonoBehaviour:
   cohesionWeight: 10
   avoidanceWeight: 10
   alignmentWeight: 2
+  dnaWeight: 0
+  generalWeight: 0
+  foodAttractWeight: 1
+  driftX: 0
+  driftY: 0
+  driftZ: 0
+  transmitter: {fileID: 1576914203}
+  oscReceiver: {fileID: 1576914204}
 --- !u!4 &1576914202
 Transform:
   m_ObjectHideFlags: 0
@@ -1430,6 +1431,7 @@ MonoBehaviour:
   OscFood: []
   oscReceiver: {fileID: 1876838922}
   foodSize: 30
+  foodBounds: 75
 --- !u!4 &1876838924
 Transform:
   m_ObjectHideFlags: 0
