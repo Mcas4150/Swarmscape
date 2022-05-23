@@ -581,28 +581,45 @@ public class FlockUnit : MonoBehaviour
         dna = newDNA;
         //speed = ExtensionMethods.map(dna.genes[0], 0, 1, 10, 0); // MaxSpeed an Size are now mapped to values according to the DNA
         //Debug.Log(scale(dna.genes[0], 0, 1, 5, 15));
+
+
+
+
+
         speed = (scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, assignedFlock.maxSpeed));
-        midiNote = scale(dna.genes[0], 0, 1, 1, 10);
-
-        dnaCohesionDist = (scale(dna.genes[0], 0, 1, 5, 100));
-        dnaAvoidanceDist = (scale(dna.genes[0], 0, 1, 5, 100));
-        dnaAlignmentDist = (scale(dna.genes[0], 0, 1, 5, 100));
-
-        dnaCohesionWeight = (scale(dna.genes[0], 0, 1, 5, 100));
-        dnaAvoidanceWeight = (scale(dna.genes[0], 0, 1, 5, 100));
-        dnaAlignmentWeight = (scale(dna.genes[0], 0, 1, 5, 100));
-
         speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
-        midiNote = Math.Clamp(midiNote, 1, 10);
+
+        //midiNote = scale(dna.genes[0], 0, 1, 1, 10);
+
+        //dnaCohesionDist = (scale(dna.genes[0], 0, 1, 5, 100));
+        //dnaAvoidanceDist = (scale(dna.genes[0], 0, 1, 5, 100));
+        //dnaAlignmentDist = (scale(dna.genes[0], 0, 1, 5, 100));
+
+        //dnaCohesionWeight = (scale(dna.genes[0], 0, 1, 5, 100));
+        //dnaAvoidanceWeight = (scale(dna.genes[0], 0, 1, 5, 100));
+        //dnaAlignmentWeight = (scale(dna.genes[0], 0, 1, 5, 100));
 
 
-        dnaCohesionDist = Math.Clamp(dnaCohesionDist, 5, 100);
-        dnaAvoidanceDist = Math.Clamp(dnaAvoidanceDist, 5, 100);
-        dnaAlignmentDist = Math.Clamp(dnaAlignmentDist, 5, 100);
+        //midiNote = Math.Clamp(midiNote, 1, 10);
 
-        dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 5, 100);
-        dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 5, 100);
-        dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 5, 100);
+
+        //dnaCohesionDist = Math.Clamp(dnaCohesionDist, 5, 100);
+        //dnaAvoidanceDist = Math.Clamp(dnaAvoidanceDist, 5, 100);
+        //dnaAlignmentDist = Math.Clamp(dnaAlignmentDist, 5, 100);
+
+        //dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 5, 100);
+        //dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 5, 100);
+        //dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 5, 100);
+
+
+
+
+
+
+
+
+
+
         //this.speed = scale(dna.genes[0], 0, 1, 10, 0);
 
         //size = ExtensionMethods.map(dna.genes[0], 0, 1, 0, 2);

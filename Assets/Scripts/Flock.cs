@@ -85,8 +85,7 @@ public class Flock : MonoBehaviour
         BoidsIndex = new List<int>() { 0 };
         zeroVector = new Vector3(0, 0, 0);
 
-        StartCoroutine(OSCInit());
-        StopCoroutine(OSCInit());
+
 
     }
 
@@ -95,6 +94,8 @@ public class Flock : MonoBehaviour
         _minSpeed = 6f;
         _maxSpeed = 100f;
 
+        StartCoroutine(OSCInit());
+        StopCoroutine(OSCInit());
 
         GenerateUnits();
 
@@ -132,6 +133,11 @@ public class Flock : MonoBehaviour
 
     private IEnumerator OSCInit()
     {
+
+        OSCMessage initPlayMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
+        Debug.Log(initPlayMessage);
+        transmitter.Send(initPlayMessage);
+
         for (int i = 1; i <= flockSize; i++)
         {
             var oscNumber = i;
@@ -171,9 +177,7 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        OSCMessage initPlayMessage = new OSCMessage("/play/", OSCValue.Float(1));
-        Debug.Log(initPlayMessage);
-        transmitter.Send(initPlayMessage);
+
     }
 
     private IEnumerator OSCSender()

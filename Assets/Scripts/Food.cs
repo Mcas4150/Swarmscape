@@ -18,7 +18,15 @@ public class Food : MonoBehaviour
     //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
 
     //public FoodUnit[] allFoodUnits { get; set; }
+    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
+    {
 
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
+    }
 
     private void Awake()
     {
@@ -28,11 +36,18 @@ public class Food : MonoBehaviour
         FoodsIndex = new List<int>() { 1 };
     }
 
+    private void Start()
+    {
+
+    }
 
 
     protected void MessageReceived(OSCMessage message)
     {
-
+        //Debug.Log(message);
+        //var newFoodX = message.Values[0].FloatValue;
+        //var newFoodY = message.Values[1].FloatValue;
+        //var newFoodZ = message.Values[2].FloatValue;
         var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
         var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
         var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
@@ -43,6 +58,7 @@ public class Food : MonoBehaviour
             var random = new System.Random();
             int index = random.Next(OscFood.Count);
             GenerateFood(OscFood[index]);
+            //GenerateFood(newFood);
         }
 
     }
@@ -75,14 +91,6 @@ public class Food : MonoBehaviour
     }
 
 
-    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
-    {
 
-        float OldRange = (OldMax - OldMin);
-        float NewRange = (NewMax - NewMin);
-        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-
-        return (NewValue);
-    }
 
 }
