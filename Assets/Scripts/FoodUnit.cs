@@ -7,7 +7,7 @@ using extOSC;
 public class FoodUnit : MonoBehaviour
 {
 
-    [SerializeField] public float foodAttractMultiple => GameManager.Instance.foodAttractMultiple;
+    [SerializeField] public float foodAttractWeight => GameManager.Instance.foodAttractWeight;
     [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
     [SerializeField] public float BoidMass => GameManager.Instance.boidMass;
 
@@ -83,7 +83,7 @@ public class FoodUnit : MonoBehaviour
         // float strength =  G * (body.mass * m.mass) / (distance * distance);
         //float strength =  G * (body.mass * 1.5f) / (distance * distance);
         float strength = G * (body.mass * BoidMass) / (distance * distance);
-        force *= strength * foodAttractMultiple;
+        force *= strength * foodAttractWeight;
         //force *= strength;
 
         force = Vector3.ClampMagnitude(force, foodForceMagnitude);

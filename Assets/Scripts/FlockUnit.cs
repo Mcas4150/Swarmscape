@@ -9,27 +9,29 @@ public class FlockUnit : MonoBehaviour
 {
 
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-    [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
-    [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
+    [SerializeField] public float shadowProb => GameManager.Instance.shadowProb;
     [SerializeField] public float respawnTime => GameManager.Instance.respawnTime;
     [SerializeField] public float deathMultiplier => GameManager.Instance.deathMultiplier;
-    [SerializeField] public float driftX => GameManager.Instance.driftX;
-    [SerializeField] public float driftY => GameManager.Instance.driftY;
-    [SerializeField] public float driftZ => GameManager.Instance.driftZ;
 
-    [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
-    [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
     [SerializeField] public float cohesionDistance => GameManager.Instance.cohesionDistance;
     [SerializeField] public float alignmentDistance => GameManager.Instance.alignmentDistance;
     [SerializeField] public float avoidanceDistance => GameManager.Instance.avoidanceDistance;
+
     [SerializeField] public float cohesionWeight => GameManager.Instance.cohesionWeight;
     [SerializeField] public float alignmentWeight => GameManager.Instance.alignmentWeight;
     [SerializeField] public float avoidanceWeight => GameManager.Instance.avoidanceWeight;
-    [SerializeField] public float shadowProb => GameManager.Instance.shadowProb;
+    [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
+    [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
     [SerializeField] public float boidMass => GameManager.Instance.boidMass;
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
+    [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
+    [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
+
+    [SerializeField] public float driftX => GameManager.Instance.driftX;
+    [SerializeField] public float driftY => GameManager.Instance.driftY;
+    [SerializeField] public float driftZ => GameManager.Instance.driftZ;
 
     [SerializeField] public float trailTime => GameManager.Instance.trailTime;
 
@@ -47,6 +49,8 @@ public class FlockUnit : MonoBehaviour
     public float starterHealth;
     public int eatingState;
     public float FOVAngle;
+    public float averageVelocity;
+    public float foodDistance;
 
     [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
@@ -62,7 +66,7 @@ public class FlockUnit : MonoBehaviour
     public Vector3 attractionForce;
     public Vector3 foodForce;
     public Vector3 currentVelocity;
-    public float currentAverageVelocity;
+
     public Vector3 acceleration;
     public Vector3 currentMoveVector;
     public Vector3 currentPosition;
@@ -79,7 +83,7 @@ public class FlockUnit : MonoBehaviour
     public float dnaCohesionWeight;
     public float dnaAlignmentWeight;
     public float dnaAvoidanceWeight;
-    public float foodDistance;
+
 
 
     [Header("OSC Properties")]
@@ -107,6 +111,8 @@ public class FlockUnit : MonoBehaviour
         myTransform = transform;
         health = UnityEngine.Random.Range(10, 100);
         starterHealth = health;
+
+        //delete?
         myTransform.localScale = new Vector3(3, 3, 3);
 
     }
@@ -249,7 +255,7 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.25f);
 
-            currentAverageVelocity = AverageVelocity(currentVelocity);
+            averageVelocity = AverageVelocity(currentVelocity);
 
         }
     }
