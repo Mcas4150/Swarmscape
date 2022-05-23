@@ -171,8 +171,7 @@ public class Flock : MonoBehaviour
             yield return null;
         }
 
-        OSCMessage initPlayMessage = new OSCMessage("/play/");
-        initPlayMessage.AddValue(OSCValue.Float(1));
+        OSCMessage initPlayMessage = new OSCMessage("/play/", OSCValue.Float(1));
         Debug.Log(initPlayMessage);
         transmitter.Send(initPlayMessage);
     }
