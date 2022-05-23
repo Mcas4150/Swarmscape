@@ -30,11 +30,23 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
     [SerializeField] public float trailTime => GameManager.Instance.trailTime;
-    [SerializeField] private float FOVAngle;
+
 
 
     public Flock assignedFlock;
+    public string breed;
+    public int oscNumber;
 
+
+    [Header("Health Values")]
+
+    public float age;
+    public float health;
+    public float starterHealth;
+    public int eatingState;
+    public float FOVAngle;
+
+    [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
     public List<FlockUnit> alignmentNeighbors = new List<FlockUnit>();
     public List<FlockUnit> avoidanceNeighbors = new List<FlockUnit>();
@@ -45,32 +57,17 @@ public class FlockUnit : MonoBehaviour
     public Vector3 currentAvoidanceVector;
     public Vector3 currentAlignmentVector;
     public Vector3 currentBoundsVector;
-    public Vector3 currentPosition;
+    public Vector3 attractionForce;
+    public Vector3 foodForce;
     public Vector3 currentVelocity;
     public float currentAverageVelocity;
-    public Vector3 currentMoveVector;
     public Vector3 acceleration;
-    public Vector3 attractionForce;
+    public Vector3 currentMoveVector;
+    public Vector3 currentPosition;
+
     public Transform myTransform { get; set; }
 
-
-    [Header("OSC Properties")]
-    public OSCMessage message_newPositionX;
-    public OSCMessage message_newPositionY;
-    public OSCMessage message_newPositionZ;
-    //public OSCMessage messageAddress;
-    public OSCMessage velocityMessage;
-    public OSCMessage message_newPosition;
-    public OSCMessage healthMessage;
-    public OSCMessage midiNoteMessage;
-    public OSCMessage midiPlayMessage;
-    public OSCTransmitter transmitter;
-    public string breed;
-    public int oscNumber;
-    public int eatingState;
-    public float health;
-    public float age;
-    public float starterHealth;
+    [Header("DNA")]
     public float speed;
     public float cohesionSpeed;
     public float midiNote;
@@ -81,8 +78,22 @@ public class FlockUnit : MonoBehaviour
     public float dnaAlignmentWeight;
     public float dnaAvoidanceWeight;
     public float foodDistance;
-    public Vector3 foodForce;
-    public float G = 9.8f;
+
+
+    [Header("OSC Properties")]
+
+    public OSCMessage message_newPositionX;
+    public OSCMessage message_newPositionY;
+    public OSCMessage message_newPositionZ;
+    public OSCMessage velocityMessage;
+    public OSCMessage message_newPosition;
+    public OSCMessage healthMessage;
+    public OSCMessage midiNoteMessage;
+    public OSCMessage midiPlayMessage;
+    public OSCTransmitter transmitter;
+
+    private float G = 9.8f;
+
 
     DNAboid dna;
 
@@ -108,7 +119,6 @@ public class FlockUnit : MonoBehaviour
         ////transmitter.RemotePort = 57120;
         //transmitter.UseBundle = false;
 
-
         message_newPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber);
         message_newPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber);
         message_newPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber);
@@ -118,8 +128,6 @@ public class FlockUnit : MonoBehaviour
         healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
 
         velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
 
         TrailRenderer Trail = gameObject.GetComponent<TrailRenderer>();
 
@@ -133,7 +141,6 @@ public class FlockUnit : MonoBehaviour
         StartCoroutine(CheckAgent());
 
     }
-
 
 
     private IEnumerator OSCSender()
@@ -173,9 +180,6 @@ public class FlockUnit : MonoBehaviour
 
         }
     }
-
-
-
 
     private IEnumerator Respawn()
     {
@@ -225,7 +229,6 @@ public class FlockUnit : MonoBehaviour
         }
     }
 
-
     private IEnumerator CountAge()
     {
         while (true)
@@ -236,7 +239,6 @@ public class FlockUnit : MonoBehaviour
 
         }
     }
-
 
     private IEnumerator CheckAgent()
     {
@@ -492,8 +494,14 @@ public class FlockUnit : MonoBehaviour
 
     private void CalculateBoundaries(Vector3 position)
     {
-        //myTransform.position = Math.Clamp(position.x, -10f, 10f);
-        myTransform.position = Vector3.ClampMagnitude(myTransform.position, assignedFlock.boundsDistance);
+
+        var clampX = Math.Clamp(position.x, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
+        var clampY = Math.Clamp(position.y, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
+        var clampZ = Math.Clamp(position.z, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
+        myTransform.position = new Vector3(clampX, clampY, clampZ);
+
+        //sphere
+        //myTransform.position = Vector3.ClampMagnitude(position, assignedFlock.boundsDistance);
     }
 
     //private void checkBounds(Vector3 velocity)
@@ -582,36 +590,32 @@ public class FlockUnit : MonoBehaviour
         //speed = ExtensionMethods.map(dna.genes[0], 0, 1, 10, 0); // MaxSpeed an Size are now mapped to values according to the DNA
         //Debug.Log(scale(dna.genes[0], 0, 1, 5, 15));
 
-
-
-
-
         speed = (scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, assignedFlock.maxSpeed));
         speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
 
-        //midiNote = scale(dna.genes[0], 0, 1, 1, 10);
-
-        //dnaCohesionDist = (scale(dna.genes[0], 0, 1, 5, 100));
-        //dnaAvoidanceDist = (scale(dna.genes[0], 0, 1, 5, 100));
-        //dnaAlignmentDist = (scale(dna.genes[0], 0, 1, 5, 100));
-
-        //dnaCohesionWeight = (scale(dna.genes[0], 0, 1, 5, 100));
-        //dnaAvoidanceWeight = (scale(dna.genes[0], 0, 1, 5, 100));
-        //dnaAlignmentWeight = (scale(dna.genes[0], 0, 1, 5, 100));
 
 
-        //midiNote = Math.Clamp(midiNote, 1, 10);
+        dnaCohesionDist = (scale(dna.genes[1], 0, 1, 5, 100));
+        dnaAvoidanceDist = (scale(dna.genes[2], 0, 1, 5, 100));
+        dnaAlignmentDist = (scale(dna.genes[3], 0, 1, 5, 100));
+
+        dnaCohesionWeight = (scale(dna.genes[4], 0, 1, 5, 100));
+        dnaAvoidanceWeight = (scale(dna.genes[5], 0, 1, 5, 100));
+        dnaAlignmentWeight = (scale(dna.genes[6], 0, 1, 5, 100));
+
+        midiNote = scale(dna.genes[7], 0, 1, 1, 10);
 
 
-        //dnaCohesionDist = Math.Clamp(dnaCohesionDist, 5, 100);
-        //dnaAvoidanceDist = Math.Clamp(dnaAvoidanceDist, 5, 100);
-        //dnaAlignmentDist = Math.Clamp(dnaAlignmentDist, 5, 100);
 
-        //dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 5, 100);
-        //dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 5, 100);
-        //dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 5, 100);
+        dnaCohesionDist = Math.Clamp(dnaCohesionDist, 5, 100);
+        dnaAvoidanceDist = Math.Clamp(dnaAvoidanceDist, 5, 100);
+        dnaAlignmentDist = Math.Clamp(dnaAlignmentDist, 5, 100);
 
+        dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 5, 100);
+        dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 5, 100);
+        dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 5, 100);
 
+        midiNote = Math.Clamp(midiNote, 1, 10);
 
 
 
@@ -651,7 +655,7 @@ public class DNAboid
     public DNAboid()
     {
 
-        genes = new float[1];
+        genes = new float[10];
         for (int i = 0; i < genes.Length; i++)
         {
             genes[i] = UnityEngine.Random.Range(0f, 1f);

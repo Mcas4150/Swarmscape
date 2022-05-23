@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1404202896695593403}
+  - component: {fileID: 291065812254269404}
   - component: {fileID: 7794412978908942509}
   - component: {fileID: 2500297791286915655}
-  - component: {fileID: 291065812254269404}
   - component: {fileID: 6883934484485513509}
   m_Layer: 0
   m_Name: Shadow
@@ -35,6 +35,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &291065812254269404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744981805102912257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d130444f5fa346b087a5ba159bd7d56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignedFlock: {fileID: 0}
+  breed: shadow
+  oscNumber: 0
+  age: 0
+  health: 100
+  starterHealth: 0
+  eatingState: 0
+  FOVAngle: 270
+  cohesionNeighbors: []
+  alignmentNeighbors: []
+  avoidanceNeighbors: []
+  currentCohesionVector: {x: 0, y: 0, z: 0}
+  currentAvoidanceVector: {x: 0, y: 0, z: 0}
+  currentAlignmentVector: {x: 0, y: 0, z: 0}
+  currentBoundsVector: {x: 0, y: 0, z: 0}
+  attractionForce: {x: 0, y: 0, z: 0}
+  foodForce: {x: 0, y: 0, z: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
+  currentAverageVelocity: 0
+  acceleration: {x: 0, y: 0, z: 0}
+  currentMoveVector: {x: 0, y: 0, z: 0}
+  currentPosition: {x: 0, y: 0, z: 0}
+  speed: 0
+  cohesionSpeed: 0
+  midiNote: 0
+  dnaCohesionDist: 0
+  dnaAlignmentDist: 0
+  dnaAvoidanceDist: 0
+  dnaCohesionWeight: 0
+  dnaAlignmentWeight: 0
+  dnaAvoidanceWeight: 0
+  foodDistance: 0
+  transmitter: {fileID: 0}
 --- !u!33 &7794412978908942509
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -85,52 +130,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &291065812254269404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744981805102912257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d130444f5fa346b087a5ba159bd7d56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FOVAngle: 270
-  assignedFlock: {fileID: 0}
-  cohesionNeighbors: []
-  alignmentNeighbors: []
-  avoidanceNeighbors: []
-  currentCohesionVector: {x: 0, y: 0, z: 0}
-  currentAvoidanceVector: {x: 0, y: 0, z: 0}
-  currentAlignmentVector: {x: 0, y: 0, z: 0}
-  currentBoundsVector: {x: 0, y: 0, z: 0}
-  currentPosition: {x: 0, y: 0, z: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
-  currentAverageVelocity: 0
-  currentMoveVector: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
-  attractionForce: {x: 0, y: 0, z: 0}
-  transmitter: {fileID: 0}
-  breed: shadow
-  oscNumber: 0
-  eatingState: 0
-  health: 100
-  age: 0
-  starterHealth: 0
-  speed: 0
-  cohesionSpeed: 0
-  midiNote: 0
-  dnaCohesionDist: 0
-  dnaAlignmentDist: 0
-  dnaAvoidanceDist: 0
-  dnaCohesionWeight: 0
-  dnaAlignmentWeight: 0
-  dnaAvoidanceWeight: 0
-  foodDistance: 0
-  foodForce: {x: 0, y: 0, z: 0}
-  G: 9.8
 --- !u!96 &6883934484485513509
 TrailRenderer:
   serializedVersion: 2

@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4549644435828676}
+  - component: {fileID: 1190195829}
   - component: {fileID: 4661745826881359617}
   - component: {fileID: 6204089978325790139}
-  - component: {fileID: 1190195829}
   - component: {fileID: 725359842935135765}
   m_Layer: 0
   m_Name: Organic
@@ -27,14 +27,59 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046869630431942}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1190195829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046869630431942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d130444f5fa346b087a5ba159bd7d56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignedFlock: {fileID: 0}
+  breed: organic
+  oscNumber: 0
+  age: 0
+  health: 100
+  starterHealth: 0
+  eatingState: 0
+  FOVAngle: 270
+  cohesionNeighbors: []
+  alignmentNeighbors: []
+  avoidanceNeighbors: []
+  currentCohesionVector: {x: 0, y: 0, z: 0}
+  currentAvoidanceVector: {x: 0, y: 0, z: 0}
+  currentAlignmentVector: {x: 0, y: 0, z: 0}
+  currentBoundsVector: {x: 0, y: 0, z: 0}
+  attractionForce: {x: 0, y: 0, z: 0}
+  foodForce: {x: 0, y: 0, z: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
+  currentAverageVelocity: 0
+  acceleration: {x: 0, y: 0, z: 0}
+  currentMoveVector: {x: 0, y: 0, z: 0}
+  currentPosition: {x: 0, y: 0, z: 0}
+  speed: 0
+  cohesionSpeed: 0
+  midiNote: 0
+  dnaCohesionDist: 0
+  dnaAlignmentDist: 0
+  dnaAvoidanceDist: 0
+  dnaCohesionWeight: 0
+  dnaAlignmentWeight: 0
+  dnaAvoidanceWeight: 0
+  foodDistance: 0
+  transmitter: {fileID: 0}
 --- !u!33 &4661745826881359617
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -85,52 +130,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1190195829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046869630431942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d130444f5fa346b087a5ba159bd7d56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FOVAngle: 270
-  assignedFlock: {fileID: 0}
-  cohesionNeighbors: []
-  alignmentNeighbors: []
-  avoidanceNeighbors: []
-  currentCohesionVector: {x: 0, y: 0, z: 0}
-  currentAvoidanceVector: {x: 0, y: 0, z: 0}
-  currentAlignmentVector: {x: 0, y: 0, z: 0}
-  currentBoundsVector: {x: 0, y: 0, z: 0}
-  currentPosition: {x: 0, y: 0, z: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
-  currentAverageVelocity: 0
-  currentMoveVector: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
-  attractionForce: {x: 0, y: 0, z: 0}
-  transmitter: {fileID: 0}
-  breed: organic
-  oscNumber: 0
-  eatingState: 0
-  health: 100
-  age: 0
-  starterHealth: 0
-  speed: 0
-  cohesionSpeed: 0
-  midiNote: 0
-  dnaCohesionDist: 0
-  dnaAlignmentDist: 0
-  dnaAvoidanceDist: 0
-  dnaCohesionWeight: 0
-  dnaAlignmentWeight: 0
-  dnaAvoidanceWeight: 0
-  foodDistance: 0
-  foodForce: {x: 0, y: 0, z: 0}
-  G: 9.8
 --- !u!96 &725359842935135765
 TrailRenderer:
   serializedVersion: 2

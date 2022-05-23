@@ -5,8 +5,12 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
+
+    [SerializeField] private Ecosystem ecosystem;
+
     [Header("Spawn Setup")]
     [SerializeField] private FoodUnit foodUnit;
+
 
     public List<FoodUnit> Foods = new List<FoodUnit>();
     public List<int> FoodsIndex;
@@ -15,9 +19,8 @@ public class Food : MonoBehaviour
     public OSCReceiver oscReceiver;
 
     public int foodSize = 5;
-    //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
+    public int foodBounds = 75;
 
-    //public FoodUnit[] allFoodUnits { get; set; }
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
 
@@ -44,13 +47,10 @@ public class Food : MonoBehaviour
 
     protected void MessageReceived(OSCMessage message)
     {
-        //Debug.Log(message);
-        //var newFoodX = message.Values[0].FloatValue;
-        //var newFoodY = message.Values[1].FloatValue;
-        //var newFoodZ = message.Values[2].FloatValue;
-        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
-        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
-        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -50, 50);
+
+        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -foodBounds, foodBounds);
+        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -foodBounds, foodBounds);
+        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -foodBounds, foodBounds);
         Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
         OscFood.Add(newFood);
         if (OscFood.Count < foodSize)
@@ -58,7 +58,7 @@ public class Food : MonoBehaviour
             var random = new System.Random();
             int index = random.Next(OscFood.Count);
             GenerateFood(OscFood[index]);
-            //GenerateFood(newFood);
+
         }
 
     }
@@ -82,12 +82,12 @@ public class Food : MonoBehaviour
         Foods.Remove(e.FoodObject);
 
 
-        //if (season == "spring" || season == "summer")
-        //{
-        //    var random = new System.Random();
-        //    int index = random.Next(OscFood.Count);
-        //    GenerateFood(OscFood[index]);
-        //}
+        if (ecosystem.season == "spring" || ecosystem.season == "summer")
+        {
+            var random = new System.Random();
+            int index = random.Next(OscFood.Count);
+            GenerateFood(OscFood[index]);
+        }
     }
 
 

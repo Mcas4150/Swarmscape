@@ -7,6 +7,7 @@ public class Ecosystem : MonoBehaviour
 
     [SerializeField] private Flock OrganicFlock;
     [SerializeField] private Flock ShadowFlock;
+    [SerializeField] private Food food;
 
     public int worldYear = 0;
     public string season = "spring";
