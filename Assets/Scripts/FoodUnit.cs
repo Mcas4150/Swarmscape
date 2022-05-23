@@ -13,8 +13,6 @@ public class FoodUnit : MonoBehaviour
 
     [SerializeField] private GameObject food;
 
-    public Rigidbody body;
-
     private float G = 9.8f;
     public float health;
     private float radius;
@@ -30,17 +28,13 @@ public class FoodUnit : MonoBehaviour
     {
         food = gameObject;
 
-        body = food.GetComponent<Rigidbody>();
-        body.constraints = RigidbodyConstraints.FreezeRotation;
-        body.useGravity = false;
-        body.isKinematic = true;
         health = 100;
         radius = health / 50f;
 
-        food.transform.position = body.position;
+
         food.transform.localScale = 2 * radius * Vector3.one;
-        body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
-        mass = body.mass;
+        mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
+
 
         StartCoroutine(FoodSize());
     }
@@ -60,7 +54,7 @@ public class FoodUnit : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             radius = health / 50f;
-            body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
+            mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
             food.transform.localScale = radius * Vector3.one;
 
             //var healthRatio = health * 0.025f;
@@ -72,7 +66,7 @@ public class FoodUnit : MonoBehaviour
 
     public Vector3 Attract(Vector3 targetPosition)
     {
-        Vector3 force = body.position - targetPosition;
+        Vector3 force = food.transform.position - targetPosition;
         float distance = force.magnitude;
 
         Eaten(distance);
@@ -82,7 +76,7 @@ public class FoodUnit : MonoBehaviour
 
         // float strength =  G * (body.mass * m.mass) / (distance * distance);
         //float strength =  G * (body.mass * 1.5f) / (distance * distance);
-        float strength = G * (body.mass * BoidMass) / (distance * distance);
+        float strength = G * (mass * BoidMass) / (distance * distance);
         force *= strength * foodAttractWeight;
         //force *= strength;
 
