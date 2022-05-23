@@ -466,9 +466,6 @@ MonoBehaviour:
     type: 3}
   EnemyFlock: {fileID: 1229929646}
   food: {fileID: 1876838923}
-  spawnBounds: {x: 0, y: 0, z: 0}
-  boundsDistance: 100
-  boundsWeight: 15
   seekWeight: 1
   _minSpeed: 0
   _maxSpeed: 100
@@ -776,13 +773,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 10
+  startAmount: 3
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
-  spawnBounds: {x: 0, y: 0, z: 0}
-  boundsDistance: 100
-  boundsWeight: 15
   seekWeight: 1
   _minSpeed: 2.8
   _maxSpeed: 100
@@ -820,8 +814,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 100
-  shadowProb: 0.2
+  flockSize: 16
+  shadowProb: 0.5
   smoothDamp: 1
   attractForceMagnitude: 150
   foodForceMagnitude: 75
@@ -830,7 +824,7 @@ MonoBehaviour:
   foodAttractMultiple: 1
   boidMass: 1.5
   respawnTime: 2
-  deathMultiplier: 0.5
+  deathMultiplier: 1
   driftX: 0
   driftY: 0
   driftZ: 0
@@ -838,9 +832,11 @@ MonoBehaviour:
   trailTime: 2
   transmitter: {fileID: 1576914203}
   oscReceiver: {fileID: 1576914204}
+  boundsDistance: 100
   cohesionDistance: 20
   avoidanceDistance: 30
   alignmentDistance: 16
+  boundsWeight: 15
   cohesionWeight: 10
   avoidanceWeight: 10
   alignmentWeight: 2
@@ -1039,7 +1035,7 @@ MonoBehaviour:
   FoodsIndex: 
   OscFood: []
   oscReceiver: {fileID: 1876838922}
-  foodSize: 15
+  foodSize: 30
 --- !u!4 &1876838924
 Transform:
   m_ObjectHideFlags: 0

@@ -18,7 +18,6 @@ public class Food : MonoBehaviour
     //[SerializeField] public int foodSize => GameManager.Instance.foodSeedMax;
 
     //public FoodUnit[] allFoodUnits { get; set; }
-    // Start is called before the first frame update
 
 
     private void Awake()
@@ -30,22 +29,9 @@ public class Food : MonoBehaviour
     }
 
 
-    void Start()
-    {
-        //GenerateFoodUnits();
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
     protected void MessageReceived(OSCMessage message)
     {
-
 
         var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -50, 50);
         var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -50, 50);
@@ -60,7 +46,6 @@ public class Food : MonoBehaviour
         }
 
     }
-
 
 
     private void GenerateFood(Vector3 position)

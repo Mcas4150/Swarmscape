@@ -7,32 +7,23 @@ using extOSC;
 public class FoodUnit : MonoBehaviour
 {
 
+    [SerializeField] public float foodAttractMultiple => GameManager.Instance.foodAttractMultiple;
+    [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
+    [SerializeField] public float BoidMass => GameManager.Instance.boidMass;
 
-    public Vector3 location
-    {
-        get { return food.transform.position; }
-        set { food.transform.position = value; }
-    }
+    [SerializeField] private GameObject food;
+
+    public Rigidbody body;
+
+    private float G = 9.8f;
+    public float health;
+    private float radius;
+    public float mass;
 
     public event EventHandler<FoodDeathEventArgs> Death;
 
-
-
-    [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
-    public float BoidMass => GameManager.Instance.boidMass;
-
-    [SerializeField] private GameObject food;
-    public Rigidbody body;
-
-
-    private float G = 9.8f;
-    private float radius;
-    public float mass;
-    public float foodAttractMultiple => GameManager.Instance.foodAttractMultiple;
-
     [Header("OSC Properties")]
     public OSCReceiver oscReceiver;
-    public float health;
 
 
     void Start()
@@ -41,38 +32,25 @@ public class FoodUnit : MonoBehaviour
 
         body = food.GetComponent<Rigidbody>();
         body.constraints = RigidbodyConstraints.FreezeRotation;
-        body.useGravity = false; // Remember to ignore gravity!
+        body.useGravity = false;
         body.isKinematic = true;
         health = 100;
         radius = health / 50f;
-        // Place our mover at the specified spawn position relative
-        // to the bottom of the sphere
-        food.transform.position = body.position;
-        // The default diameter of the sphere is one unit
-        // This means we have to multiple the radius by two when scaling it up
-        food.transform.localScale = 2 * radius * Vector3.one;
 
-        // We need to calculate the mass of the sphere.
-        // Assuming the sphere is of even density throughout,
-        // the mass will be proportional to the volume.
+        food.transform.position = body.position;
+        food.transform.localScale = 2 * radius * Vector3.one;
         body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
         mass = body.mass;
 
-
         StartCoroutine(FoodSize());
-        //oscReceiver = gameObject.AddComponent<OSCReceiver>();
-        //oscReceiver.LocalPort = 7500;
-        //oscReceiver.Bind("/flucoma/xy", MessageReceived);
-
-        //StartCoroutine(OSCInputStream());
     }
 
-    public void FixedUpdate()
-    {
-        //radius = health/50f ;
-        //body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
-        //food.transform.localScale =  radius * Vector3.one;
-    }
+    //public void FixedUpdate()
+    //{
+    //    //radius = health/50f ;
+    //    //body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
+    //    //food.transform.localScale =  radius * Vector3.one;
+    //}
 
 
     private IEnumerator FoodSize()
@@ -91,35 +69,6 @@ public class FoodUnit : MonoBehaviour
         }
     }
 
-    private IEnumerator OSCInputStream()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.03f);
-            //SendPosition(myTransform.position.x, myTransform.position.y, myTransform.position.z);
-
-
-
-            // Send message
-
-        }
-    }
-
-    //protected void MessageReceived(OSCMessage message)
-    //{
-    //    Debug.Log("running");
-    //    // Any code...
-    //    Debug.Log(message);
-    //    var newFoodX = message.Values[0].FloatValue;
-    //    var newFoodY = message.Values[1].FloatValue;
-
-    //    Flock.GenerateFood(newFoodX, newFoodY);
-    //    //if (message.ToFloat(out var value))
-    //    //{
-    //    //    // Any code...
-    //    //    Debug.Log(value);
-    //    //}
-    //}
 
     public Vector3 Attract(Vector3 targetPosition)
     {
@@ -127,17 +76,15 @@ public class FoodUnit : MonoBehaviour
         float distance = force.magnitude;
 
         Eaten(distance);
-        // Remember we need to constrain the distance so that our circle doesn't spin out of control
-        distance = Mathf.Clamp(distance, 5f, 25f);
 
+        distance = Mathf.Clamp(distance, 5f, 25f);
         force.Normalize();
 
         // float strength =  G * (body.mass * m.mass) / (distance * distance);
         //float strength =  G * (body.mass * 1.5f) / (distance * distance);
         float strength = G * (body.mass * BoidMass) / (distance * distance);
-        //force *= strength * foodAttractMultiple;
-
-        force *= strength;
+        force *= strength * foodAttractMultiple;
+        //force *= strength;
 
         force = Vector3.ClampMagnitude(force, foodForceMagnitude);
         return force;

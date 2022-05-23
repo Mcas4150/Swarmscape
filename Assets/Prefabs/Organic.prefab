@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4549644435828676}
   - component: {fileID: 1190195829}
   - component: {fileID: 725359842935135765}
-  - component: {fileID: 22248233208188540}
   m_Layer: 0
   m_Name: Organic
   m_TagString: Untagged
@@ -47,25 +46,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d130444f5fa346b087a5ba159bd7d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assignedFlock: {fileID: 0}
   FOVAngle: 270
+  assignedFlock: {fileID: 0}
+  cohesionNeighbors: []
+  alignmentNeighbors: []
+  avoidanceNeighbors: []
   currentCohesionVector: {x: 0, y: 0, z: 0}
   currentAvoidanceVector: {x: 0, y: 0, z: 0}
   currentAlignmentVector: {x: 0, y: 0, z: 0}
+  currentBoundsVector: {x: 0, y: 0, z: 0}
   currentPosition: {x: 0, y: 0, z: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   currentAverageVelocity: 0
   currentMoveVector: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   attractionForce: {x: 0, y: 0, z: 0}
-  transmitter: {fileID: 22248233208188540}
-  breed: 
+  transmitter: {fileID: 0}
+  breed: organic
   oscNumber: 0
   eatingState: 0
   health: 100
   age: 0
   starterHealth: 0
   speed: 0
+  cohesionSpeed: 0
   midiNote: 0
   dnaCohesionDist: 0
   dnaAlignmentDist: 0
@@ -75,6 +79,7 @@ MonoBehaviour:
   dnaAvoidanceWeight: 0
   foodDistance: 0
   foodForce: {x: 0, y: 0, z: 0}
+  G: 9.8
 --- !u!96 &725359842935135765
 TrailRenderer:
   serializedVersion: 2
@@ -183,30 +188,6 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &22248233208188540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046869630431942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localPortMode: 2
-  _localReceiver: {fileID: 0}
-  _localHost: 192.168.2.22
-  _localPort: 7000
-  _remoteHost: 127.0.0.1
-  _remotePort: 7000
-  _useBundle: 1
 --- !u!1 &4460619900801563972
 GameObject:
   m_ObjectHideFlags: 0

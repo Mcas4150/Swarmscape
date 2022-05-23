@@ -58,7 +58,7 @@ public class FlockUnit : MonoBehaviour
     public OSCMessage message_newPositionX;
     public OSCMessage message_newPositionY;
     public OSCMessage message_newPositionZ;
-    public OSCMessage messageAddress;
+    //public OSCMessage messageAddress;
     public OSCMessage velocityMessage;
     public OSCMessage message_newPosition;
     public OSCMessage healthMessage;
@@ -100,11 +100,13 @@ public class FlockUnit : MonoBehaviour
 
     private void Start()
     {
+        transmitter = assignedFlock.transmitter;
 
-
-        transmitter = gameObject.AddComponent<OSCTransmitter>();
-        transmitter.RemoteHost = "127.0.0.1";
-        transmitter.RemotePort = 57120;
+        //transmitter = gameObject.AddComponent<OSCTransmitter>();
+        //transmitter.RemoteHost = "192.168.2.22";
+        //transmitter.RemotePort = 7121;
+        ////transmitter.RemotePort = 57120;
+        //transmitter.UseBundle = false;
 
 
         message_newPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber);
@@ -117,12 +119,14 @@ public class FlockUnit : MonoBehaviour
 
         velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
 
+
+
         TrailRenderer Trail = gameObject.GetComponent<TrailRenderer>();
 
         if (Trail != null)
             Trail.time = trailTime;
 
-        //StartCoroutine(OSCSender());
+        StartCoroutine(OSCSender());
         StartCoroutine(Respawn());
         StartCoroutine(HealthSize());
         StartCoroutine(CountAge());
@@ -136,29 +140,36 @@ public class FlockUnit : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
 
-            message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
-            message_newPositionY.AddValue(OSCValue.Float(myTransform.position.y));
-            message_newPositionZ.AddValue(OSCValue.Float(myTransform.position.z));
+            message_newPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber, OSCValue.Float(myTransform.position.x));
+            message_newPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber, OSCValue.Float(myTransform.position.y));
+            message_newPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber, OSCValue.Float(myTransform.position.z));
 
-            midiNoteMessage.AddValue(OSCValue.Float(midiNote));
-            midiPlayMessage.AddValue(OSCValue.Float(eatingState));
-            healthMessage.AddValue(OSCValue.Float(health));
+            //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
+            //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
+            //message_newPositionY.AddValue(OSCValue.Float(myTransform.position.y));
+            //message_newPositionZ.AddValue(OSCValue.Float(myTransform.position.z));
 
-            velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
+            //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
+            //midiPlayMessage.AddValue(OSCValue.Float(eatingState));
+            //healthMessage.AddValue(OSCValue.Float(health));
 
+            //velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
 
-            transmitter.Send(midiNoteMessage);
-            transmitter.Send(midiPlayMessage);
-            transmitter.Send(healthMessage);
 
 
             transmitter.Send(message_newPositionX);
             transmitter.Send(message_newPositionY);
             transmitter.Send(message_newPositionZ);
 
-            transmitter.Send(velocityMessage);
+
+            //transmitter.Send(midiNoteMessage);
+            //transmitter.Send(midiPlayMessage);
+            //transmitter.Send(healthMessage);
+
+
+            //transmitter.Send(velocityMessage);
 
         }
     }
@@ -241,15 +252,36 @@ public class FlockUnit : MonoBehaviour
             if (Dead())
             {
 
+
+                OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber, OSCValue.Float(0));
+                OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber, OSCValue.Float(0));
+                OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber, OSCValue.Float(0));
+
+                OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
+                OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
+                OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
+
+                OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+
+                transmitter.Send(message_resetPositionX);
+                transmitter.Send(message_resetPositionY);
+                transmitter.Send(message_resetPositionZ);
+
+                transmitter.Send(midiNoteMessage);
+                transmitter.Send(midiPlayMessage);
+                transmitter.Send(healthMessage);
+
+                transmitter.Send(velocityMessage);
+
                 // FIX THIS 
-                messageAddress = new OSCMessage("/" + breed + "/" + oscNumber);
-                messageAddress.AddValue(OSCValue.Float(0));
-                messageAddress.AddValue(OSCValue.Float(0));
-                messageAddress.AddValue(OSCValue.Float(0));
-                messageAddress.AddValue(OSCValue.Float(midiNote));
-                messageAddress.AddValue(OSCValue.Float(health));
-                messageAddress.AddValue(OSCValue.Float(0));
-                transmitter.Send(messageAddress);
+                //OSCMessage messageAddress = new OSCMessage("/" + breed + "/" + oscNumber);
+                //messageAddress.AddValue(OSCValue.Float(0));
+                //messageAddress.AddValue(OSCValue.Float(0));
+                //messageAddress.AddValue(OSCValue.Float(0));
+                //messageAddress.AddValue(OSCValue.Float(midiNote));
+                //messageAddress.AddValue(OSCValue.Float(health));
+                //messageAddress.AddValue(OSCValue.Float(0));
+                //transmitter.Send(messageAddress);
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
 
@@ -419,7 +451,6 @@ public class FlockUnit : MonoBehaviour
             {
                 neighborsInFOV++;
                 alignmentVector += alignmentNeighbors[i].myTransform.forward;
-
             }
         }
 
@@ -440,9 +471,7 @@ public class FlockUnit : MonoBehaviour
             if (IsInFOV(avoidanceNeighbors[i].myTransform.position))
             {
                 neighborsInFOV++;
-
                 avoidanceVector += (myTransform.position - avoidanceNeighbors[i].myTransform.position);
-
             }
         }
 
@@ -493,12 +522,12 @@ public class FlockUnit : MonoBehaviour
         return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;
     }
 
-    public void ApplyAttractionForce(Vector3 force, Transform foodTransform)
+    public void ApplyAttractionForce(Vector3 force, Transform targetTransform)
     {
         // rb.AddForce(force, ForceMode.Force);
         attractionForce += force;
         attractionForce = Vector3.ClampMagnitude(attractionForce, attractForceMagnitude);
-        Eater(foodTransform);
+        Eater(targetTransform);
 
     }
 

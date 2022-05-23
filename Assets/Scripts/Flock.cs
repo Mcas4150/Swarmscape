@@ -84,6 +84,10 @@ public class Flock : MonoBehaviour
         starterDna = new DNAboid();
         BoidsIndex = new List<int>() { 0 };
         zeroVector = new Vector3(0, 0, 0);
+
+        StartCoroutine(OSCInit());
+        StopCoroutine(OSCInit());
+
     }
 
     private void Start()
@@ -91,10 +95,10 @@ public class Flock : MonoBehaviour
         _minSpeed = 6f;
         _maxSpeed = 100f;
 
+
         GenerateUnits();
 
-        StartCoroutine(OSCInit());
-        StopCoroutine(OSCInit());
+        //StartCoroutine(OSCSender());
 
     }
 
@@ -132,27 +136,27 @@ public class Flock : MonoBehaviour
         {
             var oscNumber = i;
 
-            OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + i);
-            OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + i);
-            OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + i);
+            OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + i, OSCValue.Float(0));
+            OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + i, OSCValue.Float(0));
+            OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + i, OSCValue.Float(0));
 
-            OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-            OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
-            OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
+            OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
+            OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
+            OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
 
-            OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
-
-
-            message_resetPositionX.AddValue(OSCValue.Float(0));
-            message_resetPositionY.AddValue(OSCValue.Float(0));
-            message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-            midiNoteMessage.AddValue(OSCValue.Float(0));
-            midiPlayMessage.AddValue(OSCValue.Float(0));
-            healthMessage.AddValue(OSCValue.Float(0));
+            OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
 
 
-            velocityMessage.AddValue(OSCValue.Float(0));
+            //message_resetPositionX.AddValue(OSCValue.Float(0));
+            ////message_resetPositionY.AddValue(OSCValue.Float(0));
+            ////message_resetPositionZ.AddValue(OSCValue.Float(0));
+
+            ////midiNoteMessage.AddValue(OSCValue.Float(0));
+            ////midiPlayMessage.AddValue(OSCValue.Float(0));
+            ////healthMessage.AddValue(OSCValue.Float(0));
+
+
+            ////velocityMessage.AddValue(OSCValue.Float(0));
 
             transmitter.Send(message_resetPositionX);
             transmitter.Send(message_resetPositionY);
@@ -173,6 +177,26 @@ public class Flock : MonoBehaviour
         transmitter.Send(initPlayMessage);
     }
 
+    private IEnumerator OSCSender()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            foreach (FlockUnit boid in Boids)
+            {
+
+                Transform boidTransform = boid.myTransform;
+                var positionMessageX = boid.message_newPositionX;
+                //positionMessageX.Values[0].FloatValue = boidTransform.position.x;
+                positionMessageX.AddValue(OSCValue.Float(boidTransform.position.x));
+                transmitter.Send(positionMessageX);
+
+            }
+        }
+    }
+
+
     private void GenerateUnits()
     {
         Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
@@ -186,7 +210,7 @@ public class Flock : MonoBehaviour
     public void GenerateAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
 
-        DNAboid childDNA = parentDNA.copy(); // make a copy of the DNA
+        DNAboid childDNA = parentDNA.copy();
         childDNA.mutate(0.2f);
 
 
