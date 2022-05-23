@@ -14,6 +14,7 @@ public class Flock : MonoBehaviour
     [SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
+    [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
@@ -85,8 +86,6 @@ public class Flock : MonoBehaviour
         BoidsIndex = new List<int>() { 0 };
         zeroVector = new Vector3(0, 0, 0);
 
-
-
     }
 
     private void Start()
@@ -99,7 +98,6 @@ public class Flock : MonoBehaviour
 
         GenerateUnits();
 
-        //StartCoroutine(OSCSender());
 
     }
 
@@ -108,22 +106,22 @@ public class Flock : MonoBehaviour
         foreach (FlockUnit boid in Boids)
         {
 
-            Transform boidPosition = boid.myTransform;
+            Vector3 boidPosition = boid.myTransform.position;
 
             foreach (FoodUnit food in food.Foods)
             {
-                Vector3 force = food.Attract(boidPosition.position);
+                Vector3 force = food.Attract(boidPosition);
+                boid.ApplyAttractionForce(force);
                 Transform foodTransform = food.transform;
-                boid.ApplyAttractionForce(force, foodTransform);
+                boid.Eater(foodTransform);
             }
 
             if (mutualAttraction != 0)
             {
                 foreach (FlockUnit enemy in EnemyFlock.Boids)
                 {
-                    Vector3 force = enemy.Attract(boidPosition);
-                    Transform shadowPosition = enemy.transform;
-                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force, shadowPosition);
+                    Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
+                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
                 }
 
             }
@@ -142,15 +140,15 @@ public class Flock : MonoBehaviour
         {
             var oscNumber = i;
 
-            OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + i, OSCValue.Float(0));
-            OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + i, OSCValue.Float(0));
-            OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + i, OSCValue.Float(0));
+            OSCMessage message_resetPositionX = new("/" + breed + "/position/x/" + i, OSCValue.Float(0));
+            OSCMessage message_resetPositionY = new("/" + breed + "/position/y/" + i, OSCValue.Float(0));
+            OSCMessage message_resetPositionZ = new("/" + breed + "/position/z/" + i, OSCValue.Float(0));
 
-            OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
-            OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
-            OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
+            OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
+            OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
+            OSCMessage healthMessage = new("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
 
-            OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+            OSCMessage velocityMessage = new("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
 
 
             //message_resetPositionX.AddValue(OSCValue.Float(0));
@@ -178,25 +176,6 @@ public class Flock : MonoBehaviour
         }
 
 
-    }
-
-    private IEnumerator OSCSender()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            foreach (FlockUnit boid in Boids)
-            {
-
-                Transform boidTransform = boid.myTransform;
-                var positionMessageX = boid.message_newPositionX;
-                //positionMessageX.Values[0].FloatValue = boidTransform.position.x;
-                positionMessageX.AddValue(OSCValue.Float(boidTransform.position.x));
-                transmitter.Send(positionMessageX);
-
-            }
-        }
     }
 
 

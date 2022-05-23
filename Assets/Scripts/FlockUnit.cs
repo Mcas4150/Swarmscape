@@ -25,7 +25,6 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
     [SerializeField] public float boidMass => GameManager.Instance.boidMass;
-    [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
     [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
 
@@ -549,12 +548,11 @@ public class FlockUnit : MonoBehaviour
         return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;
     }
 
-    public void ApplyAttractionForce(Vector3 force, Transform targetTransform)
+    public void ApplyAttractionForce(Vector3 force)
     {
-        // rb.AddForce(force, ForceMode.Force);
+
         attractionForce += force;
         attractionForce = Vector3.ClampMagnitude(attractionForce, attractForceMagnitude);
-        Eater(targetTransform);
 
     }
 
@@ -567,7 +565,7 @@ public class FlockUnit : MonoBehaviour
         foodDistance = distance;
 
 
-        if (distance < 5f && distance > 4.5f)
+        if (distance < 5f && distance > 3f)
         {
             //health += 5 * Time.deltaTime;
             health += 0.25f;
@@ -578,28 +576,20 @@ public class FlockUnit : MonoBehaviour
         {
             eatingState = 0;
         }
-        //else if (distance >= 2f)
-        //{
-        //    eatingState = 0;
-        //}
+
     }
 
 
-    public Vector3 Attract(Transform target)
+    public Vector3 Attract(Vector3 targetPosition, float maxForceMagnitude)
     {
-        Vector3 force = myTransform.position - target.position;
+        Vector3 force = myTransform.position - targetPosition;
         float distance = force.magnitude;
-
-        //Eaten(distance);
-        // Remember we need to constrain the distance so that our circle doesn't spin out of control
-        distance = Mathf.Clamp(distance, 5f, 25f);
-
+        distance = Mathf.Clamp(distance, 2f, 25f);
         force.Normalize();
-        // float strength =  G * (body.mass * m.mass) / (distance * distance);
-        //float strength =  G * (body.mass * 1.5f) / (distance * distance);
+
         float strength = G * (boidMass * boidMass) / (distance * distance);
         force *= strength;
-        force = Vector3.ClampMagnitude(force, attackForceMagnitude);
+        force = Vector3.ClampMagnitude(force, maxForceMagnitude);
         return force;
     }
 

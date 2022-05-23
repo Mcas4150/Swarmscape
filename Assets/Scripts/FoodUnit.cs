@@ -39,13 +39,6 @@ public class FoodUnit : MonoBehaviour
         StartCoroutine(FoodSize());
     }
 
-    //public void FixedUpdate()
-    //{
-    //    //radius = health/50f ;
-    //    //body.mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
-    //    //food.transform.localScale =  radius * Vector3.one;
-    //}
-
 
     private IEnumerator FoodSize()
     {
@@ -71,11 +64,9 @@ public class FoodUnit : MonoBehaviour
 
         Eaten(distance);
 
-        distance = Mathf.Clamp(distance, 5f, 25f);
+        distance = Mathf.Clamp(distance, 2f, 25f);
         force.Normalize();
 
-        // float strength =  G * (body.mass * m.mass) / (distance * distance);
-        //float strength =  G * (body.mass * 1.5f) / (distance * distance);
         float strength = G * (mass * BoidMass) / (distance * distance);
         force *= strength * foodAttractWeight;
         //force *= strength;
@@ -88,7 +79,7 @@ public class FoodUnit : MonoBehaviour
     public void Eaten(float distance)
     {
 
-        if (distance < 2f)
+        if (distance < 5f)
         {
             health -= 5;
             if (health < 10)
