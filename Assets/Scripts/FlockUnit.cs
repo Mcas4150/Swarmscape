@@ -97,12 +97,14 @@ public class FlockUnit : MonoBehaviour
     public string oscAddress_positionX;
     public string oscAddress_positionY;
     public string oscAddress_positionZ;
+    public string oscAddress_positionXYZ;
 
 
 
     public OSCMessage message_newPositionX;
     public OSCMessage message_newPositionY;
     public OSCMessage message_newPositionZ;
+    public OSCMessage message_newPositionXYZ;
     public OSCMessage velocityMessage;
     public OSCMessage message_newPosition;
     public OSCMessage healthMessage;
@@ -156,13 +158,19 @@ public class FlockUnit : MonoBehaviour
         ////transmitter.RemotePort = 57120;
         //transmitter.UseBundle = false;
 
-        oscAddress_positionX = "/" + breed + "/position/x/" + oscNumber;
-        oscAddress_positionY = "/" + breed + "/position/y/" + oscNumber;
-        oscAddress_positionZ = "/" + breed + "/position/z/" + oscNumber;
+        //oscAddress_positionX = "/" + breed + "/position/x/" + oscNumber;
+        //oscAddress_positionY = "/" + breed + "/position/y/" + oscNumber;
+        //oscAddress_positionZ = "/" + breed + "/position/z/" + oscNumber;
+        oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
 
-        message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
-        message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
-        message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
+        //message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
+        //message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
+        //message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
+        message_newPositionXYZ = new OSCMessage(oscAddress_positionXYZ);
+        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.x));
+        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.y));
+        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.z));
+
 
 
 
@@ -197,9 +205,13 @@ public class FlockUnit : MonoBehaviour
             //message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
             //message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
 
-            message_newPositionX.Values[0] = OSCValue.Float(myTransform.position.x);
-            message_newPositionY.Values[0] = OSCValue.Float(myTransform.position.y);
-            message_newPositionZ.Values[0] = OSCValue.Float(myTransform.position.z);
+            //message_newPositionX.Values[0] = OSCValue.Float(myTransform.position.x);
+            //message_newPositionY.Values[0] = OSCValue.Float(myTransform.position.y);
+            //message_newPositionZ.Values[0] = OSCValue.Float(myTransform.position.z);
+
+            message_newPositionXYZ.Values[0] = OSCValue.Float(myTransform.position.x);
+            message_newPositionXYZ.Values[1] = OSCValue.Float(myTransform.position.y);
+            message_newPositionXYZ.Values[2] = OSCValue.Float(myTransform.position.z);
 
 
             //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
@@ -215,9 +227,13 @@ public class FlockUnit : MonoBehaviour
 
 
 
-            transmitter.Send(message_newPositionX);
-            transmitter.Send(message_newPositionY);
-            transmitter.Send(message_newPositionZ);
+            //transmitter.Send(message_newPositionX);
+            //transmitter.Send(message_newPositionY);
+            //transmitter.Send(message_newPositionZ);
+
+            transmitter.Send(message_newPositionXYZ);
+            //transmitter.Send(message_newPositionY);
+            //transmitter.Send(message_newPositionZ);
 
 
             //transmitter.Send(midiNoteMessage);

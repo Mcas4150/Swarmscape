@@ -161,6 +161,11 @@ public class Flock : MonoBehaviour
             OSCMessage message_resetPositionY = new("/" + breed + "/position/y/" + i, OSCValue.Float(0));
             OSCMessage message_resetPositionZ = new("/" + breed + "/position/z/" + i, OSCValue.Float(0));
 
+            OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+
             OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
             OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
             OSCMessage healthMessage = new("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
@@ -182,6 +187,7 @@ public class Flock : MonoBehaviour
             transmitter.Send(message_resetPositionX);
             transmitter.Send(message_resetPositionY);
             transmitter.Send(message_resetPositionZ);
+            transmitter.Send(message_resetPositionXYZ);
 
             transmitter.Send(midiNoteMessage);
             transmitter.Send(midiPlayMessage);
