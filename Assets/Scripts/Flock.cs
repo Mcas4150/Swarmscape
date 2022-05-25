@@ -157,9 +157,6 @@ public class Flock : MonoBehaviour
         {
             var oscNumber = i;
 
-            OSCMessage message_resetPositionX = new("/" + breed + "/position/x/" + i, OSCValue.Float(0));
-            OSCMessage message_resetPositionY = new("/" + breed + "/position/y/" + i, OSCValue.Float(0));
-            OSCMessage message_resetPositionZ = new("/" + breed + "/position/z/" + i, OSCValue.Float(0));
 
             OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
             message_resetPositionXYZ.AddValue(OSCValue.Float(0));
@@ -184,9 +181,7 @@ public class Flock : MonoBehaviour
 
             ////velocityMessage.AddValue(OSCValue.Float(0));
 
-            transmitter.Send(message_resetPositionX);
-            transmitter.Send(message_resetPositionY);
-            transmitter.Send(message_resetPositionZ);
+
             transmitter.Send(message_resetPositionXYZ);
 
             transmitter.Send(midiNoteMessage);
@@ -220,7 +215,7 @@ public class Flock : MonoBehaviour
 
 
         var spawnPosition = transform.position + position;
-        rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+        rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
 

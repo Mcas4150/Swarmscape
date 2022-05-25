@@ -934,7 +934,7 @@ MonoBehaviour:
   alignmentWeight: 2
   dnaWeight: 1
   generalWeight: 1
-  foodAttractWeight: 1
+  foodAttractWeight: 0
   maxForce: 5
   driftX: 0
   driftY: 0

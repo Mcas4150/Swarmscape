@@ -24,7 +24,7 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
     [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
-    [SerializeField] public float maxForce => GameManager.Instance.maxForce;
+    //[SerializeField] public float maxForce => GameManager.Instance.maxForce;
     [SerializeField] public float boidMass => GameManager.Instance.boidMass;
     [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
@@ -120,11 +120,11 @@ public class FlockUnit : MonoBehaviour
     public event EventHandler<BoidDeathEventArgs> Death;
 
 
-    public Vector3 location
-    {
-        get { return transform.position; }
-        set { transform.position = value; }
-    }
+    //public Vector3 location
+    //{
+    //    get { return transform.position; }
+    //    set { transform.position = value; }
+    //}
     //public Vector3 velocity
     //{
     //    get { return body.velocity; }
@@ -137,8 +137,6 @@ public class FlockUnit : MonoBehaviour
 
         health = UnityEngine.Random.Range(10, 100);
         starterHealth = health;
-
-
 
     }
 
@@ -187,7 +185,7 @@ public class FlockUnit : MonoBehaviour
 
         StartCoroutine(OSCSender());
         StartCoroutine(Respawn());
-        StartCoroutine(HealthSize());
+        //StartCoroutine(HealthSize());
         StartCoroutine(CountAge());
         StartCoroutine(CheckAgent());
         StartCoroutine(CalcSlowStats());
@@ -201,23 +199,10 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.05f);
 
-            //message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
-            //message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
-            //message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
-
-            //message_newPositionX.Values[0] = OSCValue.Float(myTransform.position.x);
-            //message_newPositionY.Values[0] = OSCValue.Float(myTransform.position.y);
-            //message_newPositionZ.Values[0] = OSCValue.Float(myTransform.position.z);
-
             message_newPositionXYZ.Values[0] = OSCValue.Float(myTransform.position.x);
             message_newPositionXYZ.Values[1] = OSCValue.Float(myTransform.position.y);
             message_newPositionXYZ.Values[2] = OSCValue.Float(myTransform.position.z);
 
-
-            //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
-            //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
-            //message_newPositionY.AddValue(OSCValue.Float(myTransform.position.y));
-            //message_newPositionZ.AddValue(OSCValue.Float(myTransform.position.z));
 
             //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
             //midiPlayMessage.AddValue(OSCValue.Float(eatingState));
@@ -225,16 +210,7 @@ public class FlockUnit : MonoBehaviour
 
             //velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
 
-
-
-            //transmitter.Send(message_newPositionX);
-            //transmitter.Send(message_newPositionY);
-            //transmitter.Send(message_newPositionZ);
-
             transmitter.Send(message_newPositionXYZ);
-            //transmitter.Send(message_newPositionY);
-            //transmitter.Send(message_newPositionZ);
-
 
             //transmitter.Send(midiNoteMessage);
             //transmitter.Send(midiPlayMessage);
@@ -282,17 +258,17 @@ public class FlockUnit : MonoBehaviour
         }
     }
 
-    private IEnumerator HealthSize()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.25f);
+    //private IEnumerator HealthSize()
+    //{
+    //    while (true)
+    //    {
+    //        yield return new WaitForSeconds(0.25f);
 
-            var healthRatio = health * 0.025f;
-            //myTransform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
+    //        var healthRatio = health * 0.025f;
+    //        //myTransform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
 
-        }
-    }
+    //    }
+    //}
 
     private IEnumerator CountAge()
     {
@@ -329,11 +305,10 @@ public class FlockUnit : MonoBehaviour
 
             if (Dead())
             {
+                message_newPositionXYZ.Values[0] = OSCValue.Float(0);
+                message_newPositionXYZ.Values[1] = OSCValue.Float(0);
+                message_newPositionXYZ.Values[2] = OSCValue.Float(0);
 
-
-                OSCMessage message_resetPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(0));
-                OSCMessage message_resetPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(0));
-                OSCMessage message_resetPositionZ = new OSCMessage(oscAddress_positionZ, OSCValue.Float(0));
 
                 //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
@@ -341,9 +316,8 @@ public class FlockUnit : MonoBehaviour
 
                 //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
 
-                transmitter.Send(message_resetPositionX);
-                transmitter.Send(message_resetPositionY);
-                transmitter.Send(message_resetPositionZ);
+
+                transmitter.Send(message_newPositionXYZ);
 
                 //transmitter.Send(midiNoteMessage);
                 //transmitter.Send(midiPlayMessage);
@@ -351,15 +325,6 @@ public class FlockUnit : MonoBehaviour
 
                 //transmitter.Send(velocityMessage);
 
-                // FIX THIS 
-                //OSCMessage messageAddress = new OSCMessage("/" + breed + "/" + oscNumber);
-                //messageAddress.AddValue(OSCValue.Float(0));
-                //messageAddress.AddValue(OSCValue.Float(0));
-                //messageAddress.AddValue(OSCValue.Float(0));
-                //messageAddress.AddValue(OSCValue.Float(midiNote));
-                //messageAddress.AddValue(OSCValue.Float(health));
-                //messageAddress.AddValue(OSCValue.Float(0));
-                //transmitter.Send(messageAddress);
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
 
@@ -443,10 +408,10 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    void applyForce(Vector3 force)
-    {
-        acceleration += force;
-    }
+    //void applyForce(Vector3 force)
+    //{
+    //    acceleration += force;
+    //}
 
     public bool Dead()
     {
@@ -461,8 +426,6 @@ public class FlockUnit : MonoBehaviour
     public void MoveUnit()
     {
         FindNeighbors();
-        //  CalculateSpeed();
-
 
         currentCohesionVector = CalculateCohesionVector() * ((cohesionWeight * generalWeight) + (dnaCohesionWeight * dnaWeight));
         currentAvoidanceVector = CalculateAvoidanceVector() * ((avoidanceWeight * generalWeight) + (dnaAvoidanceWeight * dnaWeight));
@@ -474,7 +437,7 @@ public class FlockUnit : MonoBehaviour
         var moveVector = currentCohesionVector + currentAvoidanceVector + currentAlignmentVector + currentBoundsVector + attractionForce;
 
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
-        moveVector = moveVector.normalized * (speed + cohesionSpeed);
+        moveVector = CustomNormalize(moveVector) * (speed + cohesionSpeed);
 
 
 
@@ -530,18 +493,18 @@ public class FlockUnit : MonoBehaviour
         }
     }
 
-    private void CalculateSpeed()
-    {
-        //if (cohesionNeighbors.Count == 0)
-        //    return;
-        //speed = 0;
-        for (int i = 0; i < cohesionNeighbors.Count; i++)
-        {
-            speed += cohesionNeighbors[i].speed;
-        }
-        speed /= cohesionNeighbors.Count;
-        speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
-    }
+    //private void CalculateSpeed()
+    //{
+    //    //if (cohesionNeighbors.Count == 0)
+    //    //    return;
+    //    //speed = 0;
+    //    for (int i = 0; i < cohesionNeighbors.Count; i++)
+    //    {
+    //        speed += cohesionNeighbors[i].speed;
+    //    }
+    //    speed /= cohesionNeighbors.Count;
+    //    speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
+    //}
 
     private Vector3 CalculateCohesionVector()
     {
@@ -847,7 +810,7 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    public Vector3 Attract(Vector3 targetPosition, float maxForceMagnitude)
+    public Vector3 Attract(Vector3 targetPosition, float maxForce)
     {
         Vector3 force = myTransform.position - targetPosition;
         float distance = force.magnitude;
@@ -857,7 +820,7 @@ public class FlockUnit : MonoBehaviour
 
         float strength = G * (boidMass * boidMass) / (distance * distance);
         force *= strength;
-        force = Vector3.ClampMagnitude(force, maxForceMagnitude);
+        force = Vector3.ClampMagnitude(force, maxForce);
         return force;
     }
 
