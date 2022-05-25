@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assignedFlock: {fileID: 0}
+  body: {fileID: 0}
   breed: shadow
   oscNumber: 0
   age: 0
@@ -55,6 +56,9 @@ MonoBehaviour:
   starterHealth: 0
   eatingState: 0
   FOVAngle: 270
+  averageVelocity: 0
+  foodDistance: 0
+  currentSpeed: 0
   cohesionNeighbors: []
   alignmentNeighbors: []
   avoidanceNeighbors: []
@@ -62,10 +66,10 @@ MonoBehaviour:
   currentAvoidanceVector: {x: 0, y: 0, z: 0}
   currentAlignmentVector: {x: 0, y: 0, z: 0}
   currentBoundsVector: {x: 0, y: 0, z: 0}
+  currentSteerVector: {x: 0, y: 0, z: 0}
   attractionForce: {x: 0, y: 0, z: 0}
   foodForce: {x: 0, y: 0, z: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
-  currentAverageVelocity: 0
   acceleration: {x: 0, y: 0, z: 0}
   currentMoveVector: {x: 0, y: 0, z: 0}
   currentPosition: {x: 0, y: 0, z: 0}
@@ -78,7 +82,6 @@ MonoBehaviour:
   dnaCohesionWeight: 0
   dnaAlignmentWeight: 0
   dnaAvoidanceWeight: 0
-  foodDistance: 0
   transmitter: {fileID: 0}
 --- !u!33 &7794412978908942509
 MeshFilter:

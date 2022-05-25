@@ -103,28 +103,45 @@ public class Flock : MonoBehaviour
 
     private void Update()
     {
+
+
+
         foreach (FlockUnit boid in Boids)
         {
+
+
+
+            //boid.Flock(Boids);
+
+
 
             Vector3 boidPosition = boid.myTransform.position;
 
             foreach (FoodUnit food in food.Foods)
             {
+                //boid.Arrive(food.transform.position);
                 Vector3 force = food.Attract(boidPosition);
                 boid.ApplyAttractionForce(force);
-                Transform foodTransform = food.transform;
-                boid.Eater(foodTransform);
+
+
+
+                boid.Eater(food.transform.position);
             }
 
-            if (mutualAttraction != 0)
-            {
-                foreach (FlockUnit enemy in EnemyFlock.Boids)
-                {
-                    Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
-                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
-                }
 
-            }
+
+
+            //if (mutualAttraction != 0)
+            //{
+            //    foreach (FlockUnit enemy in EnemyFlock.Boids)
+            //    {
+            //        Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
+            //        boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
+            //        //boid.ApplyForce(boid.Seek(enemy.transform.position)); 
+            //        //boid.Prey(enemy.transform.position);
+            //    }
+
+            //}
         }
 
     }

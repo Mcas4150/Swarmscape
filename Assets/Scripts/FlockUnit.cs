@@ -24,6 +24,7 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
     [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
 
+    [SerializeField] public float maxForce => GameManager.Instance.maxForce;
     [SerializeField] public float boidMass => GameManager.Instance.boidMass;
     [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
@@ -50,6 +51,7 @@ public class FlockUnit : MonoBehaviour
     public float FOVAngle;
     public float averageVelocity;
     public float foodDistance;
+    public float currentSpeed;
 
     [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
@@ -62,13 +64,18 @@ public class FlockUnit : MonoBehaviour
     public Vector3 currentAvoidanceVector;
     public Vector3 currentAlignmentVector;
     public Vector3 currentBoundsVector;
+    public Vector3 currentSteerVector;
     public Vector3 attractionForce;
     public Vector3 foodForce;
     public Vector3 currentVelocity;
 
+
+
     public Vector3 acceleration;
     public Vector3 currentMoveVector;
     public Vector3 currentPosition;
+    //public Vector3 location;
+    //public Vector3 velocity;
 
     public Transform myTransform { get; set; }
 
@@ -86,6 +93,12 @@ public class FlockUnit : MonoBehaviour
 
 
     [Header("OSC Properties")]
+
+    public string oscAddress_positionX;
+    public string oscAddress_positionY;
+    public string oscAddress_positionZ;
+
+
 
     public OSCMessage message_newPositionX;
     public OSCMessage message_newPositionY;
@@ -105,20 +118,37 @@ public class FlockUnit : MonoBehaviour
     public event EventHandler<BoidDeathEventArgs> Death;
 
 
+    public Vector3 location
+    {
+        get { return transform.position; }
+        set { transform.position = value; }
+    }
+    //public Vector3 velocity
+    //{
+    //    get { return body.velocity; }
+    //    set { body.velocity = value; }
+    //}
+
+
     private void Awake()
     {
-        myTransform = transform;
+
         health = UnityEngine.Random.Range(10, 100);
         starterHealth = health;
 
-        //delete?
-        myTransform.localScale = new Vector3(3, 3, 3);
+
 
     }
 
     private void Start()
     {
         transmitter = assignedFlock.transmitter;
+        myTransform = transform;
+        //location = transform.position;
+        //velocity = body.velocity;
+        //delete?
+        myTransform.localScale = new Vector3(3, 3, 3);
+
 
         //transmitter = gameObject.AddComponent<OSCTransmitter>();
         //transmitter.RemoteHost = "192.168.2.22";
@@ -126,9 +156,10 @@ public class FlockUnit : MonoBehaviour
         ////transmitter.RemotePort = 57120;
         //transmitter.UseBundle = false;
 
-        message_newPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber);
-        message_newPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber);
-        message_newPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber);
+        oscAddress_positionX = "/" + breed + "/position/x/" + oscNumber;
+        oscAddress_positionY = "/" + breed + "/position/y/" + oscNumber;
+        oscAddress_positionZ = "/" + breed + "/position/z/" + oscNumber;
+
 
         midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
         midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
@@ -157,9 +188,9 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.05f);
 
-            message_newPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber, OSCValue.Float(myTransform.position.x));
-            message_newPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber, OSCValue.Float(myTransform.position.y));
-            message_newPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber, OSCValue.Float(myTransform.position.z));
+            message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
+            message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
+            message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
 
             //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
             //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
@@ -274,25 +305,25 @@ public class FlockUnit : MonoBehaviour
             {
 
 
-                OSCMessage message_resetPositionX = new OSCMessage("/" + breed + "/position/x/" + oscNumber, OSCValue.Float(0));
-                OSCMessage message_resetPositionY = new OSCMessage("/" + breed + "/position/y/" + oscNumber, OSCValue.Float(0));
-                OSCMessage message_resetPositionZ = new OSCMessage("/" + breed + "/position/z/" + oscNumber, OSCValue.Float(0));
+                OSCMessage message_resetPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(0));
+                OSCMessage message_resetPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(0));
+                OSCMessage message_resetPositionZ = new OSCMessage(oscAddress_positionZ, OSCValue.Float(0));
 
-                OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
-                OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
-                OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
+                //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
+                //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
+                //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
 
-                OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+                //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
 
                 transmitter.Send(message_resetPositionX);
                 transmitter.Send(message_resetPositionY);
                 transmitter.Send(message_resetPositionZ);
 
-                transmitter.Send(midiNoteMessage);
-                transmitter.Send(midiPlayMessage);
-                transmitter.Send(healthMessage);
+                //transmitter.Send(midiNoteMessage);
+                //transmitter.Send(midiPlayMessage);
+                //transmitter.Send(healthMessage);
 
-                transmitter.Send(velocityMessage);
+                //transmitter.Send(velocityMessage);
 
                 // FIX THIS 
                 //OSCMessage messageAddress = new OSCMessage("/" + breed + "/" + oscNumber);
@@ -321,6 +352,52 @@ public class FlockUnit : MonoBehaviour
         MoveUnit();
     }
 
+
+    //void FixedUpdate()
+    //{
+    //    //body.velocity = new Vector3(
+    //    //                  Mathf.Clamp(body.velocity.x, -speed, speed),
+    //    //                  Mathf.Clamp(body.velocity.y, -speed, speed),
+    //    //                  Mathf.Clamp(body.velocity.z, -speed, speed)
+    //    //                  );
+
+    //    //transform.rotation = Quaternion.LookRotation(body.velocity);
+    //}
+
+    //public void Flock(List<FlockUnit> boids)
+    //{
+
+    //    if (velocity == Vector3.zero)
+    //        velocity = new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5));
+    //    //myTransform.forward = velocity;
+
+    //    //if (velocity == Vector3.zero)
+    //    //    velocity = transform.forward;
+    //    //myTransform.forward = velocity;
+
+
+    //    Vector3 sep = Separate(boids); // The three flocking rules
+    //    Vector3 ali = Align(boids);
+    //    Vector3 coh = Cohesion(boids);
+    //    currentBoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
+
+
+    //    sep *= avoidanceWeight;
+    //    //sep *= separationScale; // Arbitrary weights for these forces (Try different ones!)
+    //    ali *= alignmentWeight;
+    //    coh *= cohesionWeight;
+
+    //    ApplyForce(sep); // Applying all the forces
+    //    ApplyForce(ali);
+    //    ApplyForce(coh);
+    //    ApplyForce(currentBoundsVector);
+
+
+    //    CheckBounds(velocity); // To loop the world to the other side of the screen.
+    //    CalculateBoundaries(myTransform.position);
+
+    //    //LookForward(); // Make the boids face forward.
+    //}
 
     public void AssignFlock(Flock flock)
     {
@@ -360,10 +437,12 @@ public class FlockUnit : MonoBehaviour
         FindNeighbors();
         //  CalculateSpeed();
 
+
         currentCohesionVector = CalculateCohesionVector() * ((cohesionWeight * generalWeight) + (dnaCohesionWeight * dnaWeight));
         currentAvoidanceVector = CalculateAvoidanceVector() * ((avoidanceWeight * generalWeight) + (dnaAvoidanceWeight * dnaWeight));
         currentAlignmentVector = CalculateAlignmentVector() * ((alignmentWeight * generalWeight) + (dnaAlignmentWeight * dnaWeight));
         currentBoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
+
         var driftVector = new Vector3(driftX, driftY, driftZ);
 
         var moveVector = currentCohesionVector + currentAvoidanceVector + currentAlignmentVector + currentBoundsVector + attractionForce;
@@ -371,6 +450,11 @@ public class FlockUnit : MonoBehaviour
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
         moveVector = moveVector.normalized * (speed + cohesionSpeed);
 
+
+
+        //var moveVector = currentSteerVector + currentBoundsVector;
+        //if (moveVector == Vector3.zero)
+        //    moveVector = new Vector3(UnityEngine.Random.Range(-2, 2), UnityEngine.Random.Range(-2, 2), UnityEngine.Random.Range(-2, 2));
         if (moveVector == Vector3.zero)
             moveVector = transform.forward;
         myTransform.forward = moveVector;
@@ -382,6 +466,8 @@ public class FlockUnit : MonoBehaviour
 
         myTransform.position += (currentMoveVector + driftVector) * Time.deltaTime;
         //checkBounds(currentMoveVector);
+
+        //currentSteerVector
         CalculateBoundaries(myTransform.position);
     }
 
@@ -501,6 +587,109 @@ public class FlockUnit : MonoBehaviour
         return avoidanceVector;
     }
 
+    //public Vector3 Separate(List<FlockUnit> boids)
+    //{
+    //    Vector3 sum = Vector3.zero;
+    //    int count = 0;
+
+    //    //float desiredSeperation = transform.localScale.x * 2;
+    //    float desiredSeperation = avoidanceDistance;
+
+    //    foreach (FlockUnit other in boids)
+    //    {
+    //        float d = Vector3.Distance(other.location, location);
+
+    //        if ((d > 0) && (d < desiredSeperation))
+    //        {
+    //            Vector3 diff = location - other.location;
+    //            diff.Normalize();
+
+    //            diff /= d;
+
+    //            sum += diff;
+    //            count++;
+    //        }
+    //    }
+
+    //    if (count > 0)
+    //    {
+    //        sum /= count;
+
+    //        sum *= speed;
+
+    //        Vector3 steer = sum - velocity;
+    //        steer = Vector3.ClampMagnitude(steer, maxForce);
+
+
+    //        return steer;
+    //    }
+    //    return Vector3.zero;
+    //}
+
+    //public Vector3 Cohesion(List<FlockUnit> boids)
+    //{
+    //    float neighborDist = cohesionDistance;
+    //    Vector3 sum = Vector3.zero;
+    //    int count = 0;
+    //    foreach (FlockUnit other in boids)
+    //    {
+    //        float d = Vector3.Distance(location, other.location);
+    //        if ((d > 0) && (d < neighborDist))
+    //        {
+    //            sum += other.location; // Adding up all the other's locations
+    //            count++;
+    //        }
+    //    }
+    //    if (count > 0)
+    //    {
+    //        sum /= count;
+    //        /* Here we make use of the Seek() function we wrote in
+    //         * Example 6.8. The target we seek is the average
+    //         * location of our neighbors. */
+    //        return Seek(sum);
+    //    }
+    //    else
+    //    {
+    //        return Vector3.zero;
+    //    }
+    //}
+
+
+    //public Vector3 Align(List<FlockUnit> boids)
+    //{
+    //    float neighborDist = alignmentDistance; // This is an arbitrary value and could vary from boid to boid.
+
+    //    /* Add up all the velocities and divide by the total to
+    //     * calculate the average velocity. */
+    //    Vector3 sum = Vector3.zero;
+    //    int count = 0;
+    //    foreach (FlockUnit other in boids)
+    //    {
+    //        float d = Vector3.Distance(location, other.location);
+    //        if ((d > 0) && (d < neighborDist))
+    //        {
+    //            sum += other.velocity;
+    //            count++; // For an average, we need to keep track of how many boids are within the distance.
+    //        }
+    //    }
+
+    //    if (count > 0)
+    //    {
+    //        sum /= count;
+
+    //        sum = sum.normalized * speed; // We desire to go in that direction at maximum speed.
+
+    //        Vector3 steer = sum - velocity; // Reynolds's steering force formula.
+    //        steer = Vector3.ClampMagnitude(steer, maxForce);
+    //        return steer;
+    //    }
+    //    else
+    //    {
+    //        return Vector3.zero; // If we don't find any close boids, the steering force is Zero.
+    //    }
+    //}
+
+
     private Vector3 CalculateBoundsVector()
     {
         // also functions as "bounce"
@@ -522,22 +711,24 @@ public class FlockUnit : MonoBehaviour
         //myTransform.position = Vector3.ClampMagnitude(position, assignedFlock.boundsDistance);
     }
 
-    //private void checkBounds(Vector3 velocity)
+    //private void CheckBounds(Vector3 currentVelocity)
     //{
-    //    if (myTransform.position.x < -29.0f)
+    //    if (myTransform.position.x > assignedFlock.boundsDistance * 0.98 || myTransform.position.x < -assignedFlock.boundsDistance * 0.98)
     //    {
     //        //currentMoveVector = new Vector3(velocity.x * -1.0f, velocity.y, velocity.z);
-    //        currentMoveVector = new Vector3(currentMoveVector.x * -1.0f, currentMoveVector.y, currentMoveVector.z);
+    //        velocity = new Vector3(currentVelocity.x * -1.0f, currentVelocity.y, currentVelocity.z);
+    //        //velocity.x *= -1.0f;
     //    }
-    //    if (myTransform.position.y > 10.0f || myTransform.position.y < -10.0f)
+    //    else if (myTransform.position.y > assignedFlock.boundsDistance * 0.98 || myTransform.position.y < -assignedFlock.boundsDistance * 0.98)
     //    {
-    //        //currentMoveVector = new Vector3(velocity.x, velocity.y * -1.0f, velocity.z);
-    //        currentMoveVector.y *= -1.0f;
+    //        Debug.Log("Y exceeded");
+    //        velocity = new Vector3(currentVelocity.x, currentVelocity.y * -1.0f, currentVelocity.z);
+    //        //velocity.y *= -1.0f;
     //    }
-    //    if (myTransform.position.z > 10.0f || myTransform.position.z < -10.0f)
+    //    else if (myTransform.position.z > assignedFlock.boundsDistance * 0.98 || myTransform.position.z < -assignedFlock.boundsDistance * 0.98)
     //    {
-    //       //currentMoveVector = new Vector3(velocity.x, velocity.y, velocity.z * -1.0f);
-    //        currentMoveVector.z *= -1.0f;
+    //        velocity = new Vector3(currentVelocity.x, currentVelocity.y, currentVelocity.z * -1.0f);
+    //        //velocity.z *= -1.0f;
     //    }
 
     //}
@@ -548,6 +739,58 @@ public class FlockUnit : MonoBehaviour
         return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;
     }
 
+
+    //public Vector3 Seek(Vector3 targetPostion)
+    //{
+    //    Vector3 desired = targetPostion - myTransform.position;
+    //    desired.Normalize();
+    //    desired *= speed;
+    //    //desired *= assignedFlock.maxSpeed;
+    //    Vector3 steer = desired - body.velocity;
+    //    steer.x = Mathf.Clamp(steer.x, -maxForce, maxForce);
+    //    steer.y = Mathf.Clamp(steer.y, -maxForce, maxForce);
+    //    steer.z = Mathf.Clamp(steer.z, -maxForce, maxForce);
+    //    //currentSteerVector = steer;
+    //    return steer;
+    //}
+
+    //public void Arrive(Vector3 targetPostion)
+    //{
+    //    float r = 10.0f;
+    //    Vector3 desired = targetPostion - myTransform.position;
+
+    //    float d = desired.magnitude;
+    //    desired = desired.normalized;
+    //    //Debug.Log(d);
+    //    if (d < r)
+    //    {
+    //        float m = scale(d, 0, speed, 0, 3);
+    //        desired *= m;
+    //        //Debug.Log("near" + desired);
+
+    //    }
+    //    else
+    //    {
+    //        desired *= speed;
+    //        //Debug.Log("far" + desired);
+    //    }
+
+
+    //    Vector3 steer = desired - body.velocity;
+    //    steer.x = Mathf.Clamp(steer.x, -maxForce, maxForce);
+    //    steer.y = Mathf.Clamp(steer.y, -maxForce, maxForce);
+    //    steer.z = Mathf.Clamp(steer.z, -maxForce, maxForce);
+    //    currentSteerVector = steer;
+    //    ApplyForce(steer);
+    //}
+
+    //public void ApplyForce(Vector3 force)
+    //{
+    //    body.AddForce(force * Time.fixedDeltaTime, ForceMode.VelocityChange);
+    //}
+
+
+
     public void ApplyAttractionForce(Vector3 force)
     {
 
@@ -556,9 +799,9 @@ public class FlockUnit : MonoBehaviour
 
     }
 
-    public void Eater(Transform foodTransform)
+    public void Eater(Vector3 preyPosition)
     {
-        Vector3 force = myTransform.position - foodTransform.position;
+        Vector3 force = myTransform.position - preyPosition;
         float distance = force.magnitude;
 
         foodForce = force;
