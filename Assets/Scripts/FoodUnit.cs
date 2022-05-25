@@ -24,6 +24,12 @@ public class FoodUnit : MonoBehaviour
     public OSCReceiver oscReceiver;
 
 
+    public Vector3 position
+    {
+        get { return transform.position; }
+        set { transform.position = value; }
+    }
+
     void Start()
     {
         food = gameObject;
@@ -59,13 +65,14 @@ public class FoodUnit : MonoBehaviour
 
     public Vector3 Attract(Vector3 targetPosition)
     {
-        Vector3 force = food.transform.position - targetPosition;
+        Vector3 force = transform.position - targetPosition;
         float distance = force.magnitude;
 
         Eaten(distance);
 
         distance = Mathf.Clamp(distance, 2f, 25f);
-        force.Normalize();
+        //force.Normalize();
+        force = CustomNormalize(force);
 
         float strength = G * (mass * BoidMass) / (distance * distance);
         force *= strength * foodAttractWeight;
@@ -91,6 +98,22 @@ public class FoodUnit : MonoBehaviour
             }
         }
     }
+
+    public static Vector3 CustomNormalize(Vector3 v)
+    {
+        double m = Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        if (m > 9.99999974737875E-06)
+        {
+            float fm = (float)m;
+            v.x /= fm;
+            v.y /= fm;
+            v.z /= fm;
+            return v;
+        }
+        else
+            return Vector3.zero;
+    }
+
 }
 
 

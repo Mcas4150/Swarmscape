@@ -160,6 +160,11 @@ public class FlockUnit : MonoBehaviour
         oscAddress_positionY = "/" + breed + "/position/y/" + oscNumber;
         oscAddress_positionZ = "/" + breed + "/position/z/" + oscNumber;
 
+        message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
+        message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
+        message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
+
+
 
         midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
         midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
@@ -188,9 +193,14 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.05f);
 
-            message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
-            message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
-            message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
+            //message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
+            //message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
+            //message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
+
+            message_newPositionX.Values[0] = OSCValue.Float(myTransform.position.x);
+            message_newPositionY.Values[0] = OSCValue.Float(myTransform.position.y);
+            message_newPositionZ.Values[0] = OSCValue.Float(myTransform.position.z);
+
 
             //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
             //message_newPositionX.AddValue(OSCValue.Float(myTransform.position.x));
@@ -481,9 +491,9 @@ public class FlockUnit : MonoBehaviour
         foreach (FlockUnit boid in allUnits)
         {
             var currentUnit = boid;
-            if (currentUnit != this && currentUnit != null)
+            //if (currentUnit != this && currentUnit != null)
             {
-
+                if (currentUnit == this) return;
                 float currentNeighborDistanceSqr = Vector3.SqrMagnitude(currentUnit.myTransform.position - myTransform.position);
 
                 //  Color linecolor(string breed) => breed == "shadow" ? Color.cyan : Color.magenta;
@@ -523,22 +533,23 @@ public class FlockUnit : MonoBehaviour
 
         if (cohesionNeighbors.Count == 0)
             return Vector3.zero;
-        int neighborsInFOV = 0;
+        //int neighborsInFOV = 0;
         for (int i = 0; i < cohesionNeighbors.Count; i++)
         {
-            if (IsInFOV(cohesionNeighbors[i].myTransform.position))
-            {
-                neighborsInFOV++;
-                cohesionVector += cohesionNeighbors[i].myTransform.position;
-                cohesionSpeed += cohesionNeighbors[i].speed;
+            //if (IsInFOV(cohesionNeighbors[i].myTransform.position))
+            //{
+            //    neighborsInFOV++;
+            cohesionVector += cohesionNeighbors[i].myTransform.position;
+            cohesionSpeed += cohesionNeighbors[i].speed;
 
-            }
+            //}
         }
         cohesionSpeed /= cohesionNeighbors.Count;
 
         cohesionSpeed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
 
-        cohesionVector /= neighborsInFOV;
+        //cohesionVector /= neighborsInFOV;
+        cohesionVector /= cohesionNeighbors.Count;
         cohesionVector -= myTransform.position;
         cohesionVector = cohesionVector.normalized;
         //Debug.DrawLine(myTransform.position, cohesionVector, Color.green);
@@ -550,17 +561,17 @@ public class FlockUnit : MonoBehaviour
         var alignmentVector = myTransform.forward;
         if (alignmentNeighbors.Count == 0)
             return myTransform.forward;
-        int neighborsInFOV = 0;
+        //int neighborsInFOV = 0;
         for (int i = 0; i < alignmentNeighbors.Count; i++)
         {
-            if (IsInFOV(alignmentNeighbors[i].myTransform.position))
-            {
-                neighborsInFOV++;
-                alignmentVector += alignmentNeighbors[i].myTransform.forward;
-            }
+            //if (IsInFOV(alignmentNeighbors[i].myTransform.position))
+            //{
+            //    neighborsInFOV++;
+            alignmentVector += alignmentNeighbors[i].myTransform.forward;
+            //}
         }
-
-        alignmentVector /= neighborsInFOV;
+        //alignmentVector /= neighborsInFOV;
+        alignmentVector /= alignmentNeighbors.Count;
         alignmentVector = alignmentVector.normalized;
         //Debug.DrawLine(myTransform.position, alignmentVector, Color.blue);
         return alignmentVector;
@@ -571,17 +582,18 @@ public class FlockUnit : MonoBehaviour
         var avoidanceVector = Vector3.zero;
         if (avoidanceNeighbors.Count == 0)
             return Vector3.zero;
-        int neighborsInFOV = 0;
+        //int neighborsInFOV = 0;
         for (int i = 0; i < avoidanceNeighbors.Count; i++)
         {
-            if (IsInFOV(avoidanceNeighbors[i].myTransform.position))
-            {
-                neighborsInFOV++;
-                avoidanceVector += (myTransform.position - avoidanceNeighbors[i].myTransform.position);
-            }
+            //if (IsInFOV(avoidanceNeighbors[i].myTransform.position))
+            //{
+            //    neighborsInFOV++;
+            avoidanceVector += (myTransform.position - avoidanceNeighbors[i].myTransform.position);
+            //}
         }
 
-        avoidanceVector /= neighborsInFOV;
+        //avoidanceVector /= neighborsInFOV;
+        avoidanceVector /= avoidanceNeighbors.Count;
         avoidanceVector = avoidanceVector.normalized;
         //Debug.DrawLine(myTransform.position, avoidanceVector, Color.red);
         return avoidanceVector;
@@ -801,14 +813,10 @@ public class FlockUnit : MonoBehaviour
 
     public void Eater(Vector3 preyPosition)
     {
-        Vector3 force = myTransform.position - preyPosition;
-        float distance = force.magnitude;
+        foodForce = myTransform.position - preyPosition;
+        foodDistance = foodForce.magnitude;
 
-        foodForce = force;
-        foodDistance = distance;
-
-
-        if (distance < 5f && distance > 3f)
+        if (foodDistance < 5f && foodDistance > 3f)
         {
             //health += 5 * Time.deltaTime;
             health += 0.25f;
@@ -828,7 +836,8 @@ public class FlockUnit : MonoBehaviour
         Vector3 force = myTransform.position - targetPosition;
         float distance = force.magnitude;
         distance = Mathf.Clamp(distance, 2f, 25f);
-        force.Normalize();
+        //force.Normalize();
+        force = CustomNormalize(force);
 
         float strength = G * (boidMass * boidMass) / (distance * distance);
         force *= strength;
@@ -893,6 +902,22 @@ public class FlockUnit : MonoBehaviour
 
         return (NewValue);
     }
+
+
+    public static Vector3 CustomNormalize(Vector3 v)
+    {
+        double m = Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        if (m > 9.99999974737875E-06)
+        {
+            float fm = (float)m;
+            v.x /= fm;
+            v.y /= fm;
+            v.z /= fm;
+            return v;
+        }
+        else
+            return Vector3.zero;
+    }
 }
 
 public class BoidDeathEventArgs : EventArgs
@@ -933,6 +958,10 @@ public class DNAboid
         newgenes = (float[])genes.Clone();
         return new DNAboid(newgenes);
     }
+
+
+
+
 }
 
 

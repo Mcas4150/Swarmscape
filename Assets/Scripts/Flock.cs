@@ -131,17 +131,17 @@ public class Flock : MonoBehaviour
 
 
 
-            //if (mutualAttraction != 0)
-            //{
-            //    foreach (FlockUnit enemy in EnemyFlock.Boids)
-            //    {
-            //        Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
-            //        boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
-            //        //boid.ApplyForce(boid.Seek(enemy.transform.position)); 
-            //        //boid.Prey(enemy.transform.position);
-            //    }
+            if (mutualAttraction != 0)
+            {
+                foreach (FlockUnit enemy in EnemyFlock.Boids)
+                {
+                    Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
+                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
+                    //boid.ApplyForce(boid.Seek(enemy.transform.position)); 
+                    //boid.Prey(enemy.transform.position);
+                }
 
-            //}
+            }
         }
 
     }
