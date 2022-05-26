@@ -67,11 +67,11 @@ public class Food : MonoBehaviour
     private void GenerateFood(Vector3 position)
     {
 
-        var food = Instantiate(foodUnit, position, Quaternion.identity);
+        var food = Instantiate(foodUnit, position, Quaternion.identity, transform);
         var foodScript = food.GetComponent<FoodUnit>();
         foodScript.Death += OnFoodDeath;
-        Foods.Add(food.GetComponent<FoodUnit>());
-        food.transform.parent = this.transform;
+        Foods.Add(foodScript);
+
 
     }
 

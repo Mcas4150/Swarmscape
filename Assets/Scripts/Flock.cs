@@ -14,11 +14,13 @@ public class Flock : MonoBehaviour
     [SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
+    [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
     [SerializeField] public int startAmount;
+    [SerializeField] public float spawnRadius = 1f;
 
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
@@ -34,37 +36,6 @@ public class Flock : MonoBehaviour
     [Range(0, 100)]
     [SerializeField] public float _maxSpeed;
     public float maxSpeed { get { return _maxSpeed; } }
-
-    //[Header("Detection Distances")]
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _cohesionDistance;
-    //public float cohesionDistance { get { return _cohesionDistance; } }
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _avoidanceDistance;
-    //public float avoidanceDistance { get { return _avoidanceDistance; } }
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _alignmentDistance;
-    //public float alignmentDistance { get { return _alignmentDistance; } }
-
-
-
-    //[Header("Behavior Weights")]
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _cohesionWeight;
-    //public float cohesionWeight { get { return _cohesionWeight; } }
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _avoidanceWeight;
-    //public float avoidanceWeight { get { return _avoidanceWeight; } }
-
-    //[Range(0, 10)]
-    //[SerializeField] public float _alignmentWeight;
-    //public float alignmentWeight { get { return _alignmentWeight; } }
-
 
     [Header("Agents ")]
     public List<FlockUnit> Boids = new List<FlockUnit>();
@@ -93,8 +64,8 @@ public class Flock : MonoBehaviour
         _minSpeed = 6f;
         _maxSpeed = 100f;
 
-        StartCoroutine(OSCInit());
-        StopCoroutine(OSCInit());
+        StartCoroutine(OSCReset());
+        StopCoroutine(OSCReset());
 
         GenerateUnits();
 
@@ -104,32 +75,21 @@ public class Flock : MonoBehaviour
     private void Update()
     {
 
-
-
         foreach (FlockUnit boid in Boids)
         {
 
-
-
             //boid.Flock(Boids);
-
-
-
             Vector3 boidPosition = boid.myTransform.position;
-
             foreach (FoodUnit food in food.Foods)
             {
                 //boid.Arrive(food.transform.position);
-                Vector3 force = food.Attract(boidPosition);
-                boid.ApplyAttractionForce(force);
+                //Vector3 force = food.Attract(boidPosition);
 
+                //Vector3 force = boid.Seek(food.transform.position);
+                //boid.ApplyAttractionForce(force);
 
-
-                boid.Eater(food.transform.position);
+                boid.Eater(food);
             }
-
-
-
 
             if (mutualAttraction != 0)
             {
@@ -140,18 +100,16 @@ public class Flock : MonoBehaviour
                     //boid.ApplyForce(boid.Seek(enemy.transform.position)); 
                     //boid.Prey(enemy.transform.position);
                 }
-
             }
         }
-
     }
 
-    private IEnumerator OSCInit()
+    private IEnumerator OSCReset()
     {
 
-        OSCMessage initPlayMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
-        Debug.Log(initPlayMessage);
-        transmitter.Send(initPlayMessage);
+        OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
+        Debug.Log(resetMessage);
+        transmitter.Send(resetMessage);
 
         for (int i = 1; i <= flockSize; i++)
         {
@@ -214,13 +172,13 @@ public class Flock : MonoBehaviour
         childDNA.mutate(0.2f);
 
 
-        var spawnPosition = transform.position + position;
+        var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
         rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
 
         var agentNumber = FindOpenIndex(unitIndex, flockSize);
 
 
-        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation);
+        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation, transform);
         var newAgentScript = newAgent.GetComponent<FlockUnit>();
 
         newAgentScript.Death += OnBoidDeath;
@@ -233,9 +191,8 @@ public class Flock : MonoBehaviour
 
         unitIndex.Add(agentNumber);
         agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
-        newAgent.transform.parent = this.transform;
+        //newAgent.transform.parent = this.transform;
     }
-
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
     {

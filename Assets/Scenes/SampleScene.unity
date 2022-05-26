@@ -455,7 +455,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551930387}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
@@ -866,7 +866,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229929643}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
@@ -913,29 +913,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 50
+  flockSize: 16
   shadowProb: 0.5
   respawnTime: 2
   deathMultiplier: 1
-  mutualAttraction: 1
+  mutualAttraction: 0
   attractForceMagnitude: 25
   foodForceMagnitude: 25
   attackForceMagnitude: 25
   boidMass: 1.5
   smoothDamp: 1
-  trailTime: 2
+  trailTime: 1
   boundsDistance: 100
   cohesionDistance: 20
   avoidanceDistance: 30
   alignmentDistance: 16
-  boundsWeight: 30
+  preyDistance: 50
+  boundsWeight: 0
   cohesionWeight: 10
   avoidanceWeight: 20
   alignmentWeight: 2
-  dnaWeight: 1
-  generalWeight: 1
-  foodAttractWeight: 0
-  maxForce: 5
+  preyWeight: 10
+  dnaWeight: 0
+  generalWeight: 0
+  foodAttractWeight: 1
   driftX: 0
   driftY: 0
   driftZ: 0
@@ -1375,7 +1376,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876838921}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4140e1bd3bc834d05ac20d7654bc404d, type: 3}
   m_Name: 
@@ -1537,6 +1538,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1924572748}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2099012293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2099012295}
+  - component: {fileID: 2099012294}
+  m_Layer: 0
+  m_Name: jFlock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2099012294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099012293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boidPrefab: {fileID: 4232150327087004145, guid: 0312af50b926745ff829cd4114a654f7,
+    type: 3}
+  numBoids: 150
+  spawnRadius: 1
+  boundaryRadius: 100
+  maxVelocity: 1.75
+  maxSteeringForce: 0.03
+  seperationDistance: 35
+  neighborDistance: 50
+  fieldOfView: 300
+  seperationMultiplier: 1.5
+  alignmentMultiplier: 1
+  cohesionMultiplier: 1
+  boundaryMultiplier: 1
+--- !u!4 &2099012295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099012293}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -28.86554, y: -6.5139184, z: -39.507446}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2119595933
 GameObject:
