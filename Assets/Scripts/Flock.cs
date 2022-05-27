@@ -15,6 +15,7 @@ public class Flock : MonoBehaviour
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
     [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
+    [SerializeField] public float foodWeight => GameManager.Instance.foodWeight;
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
 
@@ -26,6 +27,7 @@ public class Flock : MonoBehaviour
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
+    public Boolean Predator;
 
     public float seekWeight = 1;
 
@@ -83,25 +85,9 @@ public class Flock : MonoBehaviour
             Vector3 boidPosition = boid.myTransform.position;
             foreach (FoodUnit food in food.Foods)
             {
-                //boid.Arrive(food.transform.position);
-                //Vector3 force = food.Attract(boidPosition);
-
-                //Vector3 force = boid.Seek(food.transform.position);
-                //boid.ApplyAttractionForce(force);
-
                 boid.Eater(food);
             }
 
-            if (mutualAttraction != 0)
-            {
-                foreach (FlockUnit enemy in EnemyFlock.Boids)
-                {
-                    Vector3 force = enemy.Attract(boidPosition, attackForceMagnitude);
-                    boid.ApplyAttractionForce(mutualAttraction * seekWeight * force);
-                    //boid.ApplyForce(boid.Seek(enemy.transform.position)); 
-                    //boid.Prey(enemy.transform.position);
-                }
-            }
         }
     }
 

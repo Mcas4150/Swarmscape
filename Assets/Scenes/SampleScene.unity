@@ -440,7 +440,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473739473}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
   m_Name: 
@@ -464,6 +464,7 @@ MonoBehaviour:
   cohesionMultiplier: 1
   attractionMultiplier: 1
   boundaryMultiplier: 1
+  foodMultiplier: 1
 --- !u!4 &473739475
 Transform:
   m_ObjectHideFlags: 0
@@ -518,7 +519,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551930387}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
@@ -930,7 +931,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229929643}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
@@ -986,6 +987,7 @@ MonoBehaviour:
   attractForceMagnitude: 25
   foodForceMagnitude: 25
   attackForceMagnitude: 25
+  maxSteeringForce: 0.3
   boidMass: 1.5
   smoothDamp: 1
   trailTime: 1
@@ -1628,7 +1630,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099012293}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
   m_Name: 
@@ -1652,6 +1654,7 @@ MonoBehaviour:
   cohesionMultiplier: 1
   attractionMultiplier: 2.75
   boundaryMultiplier: 1
+  foodMultiplier: 1
 --- !u!4 &2099012295
 Transform:
   m_ObjectHideFlags: 0
