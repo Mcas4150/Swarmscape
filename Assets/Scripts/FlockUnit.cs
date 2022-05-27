@@ -334,51 +334,6 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    //void FixedUpdate()
-    //{
-    //    //body.velocity = new Vector3(
-    //    //                  Mathf.Clamp(body.velocity.x, -speed, speed),
-    //    //                  Mathf.Clamp(body.velocity.y, -speed, speed),
-    //    //                  Mathf.Clamp(body.velocity.z, -speed, speed)
-    //    //                  );
-
-    //    //transform.rotation = Quaternion.LookRotation(body.velocity);
-    //}
-
-    //public void Flock(List<FlockUnit> boids)
-    //{
-
-    //    if (velocity == Vector3.zero)
-    //        velocity = new Vector3(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5));
-    //    //myTransform.forward = velocity;
-
-    //    //if (velocity == Vector3.zero)
-    //    //    velocity = transform.forward;
-    //    //myTransform.forward = velocity;
-
-
-    //    Vector3 sep = Separate(boids); // The three flocking rules
-    //    Vector3 ali = Align(boids);
-    //    Vector3 coh = Cohesion(boids);
-    //    currentBoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
-
-
-    //    sep *= avoidanceWeight;
-    //    //sep *= separationScale; // Arbitrary weights for these forces (Try different ones!)
-    //    ali *= alignmentWeight;
-    //    coh *= cohesionWeight;
-
-    //    ApplyForce(sep); // Applying all the forces
-    //    ApplyForce(ali);
-    //    ApplyForce(coh);
-    //    ApplyForce(currentBoundsVector);
-
-
-    //    CheckBounds(velocity); // To loop the world to the other side of the screen.
-    //    CalculateBoundaries(myTransform.position);
-
-    //    //LookForward(); // Make the boids face forward.
-    //}
 
     public void AssignFlock(Flock flock)
     {
@@ -422,7 +377,7 @@ public class FlockUnit : MonoBehaviour
         currentAvoidanceVector = CalculateAvoidanceVector() * ((avoidanceWeight * generalWeight) + (dnaAvoidanceWeight * dnaWeight));
         currentAlignmentVector = CalculateAlignmentVector() * ((alignmentWeight * generalWeight) + (dnaAlignmentWeight * dnaWeight));
         currentBoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
-        currentPreyVector = CalculatePreyVector() * assignedFlock.preyWeight;
+        currentPreyVector = CalculatePreyVector(preyNeighbors, foodForceMagnitude) * assignedFlock.preyWeight;
 
         var driftVector = new Vector3(driftX, driftY, driftZ);
 
@@ -450,13 +405,6 @@ public class FlockUnit : MonoBehaviour
         //currentSteerVector
         CalculateBoundaries(myTransform.position);
 
-
-
-
-
-
-
-
     }
 
     private void FindNeighbors()
@@ -464,7 +412,7 @@ public class FlockUnit : MonoBehaviour
         cohesionNeighbors.Clear();
         alignmentNeighbors.Clear();
         avoidanceNeighbors.Clear();
-        //preyNeighbors.Clear();
+        preyNeighbors.Clear();
         var allUnits = assignedFlock.Boids;
 
         foreach (FlockUnit boid in allUnits)
@@ -495,7 +443,6 @@ public class FlockUnit : MonoBehaviour
 
     private void FindPrey()
     {
-
         preyNeighbors.Clear();
         var allPrey = assignedFlock.food.Foods;
 
@@ -504,15 +451,6 @@ public class FlockUnit : MonoBehaviour
             var currentUnit = prey;
             //if (currentUnit != this && currentUnit != null)
             {
-
-                //var currentPreyDistance = currentUnit.transform.position - transform.position;
-                //currentPreyDistance = currentPreyDistance.magnitude()
-
-                //if ( )
-                //{
-                //    preyNeighbors.Add(currentUnit);
-                //}
-
                 float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
 
                 //if (currentPreyDistanceSqr <= ((preyDistance * preyDistance * generalWeight) + (dnaPreyDistance * dnaPreyDistance * dnaWeight)))
@@ -752,114 +690,38 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    private Vector3 CalculatePreyVector()
+    private Vector3 CalculatePreyVector(List<FoodUnit> neighbors, float forceMagnitude)
     {
-        var preyVector = Vector3.zero;
+
+
+        var force = Vector3.zero;
 
         if (preyNeighbors.Count == 0)
             return Vector3.zero;
         //int neighborsInFOV = 0;
-        for (int i = 0; i < preyNeighbors.Count; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
             //if (IsInFOV(cohesionNeighbors[i].myTransform.position))
             //{
             //    neighborsInFOV++;
 
-
-            Vector3 preyDir = (preyNeighbors[i].transform.position - myTransform.position);
-            //preyVector += (preyNeighbors[i].transform.position - myTransform.position);
-            //cohesionSpeed += cohesionNeighbors[i].speed;
-
-
-            float preyDist = preyDir.magnitude;
-            preyDir = Vector3.Normalize(preyDir);
-
+            Vector3 neighborDir = (neighbors[i].transform.position - myTransform.position);
+            float neighborDist = neighborDir.magnitude;
+            neighborDir = Vector3.Normalize(neighborDir);
             // weight the vector by the distance squared
-            preyDir = preyDir / (Mathf.Pow(preyDist, 2f));
-            preyVector += preyDir;
+            neighborDir /= (Mathf.Pow(neighborDist, 2f));
+            force += neighborDir;
 
-
-            //}
         }
 
+        force = Vector3.Normalize(force);
+        force *= speed;
+        force -= currentMoveVector;
+        force = Vector3.ClampMagnitude(force, forceMagnitude);
 
-        //    float strength = G * (mass * BoidMass) / (distance * distance);
-        //    force *= strength * foodAttractWeight;
-        //    //force *= strength;
-
-        //    force = Vector3.ClampMagnitude(force, foodForceMagnitude);
-
-
-
-        //cohesionSpeed /= cohesionNeighbors.Count;
-
-        //cohesionSpeed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
-
-        //cohesionVector /= neighborsInFOV;
-
-
-
-
-        //preyVector /= preyNeighbors.Count;
-
-
-        preyVector = Vector3.Normalize(preyVector);
-        preyVector *= speed;
-        preyVector -= currentMoveVector;
-        preyVector = Vector3.ClampMagnitude(preyVector, foodForceMagnitude);
-
-
-
-
-
-        ////what is speed vs moveVector?;
-        //preyVector *= speed;
-        //preyVector -= currentMoveVector;
-
-
-        //Debug.DrawLine(myTransform.position, cohesionVector, Color.green);
-        return preyVector;
+        return force;
     }
 
-
-
-
-    //public Vector3 SeekPrey(FoodUnit target)
-    //{
-    //    float distance = Vector3.SqrMagnitude(target.transform.position - transform.position);
-
-    //    //Vector3 distance = target.transform.position - myTransform.position;
-
-    //    float desired = CustomNormalize(distance); desired.Normalize();
-
-    //    float strength = G * (target.mass * BoidMass) / (distance * distance);
-    //    //    force *= strength * foodAttractWeight; 
-    //    desired *= speed;
-    //    //desired *= assignedFlock.maxSpeed;
-    //    Vector3 steer = desired - currentMoveVector;
-    //    //steer.x = Mathf.Clamp(steer.x, -maxForce, maxForce);
-    //    //steer.y = Mathf.Clamp(steer.y, -maxForce, maxForce);
-    //    //steer.z = Mathf.Clamp(steer.z, -maxForce, maxForce);
-    //    currentSteerVector = steer;
-    //    return steer;
-
-
-    //    // Vector3 force = transform.position - targetPosition;
-    //    //    float distance = force.magnitude;
-
-    //    //    Eaten(distance);
-
-    //    //    distance = Mathf.Clamp(distance, 2f, 25f);
-    //    //    //force.Normalize();
-    //    //    force = CustomNormalize(force);
-
-    //    //    float strength = G * (mass * BoidMass) / (distance * distance);
-    //    //    force *= strength * foodAttractWeight;
-    //    //    //force *= strength;
-
-    //    //    force = Vector3.ClampMagnitude(force, foodForceMagnitude);
-    //    //    return force;
-    //}
 
 
 
@@ -920,25 +782,7 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    //public Vector3 Attract(Vector3 targetPosition)
-    //{
-    //    Vector3 force = transform.position - targetPosition;
-    //    float distance = force.magnitude;
 
-    //    Eaten(distance);
-
-    //    distance = Mathf.Clamp(distance, 2f, 25f);
-    //    //force.Normalize();
-    //    force = CustomNormalize(force);
-
-    //    float strength = G * (mass * BoidMass) / (distance * distance);
-    //    force *= strength * foodAttractWeight;
-    //    //force *= strength;
-
-    //    force = Vector3.ClampMagnitude(force, foodForceMagnitude);
-    //    return force;
-
-    //}
 
     //public void Arrive(Vector3 targetPostion)
     //{
@@ -979,10 +823,8 @@ public class FlockUnit : MonoBehaviour
 
     public void ApplyAttractionForce(Vector3 force)
     {
-
         attractionForce += force;
         attractionForce = Vector3.ClampMagnitude(attractionForce, attractForceMagnitude);
-
     }
 
 
@@ -1010,32 +852,6 @@ public class FlockUnit : MonoBehaviour
         }
 
     }
-
-
-    //public  Vector3 Attraction(FoodUnit food)
-    //{
-    //    Vector3 force = Vector3.zero;
-
-    //    foreach (int i in indices)
-    //    {
-    //        // get a vector pointing in the opposite direction of the neighbor
-    //        Vector3 neighborDir = prey[i].position - position;
-    //        float neighborDist = neighborDir.magnitude;
-    //        neighborDir = Vector3.Normalize(neighborDir);
-
-    //        // weight the vector by the distance squared
-    //        neighborDir = neighborDir / (Mathf.Pow(neighborDist, 2f));
-    //        force += neighborDir;
-    //    }
-
-    //    // we implement reynolds "force = desired velocity - current velocity"
-    //    force = Vector3.Normalize(force);
-    //    force = force * flock.maxVelocity;
-    //    force = force - velocity;
-    //    force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
-
-    //    return force;
-    //}
 
 
     public Vector3 Seek(Vector3 targetPostion)
