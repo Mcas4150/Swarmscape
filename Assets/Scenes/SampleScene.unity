@@ -416,6 +416,69 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1 &473739473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 473739475}
+  - component: {fileID: 473739474}
+  m_Layer: 0
+  m_Name: jPrey
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &473739474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473739473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boidPrefab: {fileID: 2951293323639376428, guid: 9fe6b1c7225b249fdb6d897bfd60a8a3,
+    type: 3}
+  prey: {fileID: 2099012294}
+  food: {fileID: 0}
+  predator: 0
+  herbivore: 0
+  numBoids: 16
+  spawnRadius: 1
+  boundaryRadius: 80
+  maxVelocity: 0.15
+  maxSteeringForce: 0.03
+  seperationDistance: 35
+  neighborDistance: 50
+  fieldOfView: 300
+  seperationMultiplier: 1.5
+  alignmentMultiplier: 1
+  cohesionMultiplier: 1
+  attractionMultiplier: 1
+  boundaryMultiplier: 1
+--- !u!4 &473739475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473739473}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -28.86554, y: -6.5139184, z: -39.507446}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &551930387
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,6 +525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   breed: shadow
   startAmount: 3
+  spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
   EnemyFlock: {fileID: 1229929646}
@@ -873,6 +937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   breed: organic
   startAmount: 3
+  spawnRadius: 1
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
@@ -917,7 +982,7 @@ MonoBehaviour:
   shadowProb: 0.5
   respawnTime: 2
   deathMultiplier: 1
-  mutualAttraction: 0
+  mutualAttraction: 1
   attractForceMagnitude: 25
   foodForceMagnitude: 25
   attackForceMagnitude: 25
@@ -935,7 +1000,7 @@ MonoBehaviour:
   alignmentWeight: 2
   preyWeight: 10
   dnaWeight: 0
-  generalWeight: 0
+  generalWeight: 1
   foodAttractWeight: 1
   driftX: 0
   driftY: 0
@@ -1039,7 +1104,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646289878}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c98a757c06874ddb9476b0a610a5534, type: 3}
   m_Name: 
@@ -1376,7 +1441,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876838921}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4140e1bd3bc834d05ac20d7654bc404d, type: 3}
   m_Name: 
@@ -1570,10 +1635,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boidPrefab: {fileID: 4232150327087004145, guid: 0312af50b926745ff829cd4114a654f7,
     type: 3}
-  numBoids: 150
+  prey: {fileID: 473739474}
+  food: {fileID: 0}
+  predator: 1
+  herbivore: 0
+  numBoids: 16
   spawnRadius: 1
-  boundaryRadius: 100
-  maxVelocity: 1.75
+  boundaryRadius: 80
+  maxVelocity: 0.25
   maxSteeringForce: 0.03
   seperationDistance: 35
   neighborDistance: 50
@@ -1581,6 +1650,7 @@ MonoBehaviour:
   seperationMultiplier: 1.5
   alignmentMultiplier: 1
   cohesionMultiplier: 1
+  attractionMultiplier: 2.75
   boundaryMultiplier: 1
 --- !u!4 &2099012295
 Transform:

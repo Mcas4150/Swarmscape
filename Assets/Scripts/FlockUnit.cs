@@ -28,6 +28,7 @@ public class FlockUnit : MonoBehaviour
     //[SerializeField] public float maxForce => GameManager.Instance.maxForce;
     [SerializeField] public float boidMass => GameManager.Instance.boidMass;
     [SerializeField] public float attractForceMagnitude => GameManager.Instance.attractForceMagnitude;
+    [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
 
     [SerializeField] public float driftX => GameManager.Instance.driftX;
@@ -154,21 +155,8 @@ public class FlockUnit : MonoBehaviour
         //delete?
         myTransform.localScale = new Vector3(3, 3, 3);
 
-
-        //transmitter = gameObject.AddComponent<OSCTransmitter>();
-        //transmitter.RemoteHost = "192.168.2.22";
-        //transmitter.RemotePort = 7121;
-        ////transmitter.RemotePort = 57120;
-        //transmitter.UseBundle = false;
-
-        //oscAddress_positionX = "/" + breed + "/position/x/" + oscNumber;
-        //oscAddress_positionY = "/" + breed + "/position/y/" + oscNumber;
-        //oscAddress_positionZ = "/" + breed + "/position/z/" + oscNumber;
         oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
 
-        //message_newPositionX = new OSCMessage(oscAddress_positionX, OSCValue.Float(myTransform.position.x));
-        //message_newPositionY = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.y));
-        //message_newPositionZ = new OSCMessage(oscAddress_positionY, OSCValue.Float(myTransform.position.z));
         message_newPositionXYZ = new OSCMessage(oscAddress_positionXYZ);
         message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.x));
         message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.y));
@@ -438,7 +426,8 @@ public class FlockUnit : MonoBehaviour
 
         var driftVector = new Vector3(driftX, driftY, driftZ);
 
-        var moveVector = currentCohesionVector + currentAvoidanceVector + currentAlignmentVector + currentBoundsVector + currentPreyVector + attractionForce;
+        //var moveVector = currentCohesionVector + currentAvoidanceVector + currentAlignmentVector + currentBoundsVector + currentPreyVector + attractionForce;
+        var moveVector = currentBoundsVector + currentPreyVector;
 
         moveVector = Vector3.SmoothDamp(myTransform.forward, moveVector, ref currentVelocity, smoothDamp);
         moveVector = CustomNormalize(moveVector) * (speed + cohesionSpeed);
@@ -460,6 +449,14 @@ public class FlockUnit : MonoBehaviour
         //checkBounds(currentMoveVector);
         //currentSteerVector
         CalculateBoundaries(myTransform.position);
+
+
+
+
+
+
+
+
     }
 
     private void FindNeighbors()
@@ -769,9 +766,18 @@ public class FlockUnit : MonoBehaviour
             //    neighborsInFOV++;
 
 
-
-            preyVector += (preyNeighbors[i].transform.position - myTransform.position);
+            Vector3 preyDir = (preyNeighbors[i].transform.position - myTransform.position);
+            //preyVector += (preyNeighbors[i].transform.position - myTransform.position);
             //cohesionSpeed += cohesionNeighbors[i].speed;
+
+
+            float preyDist = preyDir.magnitude;
+            preyDir = Vector3.Normalize(preyDir);
+
+            // weight the vector by the distance squared
+            preyDir = preyDir / (Mathf.Pow(preyDist, 2f));
+            preyVector += preyDir;
+
 
             //}
         }
@@ -792,9 +798,20 @@ public class FlockUnit : MonoBehaviour
         //cohesionVector /= neighborsInFOV;
 
 
-        preyVector /= preyNeighbors.Count;
 
-        preyVector = preyVector.normalized;
+
+        //preyVector /= preyNeighbors.Count;
+
+
+        preyVector = Vector3.Normalize(preyVector);
+        preyVector *= speed;
+        preyVector -= currentMoveVector;
+        preyVector = Vector3.ClampMagnitude(preyVector, foodForceMagnitude);
+
+
+
+
+
         ////what is speed vs moveVector?;
         //preyVector *= speed;
         //preyVector -= currentMoveVector;
@@ -993,6 +1010,33 @@ public class FlockUnit : MonoBehaviour
         }
 
     }
+
+
+    //public  Vector3 Attraction(FoodUnit food)
+    //{
+    //    Vector3 force = Vector3.zero;
+
+    //    foreach (int i in indices)
+    //    {
+    //        // get a vector pointing in the opposite direction of the neighbor
+    //        Vector3 neighborDir = prey[i].position - position;
+    //        float neighborDist = neighborDir.magnitude;
+    //        neighborDir = Vector3.Normalize(neighborDir);
+
+    //        // weight the vector by the distance squared
+    //        neighborDir = neighborDir / (Mathf.Pow(neighborDist, 2f));
+    //        force += neighborDir;
+    //    }
+
+    //    // we implement reynolds "force = desired velocity - current velocity"
+    //    force = Vector3.Normalize(force);
+    //    force = force * flock.maxVelocity;
+    //    force = force - velocity;
+    //    force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
+
+    //    return force;
+    //}
+
 
     public Vector3 Seek(Vector3 targetPostion)
     {

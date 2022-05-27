@@ -17,6 +17,7 @@ public class Flock : MonoBehaviour
     [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
     [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
+
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
     [SerializeField] public int startAmount;

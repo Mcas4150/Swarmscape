@@ -33,6 +33,7 @@ public class jFlock : MonoBehaviour
     public float cohesionMultiplier = 1.0f;
     public float attractionMultiplier = 1.0f;
     public float boundaryMultiplier = 1.0f;
+    public float foodMultiplier = 1.0f;
 
     public jBoid[] boids { get; private set; }
 
