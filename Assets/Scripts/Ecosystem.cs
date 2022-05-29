@@ -8,6 +8,7 @@ public class Ecosystem : MonoBehaviour
     [SerializeField] private Flock OrganicFlock;
     [SerializeField] private Flock ShadowFlock;
     [SerializeField] private Food food;
+    [SerializeField] private World world;
 
     public int worldYear = 0;
     public string season = "spring";
@@ -49,20 +50,25 @@ public class Ecosystem : MonoBehaviour
         {
             case "spring":
                 season = "spring";
+                world.ground.GroundMaterial.color = Color.green;
                 //flockSize = 8;
                 break;
 
             case "summer":
                 season = "summer";
+                world.ground.GroundMaterial.color = Color.yellow;
+
                 // flockSize = 16;
                 break;
 
             case "fall":
                 season = "fall";
+                world.ground.GroundMaterial.color = Color.cyan;
                 break;
 
             case "winter":
                 season = "winter";
+                world.ground.GroundMaterial.color = Color.blue;
                 break;
         }
 

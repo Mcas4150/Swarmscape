@@ -99,13 +99,9 @@ public class FlockUnit : MonoBehaviour
     public float dnaAlignmentWeight;
     public float dnaAvoidanceWeight;
 
-
-
     [Header("OSC Properties")]
 
     public string oscAddress_positionXYZ;
-
-
 
     public OSCMessage message_newPositionX;
     public OSCMessage message_newPositionY;
@@ -117,9 +113,6 @@ public class FlockUnit : MonoBehaviour
     public OSCMessage midiNoteMessage;
     public OSCMessage midiPlayMessage;
     public OSCTransmitter transmitter;
-
-    private float G = 9.8f;
-
 
     DNAboid dna;
 
