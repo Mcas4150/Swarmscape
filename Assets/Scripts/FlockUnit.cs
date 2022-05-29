@@ -355,7 +355,6 @@ public class FlockUnit : MonoBehaviour
     public void MoveUnit()
     {
         FindNeighbors();
-        FindFood();
         FindPrey();
 
         Cohesion = CalculateCohesionVector() * ((cohesionWeight * generalWeight) + (dnaCohesionWeight * dnaWeight));
@@ -377,8 +376,9 @@ public class FlockUnit : MonoBehaviour
 
         if (assignedFlock.Herbivore == true)
         {
-
+            FindFood();
             FoodVector = CalculateFoodVector(foodNeighbors, foodForceMagnitude) * assignedFlock.foodWeight;
+            EatFood(foodNeighbors);
         }
         else
         {
@@ -457,6 +457,10 @@ public class FlockUnit : MonoBehaviour
                 }
             }
         }
+
+
+
+
     }
 
 
@@ -712,16 +716,44 @@ public class FlockUnit : MonoBehaviour
 
 
 
-    public void Eater(FoodUnit prey)
+    public void EatFood(List<FoodUnit> neighbors)
+    {
+
+        foreach (FoodUnit prey in neighbors)
+        {
+            //sqr magnitude
+            var foodForce = myTransform.position - prey.transform.position;
+            foodDistance = foodForce.magnitude;
+            //Gizmos.color = Color.blue;
+            //Gizmos.DrawLine(transform.position, prey.transform.position);
+            //if (foodDistance < 5f && foodDistance > 3f)
+            if (foodDistance < 5f)
+            {
+                //health += 5 * Time.deltaTime;
+                prey.Eaten();
+
+
+                health += 0.25f;
+
+                eatingState = 1;
+            }
+            else
+            {
+                eatingState = 0;
+            }
+
+        }
+
+    }
+
+    public void EatPrey(FlockUnit prey)
     {
 
         //sqr magnitude
-        var foodForce = myTransform.position - prey.transform.position;
-        foodDistance = foodForce.magnitude;
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(transform.position, prey.transform.position);
-        //if (foodDistance < 5f && foodDistance > 3f)
-        if (foodDistance < 5f)
+        var desiredDirection = myTransform.position - prey.transform.position;
+        var desiredDistance = desiredDirection.magnitude;
+
+        if (desiredDistance < 5f)
         {
             //health += 5 * Time.deltaTime;
             prey.Eaten();
@@ -737,6 +769,16 @@ public class FlockUnit : MonoBehaviour
         }
 
     }
+
+    public void Eaten()
+    {
+        //include foodsize only when eaten?
+
+        health -= 5;
+
+    }
+
+
 
     public Vector3 Attract(Vector3 targetPosition, float maxForce)
     {

@@ -80,17 +80,7 @@ public class Flock : MonoBehaviour
     private void Update()
     {
 
-        foreach (FlockUnit boid in Boids)
-        {
 
-            //boid.Flock(Boids);
-            Vector3 boidPosition = boid.myTransform.position;
-            foreach (FoodUnit food in food.Foods)
-            {
-                boid.Eater(food);
-            }
-
-        }
     }
 
     private IEnumerator OSCReset()
