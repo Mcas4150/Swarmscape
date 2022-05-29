@@ -7,9 +7,9 @@ using extOSC;
 public class FoodUnit : MonoBehaviour
 {
 
-    [SerializeField] public float foodAttractWeight => GameManager.Instance.foodAttractWeight;
+    //[SerializeField] public float foodAttractWeight => GameManager.Instance.foodAttractWeight;
     [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
-    [SerializeField] public float BoidMass => GameManager.Instance.boidMass;
+    //[SerializeField] public float BoidMass => GameManager.Instance.boidMass;
 
     [SerializeField] private GameObject food;
 
@@ -57,53 +57,23 @@ public class FoodUnit : MonoBehaviour
     }
 
 
-    public Vector3 Attract(Vector3 targetPosition)
-    {
-        Vector3 force = transform.position - targetPosition;
-        float distance = force.magnitude;
-        //Eaten(distance);
-        distance = Mathf.Clamp(distance, 2f, 25f);
-        //force.Normalize();
-        force = CustomNormalize(force);
-
-        float strength = G * (mass * BoidMass) / (distance * distance);
-        force *= strength * foodAttractWeight;
-        //force *= strength;
-        force = Vector3.ClampMagnitude(force, foodForceMagnitude);
-        return force;
-    }
-
-
-
-    //public Vector3 Seek(Vector3 targetPostion)
+    //public Vector3 Attract(Vector3 targetPosition)
     //{
-    //    Vector3 desired = targetPostion - myTransform.position;
-    //    desired.Normalize();
-    //    desired *= speed;
-    //    //desired *= assignedFlock.maxSpeed;
-    //    Vector3 steer = desired - body.velocity;
-    //    steer.x = Mathf.Clamp(steer.x, -maxForce, maxForce);
-    //    steer.y = Mathf.Clamp(steer.y, -maxForce, maxForce);
-    //    steer.z = Mathf.Clamp(steer.z, -maxForce, maxForce);
-    //    //currentSteerVector = steer;
-    //    return steer;
+    //    Vector3 force = transform.position - targetPosition;
+    //    float distance = force.magnitude;
+    //    //Eaten(distance);
+    //    distance = Mathf.Clamp(distance, 2f, 25f);
+    //    //force.Normalize();
+    //    force = CustomNormalize(force);
+
+    //    float strength = G * (mass * BoidMass) / (distance * distance);
+    //    force *= strength * foodAttractWeight;
+    //    //force *= strength;
+    //    force = Vector3.ClampMagnitude(force, foodForceMagnitude);
+    //    return force;
     //}
 
-    //public void Eaten(float distance)
-    //{
 
-    //    if (distance < 5f)
-    //    {
-    //        health -= 5;
-    //        if (health < 10)
-    //        {
-    //            // Reseed();
-    //            Death?.Invoke(this, new FoodDeathEventArgs { FoodObject = gameObject.GetComponent<FoodUnit>() });
-    //            Destroy(this, 0.5f);
-    //            Destroy(gameObject, 0.5f);
-    //        }
-    //    }
-    //}
 
     public void Eaten()
     {

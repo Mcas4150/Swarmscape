@@ -525,7 +525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 3
+  startAmount: 0
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
@@ -983,14 +983,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 16
-  shadowProb: 0.5
+  flockSize: 50
+  shadowProb: 0.2
   respawnTime: 2
   deathMultiplier: 1
   foodForceMagnitude: 0.5
   maxSteeringForce: 0.3
-  masterSpeed: 10
-  boidMass: 1.5
+  masterSpeed: 25
   smoothDamp: 1
   trailTime: 0.5
   boundsDistance: 100
@@ -1003,11 +1002,10 @@ MonoBehaviour:
   avoidanceWeight: 2
   alignmentWeight: 5
   preyWeight: 1
-  foodWeight: 3
   fleeWeight: 3
+  foodWeight: 3
   dnaWeight: 0
   generalWeight: 1
-  foodAttractWeight: 1
   driftX: 0
   driftY: 0
   driftZ: 0

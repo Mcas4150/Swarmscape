@@ -33,12 +33,12 @@ public class Ecosystem : MonoBehaviour
             yield return new WaitForSeconds(1f);
             worldYear += 1;
 
-            //if (worldYear == 90)
-            //{ setSeason("summer"); }
-            //else if (worldYear == 180)
-            //{ setSeason("fall"); }
-            //else if (worldYear == 270)
-            //{ setSeason("winter"); }
+            if (worldYear == 90)
+            { setSeason("summer"); }
+            else if (worldYear == 180)
+            { setSeason("fall"); }
+            else if (worldYear == 270)
+            { setSeason("winter"); }
 
         }
     }

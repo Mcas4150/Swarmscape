@@ -29,7 +29,6 @@ public class FlockUnit : MonoBehaviour
 
     [SerializeField] public float masterSpeed => GameManager.Instance.masterSpeed;
 
-    [SerializeField] public float boidMass => GameManager.Instance.boidMass;
 
     [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
     [SerializeField] public float maxSteeringForce => GameManager.Instance.maxSteeringForce;
@@ -41,7 +40,7 @@ public class FlockUnit : MonoBehaviour
 
     [SerializeField] public float trailTime => GameManager.Instance.trailTime;
 
-    [SerializeField] public float BoidMass => GameManager.Instance.boidMass;
+    //[SerializeField] public float BoidMass => GameManager.Instance.boidMass;
 
 
 
@@ -252,9 +251,7 @@ public class FlockUnit : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
-
             age += 1;
-
         }
     }
 
@@ -317,11 +314,9 @@ public class FlockUnit : MonoBehaviour
 
     void Update()
     {
-
         MoveUnit();
         transform.localRotation = Quaternion.LookRotation(currentMoveVector, Vector3.up);
     }
-
 
 
     public void AssignFlock(Flock flock)
@@ -340,7 +335,6 @@ public class FlockUnit : MonoBehaviour
 
         return averageVelocity;
     }
-
 
     public bool Dead()
     {
@@ -389,7 +383,9 @@ public class FlockUnit : MonoBehaviour
         var driftVector = new Vector3(driftX, driftY, driftZ);
 
         var moveVector = Cohesion + BoundsVector + Alignment + FoodVector + PreyVector + PredatorVector + Separation;
-        moveVector = CustomNormalize(moveVector) * speed;
+
+
+        //moveVector = CustomNormalize(moveVector) * speed;
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
 
         if (moveVector == Vector3.zero)
@@ -397,7 +393,7 @@ public class FlockUnit : MonoBehaviour
         myTransform.forward = moveVector;
 
         currentMoveVector = moveVector;
-        transform.position += (currentMoveVector + driftVector) * Time.deltaTime * masterSpeed;
+        transform.position += (currentMoveVector + driftVector) * Time.deltaTime * ((masterSpeed * generalWeight) + (speed * dnaWeight));
         CalculateBoundaries(myTransform.position);
 
     }
@@ -464,7 +460,6 @@ public class FlockUnit : MonoBehaviour
 
     }
 
-
     private void FindPrey()
     {
         preyNeighbors.Clear();
@@ -486,7 +481,6 @@ public class FlockUnit : MonoBehaviour
             }
         }
     }
-
 
 
     private Vector3 CalculateCohesionVector()
@@ -771,19 +765,19 @@ public class FlockUnit : MonoBehaviour
 
 
 
-    public Vector3 Attract(Vector3 targetPosition, float maxForce)
-    {
-        Vector3 force = myTransform.position - targetPosition;
-        float distance = force.magnitude;
-        distance = Mathf.Clamp(distance, 2f, 25f);
-        //force.Normalize();
-        force = CustomNormalize(force);
+    //public Vector3 Attract(Vector3 targetPosition, float maxForce)
+    //{
+    //    Vector3 force = myTransform.position - targetPosition;
+    //    float distance = force.magnitude;
+    //    distance = Mathf.Clamp(distance, 2f, 25f);
+    //    //force.Normalize();
+    //    force = CustomNormalize(force);
 
-        float strength = G * (boidMass * boidMass) / (distance * distance);
-        force *= strength;
-        force = Vector3.ClampMagnitude(force, maxForce);
-        return force;
-    }
+    //    float strength = G * (boidMass * boidMass) / (distance * distance);
+    //    force *= strength;
+    //    force = Vector3.ClampMagnitude(force, maxForce);
+    //    return force;
+    //}
 
     public void setDNA(DNAboid newDNA)
     {
@@ -799,9 +793,9 @@ public class FlockUnit : MonoBehaviour
         dnaAlignmentDist = (scale(dna.genes[3], 0, 1, 5, 100));
         dnaPreyDistance = (scale(dna.genes[4], 0, 1, 5, 100));
 
-        dnaCohesionWeight = (scale(dna.genes[5], 0, 1, 5, 100));
-        dnaAvoidanceWeight = (scale(dna.genes[6], 0, 1, 5, 100));
-        dnaAlignmentWeight = (scale(dna.genes[7], 0, 1, 5, 100));
+        dnaCohesionWeight = (scale(dna.genes[5], 0, 1, 1, 5));
+        dnaAvoidanceWeight = (scale(dna.genes[6], 0, 1, 1, 5));
+        dnaAlignmentWeight = (scale(dna.genes[7], 0, 1, 1, 5));
 
 
         midiNote = scale(dna.genes[8], 0, 1, 1, 10);
@@ -813,9 +807,9 @@ public class FlockUnit : MonoBehaviour
         dnaAlignmentDist = Math.Clamp(dnaAlignmentDist, 5, 100);
         dnaPreyDistance = Math.Clamp(dnaPreyDistance, 5, 100);
 
-        dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 5, 100);
-        dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 5, 100);
-        dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 5, 100);
+        dnaCohesionWeight = Math.Clamp(dnaCohesionWeight, 1, 5);
+        dnaAvoidanceWeight = Math.Clamp(dnaAvoidanceWeight, 1, 1);
+        dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 1, 5);
 
         midiNote = Math.Clamp(midiNote, 1, 10);
 
