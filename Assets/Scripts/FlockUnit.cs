@@ -365,6 +365,7 @@ public class FlockUnit : MonoBehaviour
         if (assignedFlock.Carnivore == true)
         {
             PreyVector = CalculatePreyVector(preyNeighbors, foodForceMagnitude) * assignedFlock.preyWeight;
+            EatPrey(preyNeighbors);
             PredatorVector = Vector3.zero;
         }
         else
@@ -480,8 +481,6 @@ public class FlockUnit : MonoBehaviour
                 if (currentPreyDistanceSqr <= ((preyDistance * preyDistance) + (dnaPreyDistance * dnaPreyDistance)))
                 {
                     preyNeighbors.Add(currentUnit);
-
-
 
                 }
             }
@@ -722,19 +721,13 @@ public class FlockUnit : MonoBehaviour
         foreach (FoodUnit prey in neighbors)
         {
             //sqr magnitude
-            var foodForce = myTransform.position - prey.transform.position;
-            foodDistance = foodForce.magnitude;
-            //Gizmos.color = Color.blue;
-            //Gizmos.DrawLine(transform.position, prey.transform.position);
-            //if (foodDistance < 5f && foodDistance > 3f)
-            if (foodDistance < 5f)
+            var desiredDirection = myTransform.position - prey.transform.position;
+            var desiredDistance = desiredDirection.magnitude;
+            if (desiredDistance < 5f)
             {
                 //health += 5 * Time.deltaTime;
                 prey.Eaten();
-
-
                 health += 0.25f;
-
                 eatingState = 1;
             }
             else
@@ -746,36 +739,34 @@ public class FlockUnit : MonoBehaviour
 
     }
 
-    public void EatPrey(FlockUnit prey)
+    public void EatPrey(List<FlockUnit> neighbors)
     {
 
-        //sqr magnitude
-        var desiredDirection = myTransform.position - prey.transform.position;
-        var desiredDistance = desiredDirection.magnitude;
-
-        if (desiredDistance < 5f)
+        foreach (FlockUnit prey in neighbors)
         {
-            //health += 5 * Time.deltaTime;
-            prey.Eaten();
-
-
-            health += 0.25f;
-
-            eatingState = 1;
-        }
-        else
-        {
-            eatingState = 0;
+            //sqr magnitude
+            var desiredDirection = myTransform.position - prey.transform.position;
+            var desiredDistance = desiredDirection.magnitude;
+            if (desiredDistance < 5f)
+            {
+                //health += 5 * Time.deltaTime;
+                prey.Eaten();
+                health += 0.25f;
+                eatingState = 1;
+            }
+            else
+            {
+                eatingState = 0;
+            }
         }
 
     }
 
     public void Eaten()
     {
-        //include foodsize only when eaten?
-
-        health -= 5;
-
+        //include foodsize only when eaten
+        //health -= 1f * Time.deltaTime;
+        health -= 1f;
     }
 
 
