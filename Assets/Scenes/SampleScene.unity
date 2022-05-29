@@ -454,15 +454,15 @@ MonoBehaviour:
   numBoids: 16
   spawnRadius: 1
   boundaryRadius: 80
-  maxVelocity: 0.15
+  maxVelocity: 1
   maxSteeringForce: 0.03
   seperationDistance: 35
   neighborDistance: 50
-  fieldOfView: 300
+  fieldOfView: 183
   seperationMultiplier: 1.5
   alignmentMultiplier: 1
   cohesionMultiplier: 1
-  attractionMultiplier: 1
+  attractionMultiplier: 2
   boundaryMultiplier: 1
   foodMultiplier: 1
 --- !u!4 &473739475
@@ -531,6 +531,8 @@ MonoBehaviour:
     type: 3}
   EnemyFlock: {fileID: 1229929646}
   food: {fileID: 1876838923}
+  Carnivore: 1
+  Herbivore: 0
   seekWeight: 1
   _minSpeed: 0
   _maxSpeed: 100
@@ -942,6 +944,8 @@ MonoBehaviour:
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
+  Carnivore: 0
+  Herbivore: 1
   seekWeight: 1
   _minSpeed: 2.8
   _maxSpeed: 100
@@ -983,24 +987,24 @@ MonoBehaviour:
   shadowProb: 0.5
   respawnTime: 2
   deathMultiplier: 1
-  mutualAttraction: 1
-  attractForceMagnitude: 25
-  foodForceMagnitude: 25
-  attackForceMagnitude: 25
+  foodForceMagnitude: 0.5
   maxSteeringForce: 0.3
+  masterSpeed: 10
   boidMass: 1.5
   smoothDamp: 1
-  trailTime: 1
+  trailTime: 0.5
   boundsDistance: 100
-  cohesionDistance: 20
-  avoidanceDistance: 30
-  alignmentDistance: 16
-  preyDistance: 50
-  boundsWeight: 0
-  cohesionWeight: 10
-  avoidanceWeight: 20
-  alignmentWeight: 2
-  preyWeight: 10
+  cohesionDistance: 75
+  avoidanceDistance: 75
+  alignmentDistance: 75
+  preyDistance: 75
+  boundsWeight: 1
+  cohesionWeight: 3
+  avoidanceWeight: 2
+  alignmentWeight: 5
+  preyWeight: 1
+  foodWeight: 3
+  fleeWeight: 3
   dnaWeight: 0
   generalWeight: 1
   foodAttractWeight: 1
@@ -1644,15 +1648,15 @@ MonoBehaviour:
   numBoids: 16
   spawnRadius: 1
   boundaryRadius: 80
-  maxVelocity: 0.25
+  maxVelocity: 0.15
   maxSteeringForce: 0.03
   seperationDistance: 35
   neighborDistance: 50
-  fieldOfView: 300
+  fieldOfView: 202
   seperationMultiplier: 1.5
   alignmentMultiplier: 1
   cohesionMultiplier: 1
-  attractionMultiplier: 2.75
+  attractionMultiplier: 2
   boundaryMultiplier: 1
   foodMultiplier: 1
 --- !u!4 &2099012295
