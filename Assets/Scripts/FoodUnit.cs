@@ -35,7 +35,7 @@ public class FoodUnit : MonoBehaviour
         food = gameObject;
         health = UnityEngine.Random.Range(50, 100);
         radius = health / 50f;
-        food.transform.localScale = 2 * radius * Vector3.one;
+        food.transform.localScale = 4 * radius * Vector3.one;
         mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
         StartCoroutine(FoodSize());
     }

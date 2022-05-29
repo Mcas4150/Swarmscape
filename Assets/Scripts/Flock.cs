@@ -11,12 +11,13 @@ public class Flock : MonoBehaviour
 {
     [SerializeField] private Helpers helper;
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-    [SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
+    //[SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
     [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
     [SerializeField] public float foodWeight => GameManager.Instance.foodWeight;
-    [SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
+    [SerializeField] public float fleeWeight => GameManager.Instance.fleeWeight;
+    //[SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
 
     [Header("Spawn Setup")]
@@ -27,7 +28,8 @@ public class Flock : MonoBehaviour
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
-    public Boolean Predator;
+    public Boolean Carnivore;
+    public Boolean Herbivore;
 
     public float seekWeight = 1;
 
@@ -147,7 +149,10 @@ public class Flock : MonoBehaviour
         Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 0; i < startAmount; i++)
         {
-            GenerateAgent(this, Boids, BoidsIndex, breed, zeroVector, starterDna);
+            var halfBounds = boundsDistance;
+            var randomPosition = UnityEngine.Random.Range(-halfBounds, halfBounds);
+            var randomVector = new Vector3(randomPosition, randomPosition, randomPosition);
+            GenerateAgent(this, Boids, BoidsIndex, breed, randomVector, starterDna);
         }
 
     }

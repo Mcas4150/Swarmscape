@@ -11,11 +11,11 @@ public class jBoid : MonoBehaviour
 
     public int[] neighborIndices { get; private set; }
     public int[] preyIndices { get; private set; }
-    public Vector3 seperation { get; private set; }
-    public Vector3 alignment { get; private set; }
-    public Vector3 attraction { get; private set; }
+    public Vector3 seperation;
+    public Vector3 alignment;
+    public Vector3 attraction;
     public Vector3 foodAttraction;
-    public Vector3 cohesion { get; private set; }
+    public Vector3 cohesion;
     public Vector3 boundary { get; private set; }
 
     private jFlock flock;
@@ -59,7 +59,7 @@ public class jBoid : MonoBehaviour
 
         neighborIndices = GetNeighborIndices(ref boids);
         preyIndices = GetNeighborIndices(ref preyBoid);
-        FindFood();
+        //FindFood();
 
         // reset the forces.
         seperation = Vector3.zero;
@@ -87,15 +87,15 @@ public class jBoid : MonoBehaviour
             seperation += Seperation(ref preyBoid, preyIndices) * flock.attractionMultiplier;
         }
 
-        if (flock.herbivore == true && foodNeighbors.Count > 0)
-        {
-            foodAttraction += FoodAttraction() * flock.foodMultiplier;
-        }
+        //if (flock.herbivore == true && foodNeighbors.Count > 0)
+        //{
+        //    foodAttraction += FoodAttraction() * flock.foodMultiplier;
+        //}
 
         boundary = Boundary() * flock.boundaryMultiplier;
 
         //// set the acceleration as the sum of the resulting forces.
-        acceleration = (seperation + alignment + cohesion + attraction + boundary + foodAttraction);
+        acceleration = (seperation + alignment + cohesion + attraction + boundary);
         //acceleration = (seperation + alignment + cohesion + boundary + foodAttraction);
 
         // update the velocity based on the acceleration.
