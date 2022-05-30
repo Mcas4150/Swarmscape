@@ -14,23 +14,26 @@ public class Flock : MonoBehaviour
 
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
-    [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
-    [SerializeField] public float foodWeight => GameManager.Instance.foodWeight;
-    [SerializeField] public float fleeWeight => GameManager.Instance.fleeWeight;
-
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
     [SerializeField] public int startAmount;
     [SerializeField] public float spawnRadius = 1f;
-    public float eatAgility;
-
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
     public Boolean Carnivore;
     public Boolean Herbivore;
     public Boolean Reproduce;
+
+    [Header("Eating")]
+    public float huntStrength = 1f;
+    public float fleeStrength = 1f;
+    public float foodStrength = 1f;
+
+    public float foodAgility;
+    public float huntAgility;
+    public float fleeAgility;
 
 
 
@@ -67,7 +70,7 @@ public class Flock : MonoBehaviour
     private void Start()
     {
         _minSpeed = 6f;
-        _maxSpeed = 100f;
+        _maxSpeed = 50f;
 
         StartCoroutine(OSCReset());
         StopCoroutine(OSCReset());

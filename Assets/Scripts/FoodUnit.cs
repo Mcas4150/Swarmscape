@@ -7,13 +7,10 @@ using extOSC;
 public class FoodUnit : MonoBehaviour
 {
 
-    //[SerializeField] public float foodAttractWeight => GameManager.Instance.foodAttractWeight;
-    [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
-    //[SerializeField] public float BoidMass => GameManager.Instance.boidMass;
+
 
     [SerializeField] private GameObject food;
 
-    private float G = 9.8f;
     public float health;
     private float radius;
     public float mass;

@@ -13,7 +13,6 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float respawnTime => GameManager.Instance.respawnTime;
     [SerializeField] public float deathMultiplier => GameManager.Instance.deathMultiplier;
 
-
     [SerializeField] public float cohesionDistance => GameManager.Instance.cohesionDistance;
     [SerializeField] public float alignmentDistance => GameManager.Instance.alignmentDistance;
     [SerializeField] public float separationDistance => GameManager.Instance.separationDistance;
@@ -24,13 +23,10 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float separationWeight => GameManager.Instance.separationWeight;
 
     [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
-    [SerializeField] public float generalWeight => GameManager.Instance.generalWeight;
-
+    [SerializeField] public float globalWeight => GameManager.Instance.globalWeight;
 
     [SerializeField] public float masterSpeed => GameManager.Instance.masterSpeed;
 
-
-    [SerializeField] public float foodForceMagnitude => GameManager.Instance.foodForceMagnitude;
     [SerializeField] public float agility => GameManager.Instance.agility;
     [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
 
@@ -51,12 +47,9 @@ public class FlockUnit : MonoBehaviour
     public float health;
     public float starterHealth;
     public int eatingState;
+    public float hunger;
     public float FOVAngle;
     public float averageVelocity;
-    public float foodDistance;
-    public float currentSpeed;
-
-
     public float totalAgility;
 
     [Header("Neighbors")]
@@ -68,45 +61,53 @@ public class FlockUnit : MonoBehaviour
 
 
     [Header("Vector Values")]
+    [Header("Flocking")]
     public Vector3 Cohesion;
     public Vector3 Separation;
     public Vector3 Alignment;
     public Vector3 BoundsVector;
+
+    [Header("Feeding")]
     public Vector3 FoodVector;
-    public Vector3 PreyVector;
-    public Vector3 PredatorVector;
+    public Vector3 HuntVector;
+    public Vector3 FleeVector;
 
-    public Vector3 currentVelocity;
-
-    public Vector3 currentMoveVector;
+    [Header("Position")]
     public Vector3 spawnPosition;
+    public Vector3 currentVelocity;
+    public Vector3 currentMoveVector;
 
 
-    public Transform myTransform { get; set; }
 
     [Header("DNA")]
     public float speed;
-    public float midiNote;
+
     public float dnaCohesionDist;
     public float dnaAlignmentDist;
     public float dnaSeparationDist;
     public float dnaPreyDistance;
+
     public float dnaCohesionWeight;
     public float dnaAlignmentWeight;
     public float dnaSeparationWeight;
-    public float dna_agility;
 
+    public float dnaHuntStrength;
+    public float dnaFleeStrength;
+    public float dnaFoodStrength;
+
+    public float dnaHuntAgility;
+    public float dnaFleeAgility;
+    public float dnaFoodAgility;
+
+    public float dna_agility;
+    public float midiNote;
 
     [Header("OSC Properties")]
 
     public string oscAddress_positionXYZ;
 
-    public OSCMessage message_newPositionX;
-    public OSCMessage message_newPositionY;
-    public OSCMessage message_newPositionZ;
     public OSCMessage message_newPositionXYZ;
     public OSCMessage velocityMessage;
-    public OSCMessage message_newPosition;
     public OSCMessage healthMessage;
     public OSCMessage midiNoteMessage;
     public OSCMessage midiPlayMessage;
@@ -127,16 +128,16 @@ public class FlockUnit : MonoBehaviour
     private void Start()
     {
         transmitter = assignedFlock.transmitter;
-        myTransform = transform;
 
-        myTransform.localScale = new Vector3(3, 3, 3);
-        totalAgility = 1 / (assignedFlock.eatAgility * generalWeight) + (dna_agility * dnaWeight);
+
+        transform.localScale = new Vector3(3, 3, 3);
+
         oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
 
         message_newPositionXYZ = new OSCMessage(oscAddress_positionXYZ);
-        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.x));
-        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.y));
-        message_newPositionXYZ.AddValue(OSCValue.Float(myTransform.position.z));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.x));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.y));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.z));
 
         midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
         midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
@@ -158,16 +159,15 @@ public class FlockUnit : MonoBehaviour
 
     }
 
-
     private IEnumerator OSCSender()
     {
         while (true)
         {
             yield return new WaitForSeconds(0.05f);
 
-            message_newPositionXYZ.Values[0] = OSCValue.Float(myTransform.position.x);
-            message_newPositionXYZ.Values[1] = OSCValue.Float(myTransform.position.y);
-            message_newPositionXYZ.Values[2] = OSCValue.Float(myTransform.position.z);
+            message_newPositionXYZ.Values[0] = OSCValue.Float(transform.position.x);
+            message_newPositionXYZ.Values[1] = OSCValue.Float(transform.position.y);
+            message_newPositionXYZ.Values[2] = OSCValue.Float(transform.position.z);
 
 
             //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
@@ -202,7 +202,7 @@ public class FlockUnit : MonoBehaviour
 
                 if (allUnits.Count < flockSize)
                 {
-                    spawnPosition = new Vector3(myTransform.position.x, myTransform.position.y, myTransform.position.z);
+                    spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
                     var breedChance = UnityEngine.Random.Range(0f, 1f);
 
                     if (breedChance <= shadowProb)
@@ -264,6 +264,18 @@ public class FlockUnit : MonoBehaviour
                 health -= deathMultiplier * Time.deltaTime;
             }
 
+            if (breed == "shadow")
+            {
+                if (age > 10 && age < 50)
+                {
+                    hunger = 5;
+                }
+                if (age > 50 && age < 75)
+                {
+                    hunger = 10;
+                }
+            }
+
             if (Dead())
             {
                 message_newPositionXYZ.Values[0] = OSCValue.Float(0);
@@ -299,13 +311,6 @@ public class FlockUnit : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        MoveUnit();
-        transform.localRotation = Quaternion.LookRotation(currentMoveVector, Vector3.up);
-    }
-
-
     public void AssignFlock(Flock flock)
     {
         assignedFlock = flock;
@@ -333,33 +338,43 @@ public class FlockUnit : MonoBehaviour
             return false;
     }
 
+    void Update()
+    {
+        MoveUnit();
+        transform.localRotation = Quaternion.LookRotation(currentMoveVector, Vector3.up);
+    }
+
     public void MoveUnit()
     {
         FindNeighbors();
         FindPrey();
 
-        Cohesion = CalculateCohesionVector() * ((cohesionWeight * generalWeight) + (dnaCohesionWeight * dnaWeight));
-        Separation = CalculateSeparation() * ((separationWeight * generalWeight) + (dnaSeparationWeight * dnaWeight));
-        Alignment = CalculateAlignment() * ((alignmentWeight * generalWeight) + (dnaAlignmentWeight * dnaWeight));
+
+        var huntAgility = CalculateTotalParam(assignedFlock.huntAgility, dnaFoodAgility);
+        var fleeAgility = CalculateTotalParam(assignedFlock.fleeAgility, dnaFoodAgility);
+        var foodAgility = CalculateTotalParam(assignedFlock.foodAgility, dnaFoodAgility);
+
+        Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
+        Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
+        Alignment = CalculateAlignment(alignmentNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
         BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
 
         if (assignedFlock.Carnivore == true)
         {
-            PreyVector = CalculatePreyVector(preyNeighbors, foodForceMagnitude) * assignedFlock.preyWeight;
+            HuntVector = CalculatePreyVector(preyNeighbors, huntAgility) * CalculateTotalParam(assignedFlock.huntStrength, dnaHuntStrength) * hunger;
             EatPrey(preyNeighbors);
-            PredatorVector = Vector3.zero;
+            FleeVector = Vector3.zero;
         }
         else
         {
-            PredatorVector = CalculateFlee(preyNeighbors, foodForceMagnitude) * assignedFlock.fleeWeight;
-            PreyVector = Vector3.zero;
-
+            FleeVector = CalculateFlee(preyNeighbors, fleeAgility) * CalculateTotalParam(assignedFlock.fleeStrength, dnaFleeStrength);
+            HuntVector = Vector3.zero;
         }
 
         if (assignedFlock.Herbivore == true)
         {
             FindFood();
-            FoodVector = CalculateFoodVector(foodNeighbors, totalAgility) * assignedFlock.foodWeight;
+            FoodVector = CalculateFoodVector(foodNeighbors, foodAgility) * CalculateTotalParam(assignedFlock.foodStrength, dnaFoodStrength);
             EatFood(foodNeighbors);
         }
         else
@@ -368,21 +383,18 @@ public class FlockUnit : MonoBehaviour
         }
 
         var driftVector = new Vector3(driftX, driftY, driftZ);
-
-        var moveVector = Cohesion + BoundsVector + Alignment + FoodVector + PreyVector + PredatorVector + Separation;
-
-
+        var moveVector = Cohesion + BoundsVector + Alignment + FoodVector + HuntVector + FleeVector + Separation;
         //moveVector = CustomNormalize(moveVector) * speed;
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
 
         if (moveVector == Vector3.zero)
             moveVector = transform.forward;
-        myTransform.forward = moveVector;
+        transform.forward = moveVector;
 
         currentMoveVector = moveVector;
-        transform.position += (currentMoveVector + driftVector) * Time.deltaTime * ((masterSpeed * generalWeight) + (speed * dnaWeight));
+        transform.position += (currentMoveVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
         CheckBounds(moveVector);
-        CalculateBoundaries(myTransform.position);
+        CalculateBoundaries(transform.position);
 
     }
 
@@ -400,19 +412,19 @@ public class FlockUnit : MonoBehaviour
             //if (currentUnit != this && currentUnit != null)
             {
                 if (currentUnit == this) return;
-                float currentNeighborDistanceSqr = Vector3.SqrMagnitude(currentUnit.myTransform.position - myTransform.position);
+                float currentNeighborDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
 
                 //  Color linecolor(string breed) => breed == "shadow" ? Color.cyan : Color.magenta;
                 // Debug.DrawLine(myTransform.position, currentUnit.myTransform.position, linecolor(breed));
-                if (currentNeighborDistanceSqr <= ((cohesionDistance * cohesionDistance * generalWeight) + (dnaCohesionDist * dnaCohesionDist * dnaWeight)))
+                if (currentNeighborDistanceSqr <= CalculateTotalParam(cohesionDistance * cohesionDistance, dnaCohesionDist * dnaCohesionDist))
                 {
                     cohesionNeighbors.Add(currentUnit);
                 }
-                if (currentNeighborDistanceSqr <= ((separationDistance * separationDistance * generalWeight) + (dnaSeparationDist * dnaSeparationDist * dnaWeight)))
+                if (currentNeighborDistanceSqr <= CalculateTotalParam(separationDistance * separationDistance, dnaSeparationDist * dnaSeparationDist))
                 {
                     separationNeighbors.Add(currentUnit);
                 }
-                if (currentNeighborDistanceSqr <= ((alignmentDistance * alignmentDistance * generalWeight) + (dnaAlignmentDist * dnaAlignmentDist * dnaWeight)))
+                if (currentNeighborDistanceSqr <= CalculateTotalParam(alignmentDistance * alignmentDistance, dnaAlignmentDist * dnaAlignmentDist))
                 {
                     alignmentNeighbors.Add(currentUnit);
                 }
@@ -433,7 +445,7 @@ public class FlockUnit : MonoBehaviour
                 float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
 
                 //if (currentPreyDistanceSqr <= ((preyDistance * preyDistance * generalWeight) + (dnaPreyDistance * dnaPreyDistance * dnaWeight)))
-                if (currentPreyDistanceSqr <= ((preyDistance * preyDistance) + (dnaPreyDistance * dnaPreyDistance)))
+                if (currentPreyDistanceSqr <= CalculateTotalParam(preyDistance * preyDistance, dnaPreyDistance * dnaPreyDistance))
                 {
                     foodNeighbors.Add(currentUnit);
 
@@ -442,10 +454,6 @@ public class FlockUnit : MonoBehaviour
                 }
             }
         }
-
-
-
-
     }
 
     private void FindPrey()
@@ -461,7 +469,7 @@ public class FlockUnit : MonoBehaviour
                 float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
 
                 //if (currentPreyDistanceSqr <= ((preyDistance * preyDistance * generalWeight) + (dnaPreyDistance * dnaPreyDistance * dnaWeight)))
-                if (currentPreyDistanceSqr <= ((preyDistance * preyDistance) + (dnaPreyDistance * dnaPreyDistance)))
+                if (currentPreyDistanceSqr <= CalculateTotalParam(preyDistance * preyDistance, dnaPreyDistance * dnaPreyDistance))
                 {
                     preyNeighbors.Add(currentUnit);
 
@@ -471,82 +479,90 @@ public class FlockUnit : MonoBehaviour
     }
 
 
-    private Vector3 CalculateCohesionVector()
+    private float CalculateTotalParam(float flockParam, float dnaParam)
+    {
+        return (flockParam * globalWeight) + (dnaParam * dnaWeight);
+    }
+
+
+    private Vector3 CalculateCohesionVector(List<FlockUnit> neighbors, float forceMagnitude)
     {
         var force = Vector3.zero;
 
-        if (cohesionNeighbors.Count == 0)
+        if (neighbors.Count == 0)
             return Vector3.zero;
         int neighborsInFOV = 0;
-        for (int i = 0; i < cohesionNeighbors.Count; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
             //if (IsInFOV(cohesionNeighbors[i].transform.position))
             //{
             neighborsInFOV++;
-            force += cohesionNeighbors[i].myTransform.position;
+            force += neighbors[i].transform.position;
 
         }
 
-        force /= cohesionNeighbors.Count;
-        force -= myTransform.position;
+        force /= neighbors.Count;
+        force -= transform.position;
         force = force.normalized;
         force -= currentMoveVector;
-        force = Vector3.ClampMagnitude(force, agility);
-        //Debug.DrawLine(transform.position, cohesionVector, Color.green);
+        force = Vector3.ClampMagnitude(force, forceMagnitude);
+        //Debug.DrawLine(transform.position, force, Color.green);
         return force;
     }
 
 
-    private Vector3 CalculateAlignment()
+
+
+    private Vector3 CalculateAlignment(List<FlockUnit> neighbors, float forceMagnitude)
     {
-        var force = myTransform.forward;
-        if (alignmentNeighbors.Count == 0)
-            return myTransform.forward;
+        var force = transform.forward;
+        if (neighbors.Count == 0)
+            return transform.forward;
         int neighborsInFOV = 0;
-        for (int i = 0; i < alignmentNeighbors.Count; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
             //if (IsInFOV(alignmentNeighbors[i].transform.position))
             //{
             neighborsInFOV++;
-            force += alignmentNeighbors[i].transform.forward;
+            force += neighbors[i].transform.forward;
             //}
         }
         //alignmentVector /= neighborsInFOV;
-        //force /= alignmentNeighbors.Count;
         force = force.normalized;
         force *= speed;
         force -= currentMoveVector;
-        force = Vector3.ClampMagnitude(force, agility);
+        force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.blue);
         return force;
     }
 
 
-    private Vector3 CalculateSeparation()
+    private Vector3 CalculateSeparation(List<FlockUnit> neighbors, float forceMagnitude)
     {
         var force = Vector3.zero;
-        if (separationNeighbors.Count == 0)
+        if (neighbors.Count == 0)
             return Vector3.zero;
         int neighborsInFOV = 0;
-        for (int i = 0; i < separationNeighbors.Count; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
             //if (IsInFOV(avoidanceNeighbors[i].transform.position))
             //{
             neighborsInFOV++;
-            Vector3 neighborDir = (transform.position - separationNeighbors[i].transform.position);
+            Vector3 neighborDir = (transform.position - neighbors[i].transform.position);
             float neighborDist = neighborDir.magnitude;
             neighborDir = Vector3.Normalize(neighborDir);
-            neighborDir = neighborDir / (Mathf.Pow(neighborDist, 2f));
+            neighborDir /= (Mathf.Pow(neighborDist, 2f));
             force += neighborDir;
             //}
         }
 
         //avoidanceVector /= neighborsInFOV;
         force = Vector3.Normalize(force);
-        force = force * speed;
-        force = force - currentMoveVector;
-        force = Vector3.ClampMagnitude(force, agility);
-        //Debug.DrawLine(transform.position, force, Color.red);
+        force *= speed;
+        force -= currentMoveVector;
+        //Debug.DrawLine(force, transform.position, Color.red);
+        force = Vector3.ClampMagnitude(force, forceMagnitude);
+
         return force;
     }
 
@@ -583,7 +599,7 @@ public class FlockUnit : MonoBehaviour
     private Vector3 CalculateBoundsVector()
     {
         // also functions as "bounce"
-        var offsetToCenter = assignedFlock.transform.position - myTransform.position;
+        var offsetToCenter = assignedFlock.transform.position - transform.position;
         bool isNearCenter = (offsetToCenter.magnitude >= assignedFlock.boundsDistance * 0.9f);
         return isNearCenter ? offsetToCenter.normalized : Vector3.zero;
     }
@@ -602,7 +618,7 @@ public class FlockUnit : MonoBehaviour
             //{
             //    neighborsInFOV++;
 
-            Vector3 neighborDir = (neighbors[i].transform.position - myTransform.position);
+            Vector3 neighborDir = (neighbors[i].transform.position - transform.position);
             float neighborDist = neighborDir.magnitude;
             neighborDir = Vector3.Normalize(neighborDir);
             // weight the vector by the distance squared
@@ -632,7 +648,7 @@ public class FlockUnit : MonoBehaviour
             //{
             //    neighborsInFOV++;
 
-            Vector3 neighborDir = (neighbors[i].transform.position - myTransform.position);
+            Vector3 neighborDir = (neighbors[i].transform.position - transform.position);
             float neighborDist = neighborDir.magnitude;
             neighborDir = Vector3.Normalize(neighborDir);
             // weight the vector by the distance squared
@@ -656,7 +672,7 @@ public class FlockUnit : MonoBehaviour
         var clampX = Math.Clamp(position.x, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
         var clampY = Math.Clamp(position.y, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
         var clampZ = Math.Clamp(position.z, -assignedFlock.boundsDistance, assignedFlock.boundsDistance);
-        myTransform.position = new Vector3(clampX, clampY, clampZ);
+        transform.position = new Vector3(clampX, clampY, clampZ);
 
         //sphere
         //myTransform.position = Vector3.ClampMagnitude(position, assignedFlock.boundsDistance);
@@ -664,40 +680,37 @@ public class FlockUnit : MonoBehaviour
 
     private void CheckBounds(Vector3 currentVelocity)
     {
-        if (myTransform.position.x > assignedFlock.boundsDistance * 0.97 || myTransform.position.x < -assignedFlock.boundsDistance * 0.97)
+        if (transform.position.x > assignedFlock.boundsDistance * 0.97 || transform.position.x < -assignedFlock.boundsDistance * 0.97)
         {
-            //currentMoveVector = new Vector3(velocity.x * -1.0f, velocity.y, velocity.z);
+
             currentMoveVector = new Vector3(currentVelocity.x * -1.0f, currentVelocity.y, currentVelocity.z);
-            //velocity.x *= -1.0f;
+
         }
-        else if (myTransform.position.y > assignedFlock.boundsDistance * 0.97 || myTransform.position.y < -assignedFlock.boundsDistance * 0.97)
+        else if (transform.position.y > assignedFlock.boundsDistance * 0.97 || transform.position.y < -assignedFlock.boundsDistance * 0.97)
         {
 
             currentMoveVector = new Vector3(currentVelocity.x, currentVelocity.y * -1.0f, currentVelocity.z);
-            //velocity.y *= -1.0f;
+
         }
-        else if (myTransform.position.z > assignedFlock.boundsDistance * 0.97 || myTransform.position.z < -assignedFlock.boundsDistance * 0.97)
+        else if (transform.position.z > assignedFlock.boundsDistance * 0.97 || transform.position.z < -assignedFlock.boundsDistance * 0.97)
         {
             currentMoveVector = new Vector3(currentVelocity.x, currentVelocity.y, currentVelocity.z * -1.0f);
-            //velocity.z *= -1.0f;
+
         }
 
     }
 
     private bool IsInFOV(Vector3 position)
     {
-        return Vector3.Angle(myTransform.forward, position - myTransform.position) <= FOVAngle;
+        return Vector3.Angle(transform.forward, position - transform.position) <= FOVAngle;
     }
-
-
 
     public void EatFood(List<FoodUnit> neighbors)
     {
-
         foreach (FoodUnit prey in neighbors)
         {
             //sqr magnitude
-            var desiredDirection = myTransform.position - prey.transform.position;
+            var desiredDirection = transform.position - prey.transform.position;
             var desiredDistance = desiredDirection.magnitude;
             if (desiredDistance < 5f)
             {
@@ -710,9 +723,7 @@ public class FlockUnit : MonoBehaviour
             {
                 eatingState = 0;
             }
-
         }
-
     }
 
     public void EatPrey(List<FlockUnit> neighbors)
@@ -721,7 +732,7 @@ public class FlockUnit : MonoBehaviour
         foreach (FlockUnit prey in neighbors)
         {
             //sqr magnitude
-            var desiredDirection = myTransform.position - prey.transform.position;
+            var desiredDirection = transform.position - prey.transform.position;
             var desiredDistance = desiredDirection.magnitude;
             if (desiredDistance < 5f)
             {
@@ -764,8 +775,6 @@ public class FlockUnit : MonoBehaviour
     public void setDNA(DNAboid newDNA)
     {
         dna = newDNA;
-        //speed = ExtensionMethods.map(dna.genes[0], 0, 1, 10, 0); // MaxSpeed an Size are now mapped to values according to the DNA
-        //Debug.Log(scale(dna.genes[0], 0, 1, 5, 15));
 
         speed = (scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, assignedFlock.maxSpeed));
         speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
@@ -779,12 +788,20 @@ public class FlockUnit : MonoBehaviour
         dnaSeparationWeight = (scale(dna.genes[6], 0, 1, 1, 5));
         dnaAlignmentWeight = (scale(dna.genes[7], 0, 1, 1, 5));
 
-        dna_agility = scale(dna.genes[8], 0, 1, 1, 100);
+
+        dnaHuntStrength = (scale(dna.genes[8], 0, 1, 1, 5));
+        dnaFleeStrength = (scale(dna.genes[9], 0, 1, 1, 5));
+        dnaFoodStrength = (scale(dna.genes[10], 0, 1, 1, 5));
 
 
-        midiNote = scale(dna.genes[9], 0, 1, 1, 10);
+        dnaHuntAgility = (scale(dna.genes[11], 0, 1, 5, 25));
+        dnaFleeAgility = (scale(dna.genes[12], 0, 1, 5, 25));
+        dnaFoodAgility = (scale(dna.genes[13], 0, 1, 5, 25));
+
+        dna_agility = scale(dna.genes[11], 0, 1, 5, 25);
 
 
+        midiNote = scale(dna.genes[12], 0, 1, 1, 10);
 
         dnaCohesionDist = Math.Clamp(dnaCohesionDist, 5, 100);
         dnaSeparationDist = Math.Clamp(dnaSeparationDist, 5, 100);
@@ -795,14 +812,10 @@ public class FlockUnit : MonoBehaviour
         dnaSeparationWeight = Math.Clamp(dnaSeparationWeight, 1, 1);
         dnaAlignmentWeight = Math.Clamp(dnaAlignmentWeight, 1, 5);
 
+        dna_agility = Math.Clamp(dna_agility, 1, 25);
         midiNote = Math.Clamp(midiNote, 1, 10);
 
 
-        //this.speed = scale(dna.genes[0], 0, 1, 10, 0);
-
-        //size = ExtensionMethods.map(dna.genes[0], 0, 1, 0, 2);
-
-        //gameObject.transform.localScale *= size;
     }
 
 
@@ -845,7 +858,7 @@ public class DNAboid
     public DNAboid()
     {
 
-        genes = new float[10];
+        genes = new float[20];
         for (int i = 0; i < genes.Length; i++)
         {
             genes[i] = UnityEngine.Random.Range(0f, 1f);
@@ -871,9 +884,6 @@ public class DNAboid
         newgenes = (float[])genes.Clone();
         return new DNAboid(newgenes);
     }
-
-
-
 
 }
 

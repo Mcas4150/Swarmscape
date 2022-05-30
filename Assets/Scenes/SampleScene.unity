@@ -526,9 +526,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 0
+  startAmount: 3
   spawnRadius: 1
-  eatAgility: 0
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
   EnemyFlock: {fileID: 1229929646}
@@ -536,6 +535,12 @@ MonoBehaviour:
   Carnivore: 1
   Herbivore: 0
   Reproduce: 0
+  huntStrength: 1
+  fleeStrength: 1
+  foodStrength: 1
+  foodAgility: 0
+  huntAgility: 0
+  fleeAgility: 0
   _minSpeed: 0
   _maxSpeed: 100
   Boids: []
@@ -694,7 +699,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b81bbda1b1fc64f209d5abb7cba6b754, type: 2}
+  - {fileID: 2100000, guid: eb625465151c74d7489f2f9a8c5a626c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -752,7 +757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GroundMesh: {fileID: 816030522}
-  CurrentMaterial: {fileID: 2100000, guid: b81bbda1b1fc64f209d5abb7cba6b754, type: 2}
+  CurrentMaterial: {fileID: 2100000, guid: eb625465151c74d7489f2f9a8c5a626c, type: 2}
   SpringMaterial: {fileID: 2100000, guid: b81bbda1b1fc64f209d5abb7cba6b754, type: 2}
   SummerMaterial: {fileID: 2100000, guid: b81bbda1b1fc64f209d5abb7cba6b754, type: 2}
   FallMaterial: {fileID: 2100000, guid: b2c95efc18c6640b594fed41bd4cc61a, type: 2}
@@ -962,13 +967,18 @@ MonoBehaviour:
   breed: organic
   startAmount: 3
   spawnRadius: 1
-  eatAgility: 0
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
   Carnivore: 0
   Herbivore: 1
   Reproduce: 1
+  huntStrength: 1
+  fleeStrength: 1
+  foodStrength: 1
+  foodAgility: 0
+  huntAgility: 0
+  fleeAgility: 0
   _minSpeed: 2.8
   _maxSpeed: 100
   Boids: []
@@ -1005,15 +1015,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 50
+  flockSize: 25
   shadowProb: 0.2
   respawnTime: 2
   deathMultiplier: 1
-  foodForceMagnitude: 0.5
-  agility: 0.3
   masterSpeed: 25
   smoothDamp: 1
   trailTime: 0.5
+  agility: 0.3
   boundsDistance: 100
   cohesionDistance: 75
   separationDistance: 30
@@ -1023,11 +1032,8 @@ MonoBehaviour:
   cohesionWeight: 3
   separationWeight: 10
   alignmentWeight: 5
-  preyWeight: 1
-  fleeWeight: 3
-  foodWeight: 3
   dnaWeight: 1
-  generalWeight: 1
+  globalWeight: 0
   driftX: 0
   driftY: 0
   driftZ: 0
