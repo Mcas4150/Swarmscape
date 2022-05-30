@@ -9,14 +9,18 @@ public class Ground : MonoBehaviour
 
 
     public MeshRenderer GroundMesh;
-    public Material GroundMaterial;
+    public Material CurrentMaterial;
+    public Material SpringMaterial;
+    public Material SummerMaterial;
+    public Material FallMaterial;
+    public Material WinterMaterial;
 
     // Start is called before the first frame update
     void Start()
     {
 
         //GroundMesh = GetComponent<MeshRenderer>();
-        //GroundMaterial = GroundMesh.material;
+        CurrentMaterial = GroundMesh.material;
 
     }
     // Update is called once per frame

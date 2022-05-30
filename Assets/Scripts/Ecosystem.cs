@@ -40,6 +40,12 @@ public class Ecosystem : MonoBehaviour
             { setSeason("fall"); }
             else if (worldYear == 270)
             { setSeason("winter"); }
+            else if (worldYear == 360)
+            {
+                setSeason("Spring");
+                worldYear = 0;
+
+            }
 
         }
     }
@@ -50,25 +56,25 @@ public class Ecosystem : MonoBehaviour
         {
             case "spring":
                 season = "spring";
-                world.ground.GroundMaterial.color = Color.green;
+                world.ground.CurrentMaterial = world.ground.SpringMaterial;
                 //flockSize = 8;
                 break;
 
             case "summer":
                 season = "summer";
-                world.ground.GroundMaterial.color = Color.yellow;
+                world.ground.CurrentMaterial = world.ground.SummerMaterial;
 
                 // flockSize = 16;
                 break;
 
             case "fall":
                 season = "fall";
-                world.ground.GroundMaterial.color = Color.cyan;
+                world.ground.CurrentMaterial = world.ground.FallMaterial;
                 break;
 
             case "winter":
                 season = "winter";
-                world.ground.GroundMaterial.color = Color.blue;
+                world.ground.CurrentMaterial = world.ground.WinterMaterial;
                 break;
         }
 

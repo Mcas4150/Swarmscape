@@ -11,27 +11,28 @@ public class Flock : MonoBehaviour
 {
     [SerializeField] private Helpers helper;
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-    //[SerializeField] public float mutualAttraction => GameManager.Instance.mutualAttraction;
+
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
     [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
     [SerializeField] public float preyWeight => GameManager.Instance.preyWeight;
     [SerializeField] public float foodWeight => GameManager.Instance.foodWeight;
     [SerializeField] public float fleeWeight => GameManager.Instance.fleeWeight;
-    //[SerializeField] public float attackForceMagnitude => GameManager.Instance.attackForceMagnitude;
 
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
     [SerializeField] public int startAmount;
     [SerializeField] public float spawnRadius = 1f;
+    public float eatAgility;
 
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
     public Boolean Carnivore;
     public Boolean Herbivore;
+    public Boolean Reproduce;
 
-    public float seekWeight = 1;
+
 
     [Header("Speed Setup")]
     [Range(0, 30)]
@@ -50,7 +51,7 @@ public class Flock : MonoBehaviour
     [Header("OSC Properties")]
     public OSCTransmitter transmitter;
 
-    Vector3 zeroVector;
+
     Quaternion rotation;
 
     DNAboid starterDna;
@@ -60,7 +61,6 @@ public class Flock : MonoBehaviour
     {
         starterDna = new DNAboid();
         BoidsIndex = new List<int>() { 0 };
-        zeroVector = new Vector3(0, 0, 0);
 
     }
 
@@ -173,7 +173,7 @@ public class Flock : MonoBehaviour
 
         unitIndex.Add(agentNumber);
         agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
-        //newAgent.transform.parent = this.transform;
+
     }
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
