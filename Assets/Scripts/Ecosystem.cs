@@ -14,6 +14,7 @@ public class Ecosystem : MonoBehaviour
     public int worldYear = 0;
     public string season = "spring";
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,25 +59,32 @@ public class Ecosystem : MonoBehaviour
         {
             case "spring":
                 season = "spring";
-                world.ground.CurrentMaterial = world.ground.SpringMaterial;
+                //world.ground.CurrentMaterial = world.ground.SpringMaterial;
+                world.ground.colorStart = world.ground.ColorSpring;
+                world.ground.colorEnd = world.ground.ColorSummer;
                 //flockSize = 8;
                 break;
 
             case "summer":
                 season = "summer";
-                world.ground.CurrentMaterial = world.ground.SummerMaterial;
-
+                //world.ground.CurrentMaterial = world.ground.SummerMaterial;
+                world.ground.colorStart = world.ground.ColorSummer;
+                world.ground.colorEnd = world.ground.ColorFall;
                 // flockSize = 16;
                 break;
 
             case "fall":
                 season = "fall";
-                world.ground.CurrentMaterial = world.ground.FallMaterial;
+                //world.ground.CurrentMaterial = world.ground.FallMaterial;
+                world.ground.colorStart = world.ground.ColorFall;
+                world.ground.colorEnd = world.ground.ColorWinter;
                 break;
 
             case "winter":
                 season = "winter";
-                world.ground.CurrentMaterial = world.ground.WinterMaterial;
+                //world.ground.CurrentMaterial = world.ground.WinterMaterial;
+                world.ground.colorStart = world.ground.ColorWinter;
+                world.ground.colorEnd = world.ground.ColorSpring;
                 break;
         }
 

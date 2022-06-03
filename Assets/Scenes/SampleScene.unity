@@ -579,16 +579,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 3
+  startAmount: 25
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
   EnemyFlock: {fileID: 1229929646}
   food: {fileID: 1876838923}
   Carnivore: 1
-  Herbivore: 0
-  Reproduce: 0
-  Living: 0
+  Herbivore: 1
+  Reproduce: 1
+  Builder: 1
+  Living: 1
   maxAge: 100
   huntStrength: 1
   fleeStrength: 1
@@ -1022,14 +1023,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 3
+  startAmount: 25
   spawnRadius: 1
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
-  Carnivore: 0
+  Carnivore: 1
   Herbivore: 1
   Reproduce: 1
+  Builder: 1
   Living: 1
   maxAge: 100
   huntStrength: 1
@@ -1076,8 +1078,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 25
-  shadowProb: 0.2
+  flockSize: 75
+  buildProb: 0.1
   respawnTime: 2
   deathMultiplier: 1
   masterSpeed: 25
@@ -1095,7 +1097,7 @@ MonoBehaviour:
   alignmentWeight: 5
   flowfieldStrength: 1
   dnaWeight: 1
-  globalWeight: 0
+  globalWeight: 1
   driftX: 0
   driftY: 0
   driftZ: 0

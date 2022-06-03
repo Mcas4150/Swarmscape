@@ -52,39 +52,39 @@ public class Flowfield : MonoBehaviour
     }
 
 
-    public void OnDrawGizmos()
-    {
-        fastNoise = new FastNoise();
-        float xOff = 0;
-        for (int x = 0; x < columns; x++)
-        {
-            float yOff = 0;
-            for (int y = 0; y < rows; y++)
-            {
-                float zOff = 0;
-                for (int z = 0; z < aisles; z++)
-                {
-                    //float noise = 1;
-                    float noise = fastNoise.GetSimplex(xOff, yOff + zOff) + 1;
+    //public void OnDrawGizmos()
+    //{
+    //    fastNoise = new FastNoise();
+    //    float xOff = 0;
+    //    for (int x = 0; x < columns; x++)
+    //    {
+    //        float yOff = 0;
+    //        for (int y = 0; y < rows; y++)
+    //        {
+    //            float zOff = 0;
+    //            for (int z = 0; z < aisles; z++)
+    //            {
+    //                //float noise = 1;
+    //                float noise = fastNoise.GetSimplex(xOff, yOff + zOff) + 1;
 
-                    Vector3 noiseDirection = new Vector3(Mathf.Cos(noise * Mathf.PI), Mathf.Sin(noise * Mathf.PI), Mathf.Cos(noise * Mathf.PI));
-                    //Debug.Log(noiseDirection);
-                    field[x, y, z] = Vector3.Normalize(noiseDirection);
+    //                Vector3 noiseDirection = new Vector3(Mathf.Cos(noise * Mathf.PI), Mathf.Sin(noise * Mathf.PI), Mathf.Cos(noise * Mathf.PI));
+    //                //Debug.Log(noiseDirection);
+    //                field[x, y, z] = Vector3.Normalize(noiseDirection);
 
-                    Gizmos.color = new Color(noiseDirection.normalized.x, noiseDirection.normalized.y, noiseDirection.normalized.z, 1f);
-                    Vector3 pos = new Vector3(x, y, z) + transform.position;
-                    Vector3 endpos = pos + Vector3.Normalize(noiseDirection);
-                    Gizmos.DrawLine(pos, endpos);
-                    Gizmos.DrawSphere(endpos, 0.1f);
-                    zOff += increment;
-                    //field[x, y, z] = new Vector3(1, 0, 0);
+    //                Gizmos.color = new Color(noiseDirection.normalized.x, noiseDirection.normalized.y, noiseDirection.normalized.z, 1f);
+    //                Vector3 pos = new Vector3(x, y, z) + transform.position;
+    //                Vector3 endpos = pos + Vector3.Normalize(noiseDirection);
+    //                Gizmos.DrawLine(pos, endpos);
+    //                Gizmos.DrawSphere(endpos, 0.1f);
+    //                zOff += increment;
+    //                //field[x, y, z] = new Vector3(1, 0, 0);
 
-                }
-                yOff += increment;
-            }
-            xOff += increment;
-        }
-    }
+    //            }
+    //            yOff += increment;
+    //        }
+    //        xOff += increment;
+    //    }
+    //}
 
     //public void InitializeFlowField()
     //{
