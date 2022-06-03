@@ -123,6 +123,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &19178328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19178330}
+  - component: {fileID: 19178329}
+  m_Layer: 0
+  m_Name: Flowfield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &19178329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19178328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d646cdf9b464f328af38a4254a5796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoundsDistance: 200
+  resolution: 1
+  flowForce: 5.57
+  columns: 0
+  rows: 0
+  aisles: 0
+  gridsize: 10
+  increment: 5
+  maximumPos: 0
+--- !u!4 &19178330
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19178328}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,9 +588,12 @@ MonoBehaviour:
   Carnivore: 1
   Herbivore: 0
   Reproduce: 0
+  Living: 0
+  maxAge: 100
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
+  flowForce: 0.3
   foodAgility: 0
   huntAgility: 0
   fleeAgility: 0
@@ -546,6 +602,7 @@ MonoBehaviour:
   Boids: []
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
+  flowfield: {fileID: 19178329}
 --- !u!1 &565016923
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,9 +1030,12 @@ MonoBehaviour:
   Carnivore: 0
   Herbivore: 1
   Reproduce: 1
+  Living: 1
+  maxAge: 100
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
+  flowForce: 0.3
   foodAgility: 0
   huntAgility: 0
   fleeAgility: 0
@@ -984,6 +1044,7 @@ MonoBehaviour:
   Boids: []
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
+  flowfield: {fileID: 19178329}
 --- !u!1 &1576914200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,6 +1093,7 @@ MonoBehaviour:
   cohesionWeight: 3
   separationWeight: 10
   alignmentWeight: 5
+  flowfieldStrength: 1
   dnaWeight: 1
   globalWeight: 0
   driftX: 0

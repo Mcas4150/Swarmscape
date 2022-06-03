@@ -25,11 +25,15 @@ public class Flock : MonoBehaviour
     public Boolean Carnivore;
     public Boolean Herbivore;
     public Boolean Reproduce;
+    public Boolean Builder;
+    public Boolean Living;
+    public float maxAge;
 
     [Header("Eating")]
     public float huntStrength = 1f;
     public float fleeStrength = 1f;
     public float foodStrength = 1f;
+    public float flowForce = 0.3f;
 
     public float foodAgility;
     public float huntAgility;
@@ -58,6 +62,7 @@ public class Flock : MonoBehaviour
     Quaternion rotation;
 
     DNAboid starterDna;
+    public Flowfield flowfield;
 
 
     private void Awake()
@@ -139,7 +144,7 @@ public class Flock : MonoBehaviour
 
     private void GenerateUnits()
     {
-        Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
+        //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 0; i < startAmount; i++)
         {
             var halfBounds = boundsDistance;

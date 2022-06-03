@@ -9,7 +9,7 @@ public class FlockUnit : MonoBehaviour
 {
 
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-    [SerializeField] public float shadowProb => GameManager.Instance.shadowProb;
+    [SerializeField] public float buildProb => GameManager.Instance.buildProb;
     [SerializeField] public float respawnTime => GameManager.Instance.respawnTime;
     [SerializeField] public float deathMultiplier => GameManager.Instance.deathMultiplier;
 
@@ -35,6 +35,9 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float driftZ => GameManager.Instance.driftZ;
 
     [SerializeField] public float trailTime => GameManager.Instance.trailTime;
+
+    [SerializeField] public float flowfieldStrength => GameManager.Instance.flowfieldStrength;
+
 
 
     public Flock assignedFlock;
@@ -72,10 +75,15 @@ public class FlockUnit : MonoBehaviour
     public Vector3 HuntVector;
     public Vector3 FleeVector;
 
+    [Header("Flowfield")]
+    public Vector3 FlowfieldVector;
+    public Vector3 FlowfieldMultiplier;
+
     [Header("Position")]
     public Vector3 spawnPosition;
     public Vector3 currentVelocity;
     public Vector3 currentMoveVector;
+
 
 
 
@@ -205,17 +213,27 @@ public class FlockUnit : MonoBehaviour
                     spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
                     var breedChance = UnityEngine.Random.Range(0f, 1f);
 
-                    if (breedChance <= shadowProb)
+                    if (assignedFlock.Builder)
                     {
-                        assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, "shadow", spawnPosition, dna);
 
+                        if (breedChance <= buildProb)
+                        {
+                            assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
+
+                        }
+                        else if (breedChance > buildProb && assignedFlock.Reproduce)
+                        {
+                            assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
+                        }
                     }
-                    else if (breedChance > shadowProb)
+
+                    if (assignedFlock.Reproduce && assignedFlock.Builder == false)
                     {
-                        assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, "organic", spawnPosition, dna);
+                        assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
                     }
+
+
                     health *= 0.5f;
-
                 }
             }
         }
@@ -240,6 +258,7 @@ public class FlockUnit : MonoBehaviour
             yield return new WaitForSeconds(1f);
             age += 1;
         }
+
     }
 
     private IEnumerator CalcSlowStats()
@@ -259,7 +278,7 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (breed == "organic")
+            if (assignedFlock.Living)
             {
                 health -= deathMultiplier * Time.deltaTime;
             }
@@ -332,7 +351,7 @@ public class FlockUnit : MonoBehaviour
     {
         if (health <= 0)
             return true;
-        else if (age >= 300)
+        else if (age >= assignedFlock.maxAge)
             return true;
         else
             return false;
@@ -349,7 +368,6 @@ public class FlockUnit : MonoBehaviour
         FindNeighbors();
         FindPrey();
 
-
         var huntAgility = CalculateTotalParam(assignedFlock.huntAgility, dnaFoodAgility);
         var fleeAgility = CalculateTotalParam(assignedFlock.fleeAgility, dnaFoodAgility);
         var foodAgility = CalculateTotalParam(assignedFlock.foodAgility, dnaFoodAgility);
@@ -357,6 +375,11 @@ public class FlockUnit : MonoBehaviour
         Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
         Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
         Alignment = CalculateAlignment(alignmentNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
+        FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
+
+        FlowfieldMultiplier = new Vector3(flowfieldStrength * 0.01f, flowfieldStrength * 0.01f, flowfieldStrength * 0.01f);
+        FlowfieldVector = Vector3.Scale(FlowfieldVector, FlowfieldMultiplier);
+
         BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
 
         if (assignedFlock.Carnivore == true)
@@ -604,6 +627,15 @@ public class FlockUnit : MonoBehaviour
         return isNearCenter ? offsetToCenter.normalized : Vector3.zero;
     }
 
+    private Vector3 CalculateFlowfield(Flowfield flow)
+    {
+        Vector3 desiredVelocity = flow.Lookup(transform.position);
+        desiredVelocity = CustomNormalize(desiredVelocity);
+        desiredVelocity *= speed;
+        Vector3 steerVelocity = desiredVelocity - currentMoveVector; // Steering is desired minus velocity
+        Vector3.ClampMagnitude(steerVelocity, assignedFlock.flowForce);
+        return steerVelocity;
+    }
 
     private Vector3 CalculateFoodVector(List<FoodUnit> neighbors, float forceMagnitude)
     {

@@ -52,6 +52,7 @@ public class NoiseFlowfield : MonoBehaviour
         CalculateFlowfieldDirections();
     }
 
+
     void CalculateFlowfieldDirections()
     {
 
