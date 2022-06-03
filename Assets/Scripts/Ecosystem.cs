@@ -10,13 +10,14 @@ public class Ecosystem : MonoBehaviour
     [SerializeField] private Food food;
     [SerializeField] private World world;
 
+    public int worldDay = 0;
     public int worldYear = 0;
     public string season = "spring";
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(CountWorldYear());
+        StartCoroutine(CountWorldTime());
         setSeason("spring");
     }
 
@@ -26,24 +27,25 @@ public class Ecosystem : MonoBehaviour
 
     }
 
-    private IEnumerator CountWorldYear()
+    private IEnumerator CountWorldTime()
     {
         while (true)
         {
 
             yield return new WaitForSeconds(1f);
-            worldYear += 1;
+            worldDay += 1;
 
-            if (worldYear == 90)
+            if (worldDay == 90)
             { setSeason("summer"); }
-            else if (worldYear == 180)
+            else if (worldDay == 180)
             { setSeason("fall"); }
-            else if (worldYear == 270)
+            else if (worldDay == 270)
             { setSeason("winter"); }
-            else if (worldYear == 360)
+            else if (worldDay == 360)
             {
+                worldYear++;
                 setSeason("Spring");
-                worldYear = 0;
+                worldDay = 0;
 
             }
 
