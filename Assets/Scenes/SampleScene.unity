@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 25
+  startAmount: 0
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
@@ -590,7 +590,8 @@ MonoBehaviour:
   Reproduce: 1
   Builder: 1
   Living: 1
-  maxAge: 100
+  maxAge: 200
+  eatAge: 5
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
@@ -820,6 +821,12 @@ MonoBehaviour:
   SummerMaterial: {fileID: 2100000, guid: b81bbda1b1fc64f209d5abb7cba6b754, type: 2}
   FallMaterial: {fileID: 2100000, guid: b2c95efc18c6640b594fed41bd4cc61a, type: 2}
   WinterMaterial: {fileID: 2100000, guid: 8d087b3bcca0846edb3f8bffb1c3b349, type: 2}
+  ColorSpring: {r: 0, g: 1, b: 0, a: 1}
+  ColorSummer: {r: 1, g: 0, b: 0, a: 1}
+  ColorFall: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  ColorWinter: {r: 0, g: 1, b: 1, a: 1}
+  colorStart: {r: 0, g: 0, b: 0, a: 0}
+  colorEnd: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,7 +1030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 25
+  startAmount: 1
   spawnRadius: 1
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
@@ -1033,7 +1040,8 @@ MonoBehaviour:
   Reproduce: 1
   Builder: 1
   Living: 1
-  maxAge: 100
+  maxAge: 200
+  eatAge: 5
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
@@ -1078,7 +1086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flockSize: 75
+  flockSize: 16
   buildProb: 0.1
   respawnTime: 2
   deathMultiplier: 1
@@ -1209,6 +1217,7 @@ MonoBehaviour:
   ShadowFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
   world: {fileID: 1924572749}
+  worldDay: 0
   worldYear: 0
   season: spring
 --- !u!1 &1686695737
@@ -1550,7 +1559,7 @@ MonoBehaviour:
   FoodsIndex: 
   OscFood: []
   oscReceiver: {fileID: 1876838922}
-  foodSize: 30
+  foodSize: 16
   foodBounds: 75
 --- !u!4 &1876838924
 Transform:

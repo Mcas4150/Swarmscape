@@ -83,6 +83,9 @@ public class FlockUnit : MonoBehaviour
     public Vector3 spawnPosition;
     public Vector3 currentVelocity;
     public Vector3 currentMoveVector;
+    public Vector3 totalVelocity;
+    public Vector3 smoothVelocity;
+    public Vector3 smoothFixedVelocity;
 
 
 
@@ -116,6 +119,7 @@ public class FlockUnit : MonoBehaviour
 
     public OSCMessage message_newPositionXYZ;
     public OSCMessage velocityMessage;
+    public OSCMessage eatingStateMessage;
     public OSCMessage healthMessage;
     public OSCMessage midiNoteMessage;
     public OSCMessage midiPlayMessage;
@@ -148,10 +152,10 @@ public class FlockUnit : MonoBehaviour
         message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.z));
 
         midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-        midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber);
+        midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
         healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
 
-        velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber);
+        velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
 
         TrailRenderer Trail = gameObject.GetComponent<TrailRenderer>();
 
@@ -177,12 +181,12 @@ public class FlockUnit : MonoBehaviour
             message_newPositionXYZ.Values[1] = OSCValue.Float(transform.position.y);
             message_newPositionXYZ.Values[2] = OSCValue.Float(transform.position.z);
 
-
+            //midiPlayMessage.Values[0] = (OSCValue.Float(eatingState));
             //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
-            //midiPlayMessage.AddValue(OSCValue.Float(eatingState));
+
             //healthMessage.AddValue(OSCValue.Float(health));
 
-            //velocityMessage.AddValue(OSCValue.Float(currentVelocity.magnitude));
+            velocityMessage.Values[0] = OSCValue.Float(averageVelocity);
 
             transmitter.Send(message_newPositionXYZ);
 
@@ -191,7 +195,7 @@ public class FlockUnit : MonoBehaviour
             //transmitter.Send(healthMessage);
 
 
-            //transmitter.Send(velocityMessage);
+            transmitter.Send(velocityMessage);
 
         }
     }
@@ -265,9 +269,10 @@ public class FlockUnit : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.05f);
 
-            averageVelocity = AverageVelocity(currentVelocity);
+            //averageVelocity = AverageVelocity(totalVelocity);
+            //averageVelocity = totalVelocity.magnitude * 100;
 
         }
     }
@@ -301,21 +306,22 @@ public class FlockUnit : MonoBehaviour
                 message_newPositionXYZ.Values[1] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[2] = OSCValue.Float(0);
 
-
+                velocityMessage.Values[0] = OSCValue.Float(0);
                 //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
 
                 //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+                midiPlayMessage.Values[0] = OSCValue.Float(0);
 
 
                 transmitter.Send(message_newPositionXYZ);
 
                 //transmitter.Send(midiNoteMessage);
-                //transmitter.Send(midiPlayMessage);
+                transmitter.Send(midiPlayMessage);
                 //transmitter.Send(healthMessage);
 
-                //transmitter.Send(velocityMessage);
+                transmitter.Send(velocityMessage);
 
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
@@ -342,7 +348,7 @@ public class FlockUnit : MonoBehaviour
 
     public float AverageVelocity(Vector3 velocity)
     {
-        var averageVelocity = (Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) / 3;
+        var averageVelocity = (Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) * 0.33f;
 
         return averageVelocity;
     }
@@ -360,6 +366,7 @@ public class FlockUnit : MonoBehaviour
     void Update()
     {
         MoveUnit();
+        //needed?
         transform.localRotation = Quaternion.LookRotation(currentMoveVector, Vector3.up);
     }
 
@@ -371,6 +378,8 @@ public class FlockUnit : MonoBehaviour
         var huntAgility = CalculateTotalParam(assignedFlock.huntAgility, dnaFoodAgility);
         var fleeAgility = CalculateTotalParam(assignedFlock.fleeAgility, dnaFoodAgility);
         var foodAgility = CalculateTotalParam(assignedFlock.foodAgility, dnaFoodAgility);
+
+        var totalSpeed = CalculateTotalParam(masterSpeed, speed);
 
         Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
         Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
@@ -407,7 +416,11 @@ public class FlockUnit : MonoBehaviour
 
         var driftVector = new Vector3(driftX, driftY, driftZ);
         var moveVector = Cohesion + BoundsVector + Alignment + FoodVector + HuntVector + FleeVector + Separation;
+        //var flockVector = Cohesion + BoundsVector + Alignment + FoodVector + HuntVector + FleeVector + Separation;
         //moveVector = CustomNormalize(moveVector) * speed;
+
+
+        //var moveVector = (flockVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
 
         if (moveVector == Vector3.zero)
@@ -415,7 +428,28 @@ public class FlockUnit : MonoBehaviour
         transform.forward = moveVector;
 
         currentMoveVector = moveVector;
-        transform.position += (currentMoveVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
+
+        totalVelocity = (currentMoveVector + driftVector) * Time.deltaTime * totalSpeed;
+        //transform.position += (currentMoveVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
+        transform.position += totalVelocity;
+        //averageVelocity = totalVelocity.magnitude * 100;
+        //var myVelocity = currentVelocity * totalSpeed;
+        //averageVelocity = myVelocity.magnitude;
+
+        //averageVelocity = currentVelocity.magnitude;
+
+        //averageVelocity = totalVelocity.magnitude;
+        //averageVelocity = Time.deltaTime;
+        smoothFixedVelocity = (currentMoveVector + driftVector) * Time.fixedDeltaTime * totalSpeed;
+        averageVelocity = smoothFixedVelocity.magnitude * 10;
+
+
+
+
+
+        //averageVelocity = currentVelocity.magnitude * (Time.deltaTime * totalSpeed);
+        //var newVel = Vector3.SmoothDamp(currentMoveVector, totalVelocity, ref smoothVelocity, 0.1f);
+        //averageVelocity = smoothVelocity.magnitude;
         CheckBounds(moveVector);
         CalculateBoundaries(transform.position);
 
@@ -526,7 +560,7 @@ public class FlockUnit : MonoBehaviour
 
         force /= neighbors.Count;
         force -= transform.position;
-        force = force.normalized;
+        force = CustomNormalize(force);
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.green);
@@ -551,7 +585,7 @@ public class FlockUnit : MonoBehaviour
             //}
         }
         //alignmentVector /= neighborsInFOV;
-        force = force.normalized;
+        force = CustomNormalize(force);
         force *= speed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
@@ -573,14 +607,14 @@ public class FlockUnit : MonoBehaviour
             neighborsInFOV++;
             Vector3 neighborDir = (transform.position - neighbors[i].transform.position);
             float neighborDist = neighborDir.magnitude;
-            neighborDir = Vector3.Normalize(neighborDir);
+            neighborDir = CustomNormalize(neighborDir);
             neighborDir /= (Mathf.Pow(neighborDist, 2f));
             force += neighborDir;
             //}
         }
 
         //avoidanceVector /= neighborsInFOV;
-        force = Vector3.Normalize(force);
+        force = CustomNormalize(force);
         force *= speed;
         force -= currentMoveVector;
         //Debug.DrawLine(force, transform.position, Color.red);
@@ -603,14 +637,14 @@ public class FlockUnit : MonoBehaviour
             neighborsInFOV++;
             Vector3 neighborDir = (transform.position - neighbors[i].transform.position);
             float neighborDist = neighborDir.magnitude;
-            neighborDir = Vector3.Normalize(neighborDir);
+            neighborDir = CustomNormalize(neighborDir);
             neighborDir = neighborDir / (Mathf.Pow(neighborDist, 2f));
             force += neighborDir;
             //}
         }
 
         //avoidanceVector /= neighborsInFOV;
-        force = Vector3.Normalize(force);
+        force = CustomNormalize(force);
         force = force * speed;
         force = force - currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
@@ -652,14 +686,14 @@ public class FlockUnit : MonoBehaviour
 
             Vector3 neighborDir = (neighbors[i].transform.position - transform.position);
             float neighborDist = neighborDir.magnitude;
-            neighborDir = Vector3.Normalize(neighborDir);
+            neighborDir = CustomNormalize(neighborDir);
             // weight the vector by the distance squared
             neighborDir /= (Mathf.Pow(neighborDist, 2f));
             force += neighborDir;
             //}
         }
 
-        force = Vector3.Normalize(force);
+        force = CustomNormalize(force);
         force *= speed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
@@ -682,14 +716,14 @@ public class FlockUnit : MonoBehaviour
 
             Vector3 neighborDir = (neighbors[i].transform.position - transform.position);
             float neighborDist = neighborDir.magnitude;
-            neighborDir = Vector3.Normalize(neighborDir);
+            neighborDir = CustomNormalize(neighborDir);
             // weight the vector by the distance squared
             neighborDir /= (Mathf.Pow(neighborDist, 2f));
             force += neighborDir;
             //}
         }
 
-        force = Vector3.Normalize(force);
+        force = CustomNormalize(force);
         force *= speed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
@@ -749,11 +783,40 @@ public class FlockUnit : MonoBehaviour
                 //health += 5 * Time.deltaTime;
                 prey.Eaten();
                 health += 0.25f;
-                eatingState = 1;
+                //eatingState = 1;
+
+                if (eatingState != 1)
+                {
+
+                    midiPlayMessage.Values[0] = OSCValue.Float(1);
+                    transmitter.Send(midiPlayMessage);
+                    eatingState = 1;
+
+                }
+
             }
-            else
+            //else
+            //{
+
+            //    if (eatingState != 0)
+            //    {
+
+            //        midiPlayMessage.Values[0] = OSCValue.Float(0);
+            //        transmitter.Send(midiPlayMessage);
+            //        eatingState = 0;
+            //    }
+            //    else { eatingState = 0; }
+
+            //}
+            else if (eatingState == 1)
             {
+
+
+                midiPlayMessage.Values[0] = OSCValue.Float(0);
+                transmitter.Send(midiPlayMessage);
                 eatingState = 0;
+
+
             }
         }
     }
@@ -766,16 +829,30 @@ public class FlockUnit : MonoBehaviour
             //sqr magnitude
             var desiredDirection = transform.position - prey.transform.position;
             var desiredDistance = desiredDirection.magnitude;
-            if (desiredDistance < 5f)
+            if (desiredDistance < 5f && prey.age > assignedFlock.eatAge)
             {
                 //health += 5 * Time.deltaTime;
                 prey.Eaten();
                 health += 0.25f;
-                eatingState = 1;
+
+                //if (eatingState != 1)
+                //{
+                //    eatingState = 1;
+                //    transmitter.Send(midiPlayMessage);
+
+                //}
+
+
             }
             else
             {
-                eatingState = 0;
+                //if (eatingState != 0)
+                //{
+                //    eatingState = 0;
+                //    transmitter.Send(midiPlayMessage);
+                //}
+
+                //eatingState = 0;
             }
         }
 

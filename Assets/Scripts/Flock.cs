@@ -28,6 +28,8 @@ public class Flock : MonoBehaviour
     public Boolean Builder;
     public Boolean Living;
     public float maxAge;
+    public float eatAge;
+
 
     [Header("Eating")]
     public float huntStrength = 1f;
