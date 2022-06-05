@@ -45,7 +45,7 @@ public class Ecosystem : MonoBehaviour
             else if (worldDay == 360)
             {
                 worldYear++;
-                setSeason("Spring");
+                setSeason("spring");
                 worldDay = 0;
 
             }

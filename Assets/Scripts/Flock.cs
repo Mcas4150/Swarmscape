@@ -30,7 +30,6 @@ public class Flock : MonoBehaviour
     public float maxAge;
     public float eatAge;
 
-
     [Header("Eating")]
     public float huntStrength = 1f;
     public float fleeStrength = 1f;
@@ -76,8 +75,8 @@ public class Flock : MonoBehaviour
 
     private void Start()
     {
-        _minSpeed = 6f;
-        _maxSpeed = 50f;
+        //_minSpeed = 6f;
+        //_maxSpeed = 50f;
 
         StartCoroutine(OSCReset());
         StopCoroutine(OSCReset());
@@ -100,46 +99,53 @@ public class Flock : MonoBehaviour
         Debug.Log(resetMessage);
         transmitter.Send(resetMessage);
 
+
         for (int i = 1; i <= flockSize; i++)
         {
-            var oscNumber = i;
+            OSCMessage lifeStateMessage = new("/" + this.breed + "/lifestate/" + i, OSCValue.Float(0));
+            transmitter.Send(lifeStateMessage);
+        }
 
-
+        for (int i = 1; i <= flockSize; i++)
+        {
             OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
             message_resetPositionXYZ.AddValue(OSCValue.Float(0));
             message_resetPositionXYZ.AddValue(OSCValue.Float(0));
             message_resetPositionXYZ.AddValue(OSCValue.Float(0));
-
-            OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
-            OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
-            OSCMessage healthMessage = new("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
-
-            OSCMessage velocityMessage = new("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
-
-
-            //message_resetPositionX.AddValue(OSCValue.Float(0));
-            ////message_resetPositionY.AddValue(OSCValue.Float(0));
-            ////message_resetPositionZ.AddValue(OSCValue.Float(0));
-
-            ////midiNoteMessage.AddValue(OSCValue.Float(0));
-            ////midiPlayMessage.AddValue(OSCValue.Float(0));
-            ////healthMessage.AddValue(OSCValue.Float(0));
-
-
-            ////velocityMessage.AddValue(OSCValue.Float(0));
-
-
             transmitter.Send(message_resetPositionXYZ);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage velocityMessage = new("/" + breed + "/velocity/" + i, OSCValue.Float(0));
+            transmitter.Send(velocityMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage healthMessage = new("/" + breed + "/health/" + i, OSCValue.Float(0));
+            transmitter.Send(healthMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + i, OSCValue.Float(0));
+            OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + i, OSCValue.Float(0));
+
 
             transmitter.Send(midiNoteMessage);
             transmitter.Send(midiPlayMessage);
-            transmitter.Send(healthMessage);
 
-            transmitter.Send(velocityMessage);
-
-            yield return null;
         }
 
+
+        yield return null;
+    }
+
+    //private void InitializeFlockParam()
+
+    private void InitializeLifeState(int flockSize)
+    {
 
     }
 
@@ -147,11 +153,13 @@ public class Flock : MonoBehaviour
     private void GenerateUnits()
     {
         //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
-        for (int i = 0; i < startAmount; i++)
+        for (int i = 1; i <= startAmount; i++)
         {
             var halfBounds = boundsDistance;
-            var randomPosition = UnityEngine.Random.Range(-halfBounds, halfBounds);
-            var randomVector = new Vector3(randomPosition, randomPosition, randomPosition);
+            var randomPosition1 = UnityEngine.Random.Range(-halfBounds, halfBounds);
+            var randomPosition2 = UnityEngine.Random.Range(-halfBounds, halfBounds);
+            var randomPosition3 = UnityEngine.Random.Range(-halfBounds, halfBounds);
+            var randomVector = new Vector3(randomPosition1, randomPosition2, randomPosition3);
             GenerateAgent(this, Boids, BoidsIndex, breed, randomVector, starterDna);
         }
 
@@ -182,6 +190,10 @@ public class Flock : MonoBehaviour
         newAgent.setDNA(childDNA);
 
         unitIndex.Add(agentNumber);
+
+        //OSCMessage lifeStateMessage = new("/" + agentBreed + "/lifestate/" + agentNumber, OSCValue.Float(1));
+        //transmitter.Send(lifeStateMessage);
+
         agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
 
     }

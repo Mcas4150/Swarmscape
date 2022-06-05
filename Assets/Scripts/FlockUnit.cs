@@ -43,6 +43,8 @@ public class FlockUnit : MonoBehaviour
     public Flock assignedFlock;
     public string breed;
     public int oscNumber;
+    Boolean initialized = false;
+
 
     [Header("Health Values")]
 
@@ -54,6 +56,7 @@ public class FlockUnit : MonoBehaviour
     public float FOVAngle;
     public float averageVelocity;
     public float totalAgility;
+    public float totalSpeed;
 
     [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
@@ -86,12 +89,12 @@ public class FlockUnit : MonoBehaviour
     public Vector3 totalVelocity;
     public Vector3 smoothVelocity;
     public Vector3 smoothFixedVelocity;
-
+    public float deltaSpeed;
 
 
 
     [Header("DNA")]
-    public float speed;
+    public float dnaSpeed;
 
     public float dnaCohesionDist;
     public float dnaAlignmentDist;
@@ -117,6 +120,7 @@ public class FlockUnit : MonoBehaviour
 
     public string oscAddress_positionXYZ;
 
+    public OSCMessage message_lifeState;
     public OSCMessage message_newPositionXYZ;
     public OSCMessage velocityMessage;
     public OSCMessage eatingStateMessage;
@@ -146,11 +150,13 @@ public class FlockUnit : MonoBehaviour
 
         oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
 
+
         message_newPositionXYZ = new OSCMessage(oscAddress_positionXYZ);
         message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.x));
         message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.y));
         message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.z));
 
+        //message_lifeState = new OSCMessage("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
         midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
         midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
         healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
@@ -162,12 +168,27 @@ public class FlockUnit : MonoBehaviour
         if (Trail != null)
             Trail.time = trailTime;
 
+
+        StartCoroutine(OSCBirth());
         StartCoroutine(OSCSender());
         StartCoroutine(Respawn());
         //StartCoroutine(HealthSize());
         StartCoroutine(CountAge());
         StartCoroutine(CheckAgent());
         StartCoroutine(CalcSlowStats());
+
+    }
+
+
+    private IEnumerator OSCBirth()
+    {
+        while (initialized == false)
+        {
+            message_lifeState = new("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
+            transmitter.Send(message_lifeState);
+            initialized = true;
+            yield return null;
+        }
 
     }
 
@@ -302,6 +323,10 @@ public class FlockUnit : MonoBehaviour
 
             if (Dead())
             {
+                message_lifeState.Values[0] = OSCValue.Float(0);
+                transmitter.Send(message_lifeState);
+
+
                 message_newPositionXYZ.Values[0] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[1] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[2] = OSCValue.Float(0);
@@ -313,6 +338,7 @@ public class FlockUnit : MonoBehaviour
 
                 //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
                 midiPlayMessage.Values[0] = OSCValue.Float(0);
+
 
 
                 transmitter.Send(message_newPositionXYZ);
@@ -344,6 +370,8 @@ public class FlockUnit : MonoBehaviour
     public void NumberParticle(int number)
     {
         oscNumber = number;
+
+
     }
 
     public float AverageVelocity(Vector3 velocity)
@@ -379,7 +407,7 @@ public class FlockUnit : MonoBehaviour
         var fleeAgility = CalculateTotalParam(assignedFlock.fleeAgility, dnaFoodAgility);
         var foodAgility = CalculateTotalParam(assignedFlock.foodAgility, dnaFoodAgility);
 
-        var totalSpeed = CalculateTotalParam(masterSpeed, speed);
+        totalSpeed = CalculateTotalParam(masterSpeed, dnaSpeed);
 
         Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
         Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
@@ -419,7 +447,7 @@ public class FlockUnit : MonoBehaviour
         //var flockVector = Cohesion + BoundsVector + Alignment + FoodVector + HuntVector + FleeVector + Separation;
         //moveVector = CustomNormalize(moveVector) * speed;
 
-
+        //moveVector = (moveVector + driftVector) * (Time.deltaTime * totalSpeed);
         //var moveVector = (flockVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
 
@@ -428,10 +456,11 @@ public class FlockUnit : MonoBehaviour
         transform.forward = moveVector;
 
         currentMoveVector = moveVector;
-
-        totalVelocity = (currentMoveVector + driftVector) * Time.deltaTime * totalSpeed;
-        //transform.position += (currentMoveVector + driftVector) * Time.deltaTime * CalculateTotalParam(masterSpeed, speed);
-        transform.position += totalVelocity;
+        totalVelocity = currentMoveVector;
+        //totalVelocity = (currentMoveVector + driftVector) * Time.deltaTime * totalSpeed;
+        deltaSpeed = (Time.deltaTime * totalSpeed * 10);
+        transform.position += (currentMoveVector + driftVector) * (Time.deltaTime * totalSpeed);
+        //transform.position += totalVelocity;
         //averageVelocity = totalVelocity.magnitude * 100;
         //var myVelocity = currentVelocity * totalSpeed;
         //averageVelocity = myVelocity.magnitude;
@@ -444,7 +473,7 @@ public class FlockUnit : MonoBehaviour
         averageVelocity = smoothFixedVelocity.magnitude * 10;
 
 
-
+        //averageVelocity = totalVelocity.magnitude;
 
 
         //averageVelocity = currentVelocity.magnitude * (Time.deltaTime * totalSpeed);
@@ -586,7 +615,7 @@ public class FlockUnit : MonoBehaviour
         }
         //alignmentVector /= neighborsInFOV;
         force = CustomNormalize(force);
-        force *= speed;
+        force *= totalSpeed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.blue);
@@ -615,7 +644,7 @@ public class FlockUnit : MonoBehaviour
 
         //avoidanceVector /= neighborsInFOV;
         force = CustomNormalize(force);
-        force *= speed;
+        force *= totalSpeed;
         force -= currentMoveVector;
         //Debug.DrawLine(force, transform.position, Color.red);
         force = Vector3.ClampMagnitude(force, forceMagnitude);
@@ -645,7 +674,7 @@ public class FlockUnit : MonoBehaviour
 
         //avoidanceVector /= neighborsInFOV;
         force = CustomNormalize(force);
-        force = force * speed;
+        force = force * totalSpeed;
         force = force - currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.red);
@@ -665,7 +694,7 @@ public class FlockUnit : MonoBehaviour
     {
         Vector3 desiredVelocity = flow.Lookup(transform.position);
         desiredVelocity = CustomNormalize(desiredVelocity);
-        desiredVelocity *= speed;
+        desiredVelocity *= totalSpeed;
         Vector3 steerVelocity = desiredVelocity - currentMoveVector; // Steering is desired minus velocity
         Vector3.ClampMagnitude(steerVelocity, assignedFlock.flowForce);
         return steerVelocity;
@@ -694,7 +723,7 @@ public class FlockUnit : MonoBehaviour
         }
 
         force = CustomNormalize(force);
-        force *= speed;
+        force *= totalSpeed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
 
@@ -724,7 +753,7 @@ public class FlockUnit : MonoBehaviour
         }
 
         force = CustomNormalize(force);
-        force *= speed;
+        force *= totalSpeed;
         force -= currentMoveVector;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
 
@@ -752,13 +781,13 @@ public class FlockUnit : MonoBehaviour
             currentMoveVector = new Vector3(currentVelocity.x * -1.0f, currentVelocity.y, currentVelocity.z);
 
         }
-        else if (transform.position.y > assignedFlock.boundsDistance * 0.97 || transform.position.y < -assignedFlock.boundsDistance * 0.97)
+        if (transform.position.y > assignedFlock.boundsDistance * 0.97 || transform.position.y < -assignedFlock.boundsDistance * 0.97)
         {
 
             currentMoveVector = new Vector3(currentVelocity.x, currentVelocity.y * -1.0f, currentVelocity.z);
 
         }
-        else if (transform.position.z > assignedFlock.boundsDistance * 0.97 || transform.position.z < -assignedFlock.boundsDistance * 0.97)
+        if (transform.position.z > assignedFlock.boundsDistance * 0.97 || transform.position.z < -assignedFlock.boundsDistance * 0.97)
         {
             currentMoveVector = new Vector3(currentVelocity.x, currentVelocity.y, currentVelocity.z * -1.0f);
 
@@ -885,8 +914,11 @@ public class FlockUnit : MonoBehaviour
     {
         dna = newDNA;
 
-        speed = (scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, assignedFlock.maxSpeed));
-        speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
+        //speed = scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, assignedFlock.maxSpeed);
+        //speed = Math.Clamp(speed, assignedFlock.minSpeed, assignedFlock.maxSpeed);
+
+        dnaSpeed = scale(dna.genes[0], 0f, 1f, assignedFlock.minSpeed, 5f);
+        dnaSpeed = Math.Clamp(dnaSpeed, assignedFlock.minSpeed, 5f);
 
         dnaCohesionDist = (scale(dna.genes[1], 0, 1, 5, 100));
         dnaSeparationDist = (scale(dna.genes[2], 0, 1, 5, 100));

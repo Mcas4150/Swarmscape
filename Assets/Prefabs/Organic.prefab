@@ -58,6 +58,7 @@ MonoBehaviour:
   FOVAngle: 270
   averageVelocity: 0
   totalAgility: 0
+  totalSpeed: 0
   cohesionNeighbors: []
   alignmentNeighbors: []
   separationNeighbors: []
@@ -77,7 +78,9 @@ MonoBehaviour:
   currentMoveVector: {x: 0, y: 0, z: 0}
   totalVelocity: {x: 0, y: 0, z: 0}
   smoothVelocity: {x: 0, y: 0, z: 0}
-  speed: 0
+  smoothFixedVelocity: {x: 0, y: 0, z: 0}
+  deltaSpeed: 0
+  dnaSpeed: 0
   dnaCohesionDist: 0
   dnaAlignmentDist: 0
   dnaSeparationDist: 0
@@ -154,7 +157,7 @@ TrailRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046869630431942}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

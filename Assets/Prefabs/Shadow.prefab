@@ -48,40 +48,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assignedFlock: {fileID: 0}
-  body: {fileID: 0}
   breed: shadow
   oscNumber: 0
   age: 0
   health: 100
   starterHealth: 0
   eatingState: 0
+  hunger: 0
   FOVAngle: 270
   averageVelocity: 0
-  foodDistance: 0
-  currentSpeed: 0
+  totalAgility: 0
+  totalSpeed: 0
   cohesionNeighbors: []
   alignmentNeighbors: []
-  avoidanceNeighbors: []
-  currentCohesionVector: {x: 0, y: 0, z: 0}
-  currentAvoidanceVector: {x: 0, y: 0, z: 0}
-  currentAlignmentVector: {x: 0, y: 0, z: 0}
-  currentBoundsVector: {x: 0, y: 0, z: 0}
-  currentSteerVector: {x: 0, y: 0, z: 0}
-  attractionForce: {x: 0, y: 0, z: 0}
-  foodForce: {x: 0, y: 0, z: 0}
+  separationNeighbors: []
+  foodNeighbors: []
+  preyNeighbors: []
+  Cohesion: {x: 0, y: 0, z: 0}
+  Separation: {x: 0, y: 0, z: 0}
+  Alignment: {x: 0, y: 0, z: 0}
+  BoundsVector: {x: 0, y: 0, z: 0}
+  FoodVector: {x: 0, y: 0, z: 0}
+  HuntVector: {x: 0, y: 0, z: 0}
+  FleeVector: {x: 0, y: 0, z: 0}
+  FlowfieldVector: {x: 0, y: 0, z: 0}
+  FlowfieldMultiplier: {x: 0, y: 0, z: 0}
+  spawnPosition: {x: 0, y: 0, z: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
   currentMoveVector: {x: 0, y: 0, z: 0}
-  currentPosition: {x: 0, y: 0, z: 0}
-  speed: 0
-  cohesionSpeed: 0
-  midiNote: 0
+  totalVelocity: {x: 0, y: 0, z: 0}
+  smoothVelocity: {x: 0, y: 0, z: 0}
+  smoothFixedVelocity: {x: 0, y: 0, z: 0}
+  deltaSpeed: 0
+  dnaSpeed: 0
   dnaCohesionDist: 0
   dnaAlignmentDist: 0
-  dnaAvoidanceDist: 0
+  dnaSeparationDist: 0
+  dnaPreyDistance: 0
   dnaCohesionWeight: 0
   dnaAlignmentWeight: 0
-  dnaAvoidanceWeight: 0
+  dnaSeparationWeight: 0
+  dnaHuntStrength: 0
+  dnaFleeStrength: 0
+  dnaFoodStrength: 0
+  dnaHuntAgility: 0
+  dnaFleeAgility: 0
+  dnaFoodAgility: 0
+  dna_agility: 0
+  midiNote: 0
+  oscAddress_positionXYZ: 
   transmitter: {fileID: 0}
 --- !u!33 &7794412978908942509
 MeshFilter:
@@ -142,7 +157,7 @@ TrailRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744981805102912257}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

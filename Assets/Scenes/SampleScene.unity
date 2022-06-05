@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 0
+  startAmount: 16
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
@@ -587,10 +587,10 @@ MonoBehaviour:
   food: {fileID: 1876838923}
   Carnivore: 1
   Herbivore: 1
-  Reproduce: 1
+  Reproduce: 0
   Builder: 1
-  Living: 1
-  maxAge: 200
+  Living: 0
+  maxAge: 800
   eatAge: 5
   huntStrength: 1
   fleeStrength: 1
@@ -599,8 +599,8 @@ MonoBehaviour:
   foodAgility: 0
   huntAgility: 0
   fleeAgility: 0
-  _minSpeed: 0
-  _maxSpeed: 100
+  _minSpeed: 1
+  _maxSpeed: 21.6
   Boids: []
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
@@ -1030,17 +1030,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 1
+  startAmount: 16
   spawnRadius: 1
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
-  Carnivore: 1
+  Carnivore: 0
   Herbivore: 1
-  Reproduce: 1
+  Reproduce: 0
   Builder: 1
-  Living: 1
-  maxAge: 200
+  Living: 0
+  maxAge: 800
   eatAge: 5
   huntStrength: 1
   fleeStrength: 1
@@ -1049,8 +1049,8 @@ MonoBehaviour:
   foodAgility: 0
   huntAgility: 0
   fleeAgility: 0
-  _minSpeed: 2.8
-  _maxSpeed: 100
+  _minSpeed: 1
+  _maxSpeed: 20.8
   Boids: []
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
