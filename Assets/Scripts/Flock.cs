@@ -226,5 +226,53 @@ public class Flock : MonoBehaviour
         return indexValue;
     }
 
+
+
+    void OnApplicationQuit()
+    {
+        OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
+        Debug.Log(resetMessage);
+        transmitter.Send(resetMessage);
+
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage lifeStateMessage = new("/" + this.breed + "/lifestate/" + i, OSCValue.Float(0));
+            transmitter.Send(lifeStateMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
+            transmitter.Send(message_resetPositionXYZ);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage velocityMessage = new("/" + breed + "/velocity/" + i, OSCValue.Float(0));
+            transmitter.Send(velocityMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage healthMessage = new("/" + breed + "/health/" + i, OSCValue.Float(0));
+            transmitter.Send(healthMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + i, OSCValue.Float(0));
+            OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + i, OSCValue.Float(0));
+
+
+            transmitter.Send(midiNoteMessage);
+            transmitter.Send(midiPlayMessage);
+
+        }
+    }
+
 }
 

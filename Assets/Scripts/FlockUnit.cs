@@ -51,6 +51,7 @@ public class FlockUnit : MonoBehaviour
     public float age;
     public float health;
     public float starterHealth;
+    public float foodEaten;
     public int eatingState;
     public float hunger;
     public float FOVAngle;
@@ -331,7 +332,12 @@ public class FlockUnit : MonoBehaviour
                 message_newPositionXYZ.Values[1] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[2] = OSCValue.Float(0);
 
+
+                transmitter.Send(message_newPositionXYZ);
+
                 velocityMessage.Values[0] = OSCValue.Float(0);
+
+                transmitter.Send(velocityMessage);
                 //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
@@ -341,13 +347,13 @@ public class FlockUnit : MonoBehaviour
 
 
 
-                transmitter.Send(message_newPositionXYZ);
+
 
                 //transmitter.Send(midiNoteMessage);
                 transmitter.Send(midiPlayMessage);
                 //transmitter.Send(healthMessage);
 
-                transmitter.Send(velocityMessage);
+
 
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
@@ -812,11 +818,12 @@ public class FlockUnit : MonoBehaviour
                 //health += 5 * Time.deltaTime;
                 prey.Eaten();
                 health += 0.25f;
+
                 //eatingState = 1;
 
                 if (eatingState != 1)
                 {
-
+                    foodEaten += 0.25f;
                     midiPlayMessage.Values[0] = OSCValue.Float(1);
                     transmitter.Send(midiPlayMessage);
                     eatingState = 1;
