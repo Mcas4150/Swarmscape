@@ -174,7 +174,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
@@ -469,71 +469,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
---- !u!1 &473739473
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 473739475}
-  - component: {fileID: 473739474}
-  m_Layer: 0
-  m_Name: jPrey
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &473739474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 473739473}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boidPrefab: {fileID: 2951293323639376428, guid: 9fe6b1c7225b249fdb6d897bfd60a8a3,
-    type: 3}
-  prey: {fileID: 2099012294}
-  food: {fileID: 0}
-  predator: 0
-  herbivore: 0
-  numBoids: 16
-  spawnRadius: 1
-  boundaryRadius: 80
-  maxVelocity: 1
-  maxSteeringForce: 0.03
-  seperationDistance: 35
-  neighborDistance: 50
-  fieldOfView: 183
-  seperationMultiplier: 1.5
-  alignmentMultiplier: 1
-  cohesionMultiplier: 1
-  attractionMultiplier: 2
-  boundaryMultiplier: 1
-  foodMultiplier: 1
---- !u!4 &473739475
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 473739473}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.86554, y: -6.5139184, z: -39.507446}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 565016924}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &551930387
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,6 +479,7 @@ GameObject:
   m_Component:
   - component: {fileID: 551930388}
   - component: {fileID: 551930389}
+  - component: {fileID: 551930390}
   m_Layer: 0
   m_Name: Shadows
   m_TagString: Untagged
@@ -579,7 +515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 16
+  startAmount: 0
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
@@ -600,42 +536,35 @@ MonoBehaviour:
   huntAgility: 0
   fleeAgility: 0
   _minSpeed: 1
-  _maxSpeed: 21.6
+  _maxSpeed: 52
   Boids: []
   BoidsIndex: 
-  transmitter: {fileID: 1229929645}
+  transmitter: {fileID: 551930390}
   flowfield: {fileID: 19178329}
---- !u!1 &565016923
-GameObject:
+--- !u!114 &551930390
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 565016924}
-  m_Layer: 0
-  m_Name: FlowField
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &565016924
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565016923}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.551559, y: -5.2699065, z: 1.420929}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 473739475}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 551930387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 192.168.2.22
+  _localPort: 7000
+  _remoteHost: 192.168.2.22
+  _remotePort: 7121
+  _useBundle: 0
 --- !u!1 &648710542
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,7 +968,7 @@ MonoBehaviour:
   Herbivore: 1
   Reproduce: 0
   Builder: 1
-  Living: 0
+  Living: 1
   maxAge: 800
   eatAge: 5
   huntStrength: 1
@@ -1050,7 +979,7 @@ MonoBehaviour:
   huntAgility: 0
   fleeAgility: 0
   _minSpeed: 1
-  _maxSpeed: 20.8
+  _maxSpeed: 52.8
   Boids: []
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
@@ -1724,70 +1653,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1924572748}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2099012293
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2099012295}
-  - component: {fileID: 2099012294}
-  m_Layer: 0
-  m_Name: jFlock
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2099012294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2099012293}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f875fafeef34d5bb41c5417a051388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boidPrefab: {fileID: 4232150327087004145, guid: 0312af50b926745ff829cd4114a654f7,
-    type: 3}
-  prey: {fileID: 473739474}
-  food: {fileID: 0}
-  predator: 1
-  herbivore: 0
-  numBoids: 16
-  spawnRadius: 1
-  boundaryRadius: 80
-  maxVelocity: 0.15
-  maxSteeringForce: 0.03
-  seperationDistance: 35
-  neighborDistance: 50
-  fieldOfView: 202
-  seperationMultiplier: 1.5
-  alignmentMultiplier: 1
-  cohesionMultiplier: 1
-  attractionMultiplier: 2
-  boundaryMultiplier: 1
-  foodMultiplier: 1
---- !u!4 &2099012295
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2099012293}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.86554, y: -6.5139184, z: -39.507446}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2119595933
 GameObject:

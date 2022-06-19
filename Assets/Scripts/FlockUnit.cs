@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using extOSC;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class FlockUnit : MonoBehaviour
 {
@@ -810,52 +811,39 @@ public class FlockUnit : MonoBehaviour
     {
         foreach (FoodUnit prey in neighbors)
         {
-            //sqr magnitude
+
             var desiredDirection = transform.position - prey.transform.position;
             var desiredDistance = desiredDirection.magnitude;
-            if (desiredDistance < 5f)
+            if (desiredDistance < 5f && desiredDistance > 4.5f)
             {
-                //health += 5 * Time.deltaTime;
+
                 prey.Eaten();
+                prey.meal = true;
                 health += 0.25f;
 
-                //eatingState = 1;
+                foodEaten += 0.25f;
 
-                if (eatingState != 1)
-                {
-                    foodEaten += 0.25f;
-                    midiPlayMessage.Values[0] = OSCValue.Float(1);
-                    transmitter.Send(midiPlayMessage);
-                    eatingState = 1;
-
-                }
-
-            }
-            //else
-            //{
-
-            //    if (eatingState != 0)
-            //    {
-
-            //        midiPlayMessage.Values[0] = OSCValue.Float(0);
-            //        transmitter.Send(midiPlayMessage);
-            //        eatingState = 0;
-            //    }
-            //    else { eatingState = 0; }
-
-            //}
-            else if (eatingState == 1)
-            {
-
-
-                midiPlayMessage.Values[0] = OSCValue.Float(0);
-                transmitter.Send(midiPlayMessage);
-                eatingState = 0;
+                sendEat();
 
 
             }
+
         }
     }
+
+
+    async void sendEat()
+    {
+        midiPlayMessage.Values[0] = OSCValue.Float(1);
+        transmitter.Send(midiPlayMessage);
+
+        await Task.Delay(200);
+
+        midiPlayMessage.Values[0] = OSCValue.Float(0);
+        transmitter.Send(midiPlayMessage);
+
+    }
+
 
     public void EatPrey(List<FlockUnit> neighbors)
     {
@@ -863,6 +851,7 @@ public class FlockUnit : MonoBehaviour
         foreach (FlockUnit prey in neighbors)
         {
             //sqr magnitude
+
             var desiredDirection = transform.position - prey.transform.position;
             var desiredDistance = desiredDirection.magnitude;
             if (desiredDistance < 5f && prey.age > assignedFlock.eatAge)
@@ -871,25 +860,12 @@ public class FlockUnit : MonoBehaviour
                 prey.Eaten();
                 health += 0.25f;
 
-                //if (eatingState != 1)
-                //{
-                //    eatingState = 1;
-                //    transmitter.Send(midiPlayMessage);
+                sendEat();
 
-                //}
 
 
             }
-            else
-            {
-                //if (eatingState != 0)
-                //{
-                //    eatingState = 0;
-                //    transmitter.Send(midiPlayMessage);
-                //}
 
-                //eatingState = 0;
-            }
         }
 
     }

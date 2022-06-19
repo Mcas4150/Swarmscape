@@ -14,6 +14,7 @@ public class FoodUnit : MonoBehaviour
     public float health;
     private float radius;
     public float mass;
+    public Boolean meal = false;
 
     public event EventHandler<FoodDeathEventArgs> Death;
 
