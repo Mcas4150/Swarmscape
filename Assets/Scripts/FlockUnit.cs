@@ -255,18 +255,17 @@ public class FlockUnit : MonoBehaviour
 
                         if (breedChance <= buildProb)
                         {
-                            assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
-
+                            assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
                         }
                         else if (breedChance > buildProb && assignedFlock.Reproduce)
                         {
-                            assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
+                            assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
                         }
                     }
 
                     if (assignedFlock.Reproduce && assignedFlock.Builder == false)
                     {
-                        assignedFlock.GenerateAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
+                        assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
                     }
 
 
@@ -280,7 +279,7 @@ public class FlockUnit : MonoBehaviour
 
             else if (allUnits.Count == flockSize && assignedFlock.Builder && assignedFlock.EnemyFlock.Boids.Count < 6)
             {
-                assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
+                assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
             }
         }
     }
@@ -378,14 +377,15 @@ public class FlockUnit : MonoBehaviour
                 ageMessage.Values[0] = OSCValue.Int(0);
                 transmitter.Send(ageMessage);
 
-
-                Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
-
-                assignedFlock.BoidsIndex.Remove(oscNumber);
+                //Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
 
                 gameObject.SetActive(false);
-                Destroy(this, 0.05f);
-                Destroy(gameObject, 0.05f);
+                assignedFlock.Boids.Remove(this);
+                //assignedFlock.BoidsIndex.Remove(oscNumber);
+                assignedFlock.agentsAvailable.Enqueue(this);
+
+                //Destroy(this, 0.05f);
+                //Destroy(gameObject, 0.05f);
 
             }
         }
@@ -557,7 +557,7 @@ public class FlockUnit : MonoBehaviour
 
             var currentUnit = prey;
 
-            //if (prey.gameObject.activeInHierarchy)
+
             //if (currentUnit != this && currentUnit != null)
 
             float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);

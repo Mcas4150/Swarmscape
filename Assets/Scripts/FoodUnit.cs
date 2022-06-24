@@ -11,7 +11,7 @@ public class FoodUnit : MonoBehaviour
 
 
     [SerializeField] public GameObject food;
-    [SerializeField] public ObjectPool<FoodUnit> myPool;
+    //[SerializeField] public ObjectPool<FoodUnit> myPool;
 
     public Food assignedFood;
     public float health;
@@ -47,7 +47,7 @@ public class FoodUnit : MonoBehaviour
         oscIndex = index;
     }
 
-    public void SetPool(ObjectPool<FoodUnit> pool) => myPool = pool;
+    //public void SetPool(ObjectPool<FoodUnit> pool) => myPool = pool;
 
 
     public void AssignFood(Food food)

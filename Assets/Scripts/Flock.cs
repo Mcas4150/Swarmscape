@@ -22,6 +22,10 @@ public class Flock : MonoBehaviour
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
+
+    public Queue<FlockUnit> agentsAvailable = new Queue<FlockUnit>();
+
+
     public bool Carnivore;
     public bool Herbivore;
     public bool Reproduce;
@@ -81,7 +85,12 @@ public class Flock : MonoBehaviour
         StartCoroutine(OSCReset());
         StopCoroutine(OSCReset());
 
-        GenerateUnits();
+        InitializeAgents();
+
+        for (int i = 0; i < startAmount; i++)
+        {
+            SpawnAgent();
+        }
 
 
     }
@@ -94,11 +103,6 @@ public class Flock : MonoBehaviour
 
     private IEnumerator OSCReset()
     {
-
-        //OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
-        ////Debug.Log(resetMessage);
-        //transmitter.Send(resetMessage);
-
 
         for (int i = 1; i <= flockSize; i++)
         {
@@ -162,52 +166,82 @@ public class Flock : MonoBehaviour
     }
 
 
-    private void GenerateUnits()
+    private void InitializeAgents()
     {
         //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
-        for (int i = 1; i <= startAmount; i++)
+        for (int i = 1; i <= flockSize; i++)
         {
             var halfBounds = boundsDistance;
             var randomPosition1 = UnityEngine.Random.Range(-halfBounds, halfBounds);
             var randomPosition2 = UnityEngine.Random.Range(-halfBounds, halfBounds);
             var randomPosition3 = UnityEngine.Random.Range(-halfBounds, halfBounds);
             var randomVector = new Vector3(randomPosition1, randomPosition2, randomPosition3);
-            GenerateAgent(this, Boids, BoidsIndex, breed, randomVector, starterDna);
+            var spawnPosition = randomVector + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
+
+            InitializeAgent(this, breed, BoidsIndex, randomVector, starterDna);
         }
 
     }
 
-    public void GenerateAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
+    public void InitializeAgent(Flock agentFlock, string agentBreed, List<int> unitIndex, Vector3 position, DNAboid parentDNA)
     {
 
         DNAboid childDNA = parentDNA.copy();
         childDNA.mutate(0.2f);
 
+        var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
+        rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
+
+        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation, transform);
+        newAgent.gameObject.SetActive(false);
+        newAgent.AssignFlock(agentFlock);
+        newAgent.breed = agentBreed;
+        newAgent.setDNA(childDNA);
+
+        var agentNumber = FindOpenIndex(unitIndex, flockSize);
+        newAgent.NumberParticle(agentNumber);
+        unitIndex.Add(agentNumber);
+        agentsAvailable.Enqueue(newAgent);
+
+        //OSCMessage lifeStateMessage = new("/" + agentBreed + "/lifestate/" + agentNumber, OSCValue.Float(1));
+        //transmitter.Send(lifeStateMessage);
+        //agentFlockList.Add(newAgent);
+
+    }
+
+
+
+    public void SpawnAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
+    {
 
         var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
         rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
 
-        var agentNumber = FindOpenIndex(unitIndex, flockSize);
+        var newAgent = agentsAvailable.Dequeue();
 
-
-        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation, transform);
-        var newAgentScript = newAgent.GetComponent<FlockUnit>();
-
-        newAgentScript.Death += OnBoidDeath;
-
+        DNAboid childDNA = parentDNA.copy();
+        childDNA.mutate(0.2f);
+        newAgent.setDNA(childDNA);
         newAgent.AssignFlock(agentFlock);
         newAgent.breed = agentBreed;
 
-        newAgent.NumberParticle(agentNumber);
-        newAgent.setDNA(childDNA);
+        newAgent.gameObject.transform.position = spawnPosition;
+        newAgent.gameObject.transform.rotation = rotation;
+        newAgent.gameObject.SetActive(true);
+        agentFlockList.Add(newAgent);
 
-        unitIndex.Add(agentNumber);
-
+        // birth message here
+        //unitIndex.Add(agentNumber);
         //OSCMessage lifeStateMessage = new("/" + agentBreed + "/lifestate/" + agentNumber, OSCValue.Float(1));
         //transmitter.Send(lifeStateMessage);
 
-        agentFlockList.Add(newAgent.GetComponent<FlockUnit>());
+    }
 
+    public void SpawnAgent()
+    {
+        var newAgent = agentsAvailable.Dequeue();
+        newAgent.gameObject.SetActive(true);
+        Boids.Add(newAgent);
     }
 
     public void OnBoidDeath(object sender, BoidDeathEventArgs e)
@@ -242,9 +276,6 @@ public class Flock : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        //OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
-        //Debug.Log(resetMessage);
-        //transmitter.Send(resetMessage);
 
 
         for (int i = 1; i <= flockSize; i++)

@@ -24,8 +24,8 @@ public class Food : MonoBehaviour
     public int foodReceived = 50;
     public int foodCount = 0;
     public bool initialized = false;
-    public int activeFood;
-    public int inactiveFood;
+    //public int activeFood;
+    //public int inactiveFood;
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
@@ -50,29 +50,14 @@ public class Food : MonoBehaviour
 
     }
 
-
-    public void OnGetFood(FoodUnit obj)
-    {
-        obj.gameObject.SetActive(true);
-    }
-
-    public void OnReleaseFood(FoodUnit obj)
-    {
-        obj.gameObject.SetActive(false);
-    }
-
-
     private void TotalFood(OSCMessage message)
     {
         foodReceived = message.Values[0].IntValue;
     }
 
 
-
     protected void SeedFood(OSCMessage message)
     {
-
-
         var newNumber = message.Values[0].IntValue;
         var newFoodX = scale(message.Values[1].FloatValue, 0f, 1f, -foodBounds, foodBounds);
         var newFoodY = scale(message.Values[2].FloatValue, 0f, 1f, -foodBounds, foodBounds);
@@ -84,7 +69,6 @@ public class Food : MonoBehaviour
         foodAvailable.Enqueue(newFood);
 
         if (foodCount < foodSize) { EnableFoods(1); }
-
     }
 
 
