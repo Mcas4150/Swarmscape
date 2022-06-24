@@ -22,11 +22,11 @@ public class Flock : MonoBehaviour
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
     public Food food;
-    public Boolean Carnivore;
-    public Boolean Herbivore;
-    public Boolean Reproduce;
-    public Boolean Builder;
-    public Boolean Living;
+    public bool Carnivore;
+    public bool Herbivore;
+    public bool Reproduce;
+    public bool Builder;
+    public bool Living;
     public float maxAge;
     public float eatAge;
 
@@ -95,9 +95,9 @@ public class Flock : MonoBehaviour
     private IEnumerator OSCReset()
     {
 
-        OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
-        Debug.Log(resetMessage);
-        transmitter.Send(resetMessage);
+        //OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
+        ////Debug.Log(resetMessage);
+        //transmitter.Send(resetMessage);
 
 
         for (int i = 1; i <= flockSize; i++)
@@ -132,9 +132,21 @@ public class Flock : MonoBehaviour
             OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + i, OSCValue.Float(0));
             OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + i, OSCValue.Float(0));
 
-
             transmitter.Send(midiNoteMessage);
             transmitter.Send(midiPlayMessage);
+
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage ageMessage = new("/" + breed + "/age/" + i, OSCValue.Int(0));
+            transmitter.Send(ageMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage foodMealMessage = new("/" + breed + "/foodMeal/" + i, OSCValue.Int(-1));
+            transmitter.Send(foodMealMessage);
 
         }
 
@@ -230,9 +242,9 @@ public class Flock : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
-        Debug.Log(resetMessage);
-        transmitter.Send(resetMessage);
+        //OSCMessage resetMessage = new OSCMessage("/play/", OSCValue.Float(1.0f));
+        //Debug.Log(resetMessage);
+        //transmitter.Send(resetMessage);
 
 
         for (int i = 1; i <= flockSize; i++)
@@ -270,6 +282,19 @@ public class Flock : MonoBehaviour
 
             transmitter.Send(midiNoteMessage);
             transmitter.Send(midiPlayMessage);
+
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage ageMessage = new("/" + breed + "/age/" + i, OSCValue.Int(0));
+            transmitter.Send(ageMessage);
+        }
+
+        for (int i = 1; i <= flockSize; i++)
+        {
+            OSCMessage foodMealMessage = new("/" + breed + "/foodMeal/" + i, OSCValue.Int(-1));
+            transmitter.Send(foodMealMessage);
 
         }
     }

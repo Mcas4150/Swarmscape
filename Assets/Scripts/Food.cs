@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using extOSC;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Food : MonoBehaviour
 {
@@ -12,14 +14,18 @@ public class Food : MonoBehaviour
     [SerializeField] private FoodUnit foodUnit;
 
 
-    public List<FoodUnit> Foods = new List<FoodUnit>();
-    public List<int> FoodsIndex;
-    public List<Vector3> OscFood = new List<Vector3>();
-
+    public Queue<FoodUnit> foodAvailable = new Queue<FoodUnit>();
+    public List<FoodUnit> Foods = new();
+    public ObjectPool<FoodUnit> foodPool;
     public OSCReceiver oscReceiver;
 
-    public int foodSize = 5;
+    public int foodSize = 25;
     public int foodBounds = 75;
+    public int foodReceived = 50;
+    public int foodCount = 0;
+    public bool initialized = false;
+    public int activeFood;
+    public int inactiveFood;
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
@@ -33,11 +39,11 @@ public class Food : MonoBehaviour
 
     private void Awake()
     {
-
-        oscReceiver.Bind("/flucoma/xyz", MessageReceived);
-
-        FoodsIndex = new List<int>() { 1 };
+        oscReceiver.Bind("/flucoma/total", TotalFood);
+        oscReceiver.Bind("/flucoma/xyz", SeedFood);
     }
+
+
 
     private void Start()
     {
@@ -45,50 +51,84 @@ public class Food : MonoBehaviour
     }
 
 
-    protected void MessageReceived(OSCMessage message)
+    public void OnGetFood(FoodUnit obj)
+    {
+        obj.gameObject.SetActive(true);
+    }
+
+    public void OnReleaseFood(FoodUnit obj)
+    {
+        obj.gameObject.SetActive(false);
+    }
+
+
+    private void TotalFood(OSCMessage message)
+    {
+        foodReceived = message.Values[0].IntValue;
+    }
+
+
+
+    protected void SeedFood(OSCMessage message)
     {
 
-        var newFoodX = scale(message.Values[0].FloatValue, 0, 1, -foodBounds, foodBounds);
-        var newFoodY = scale(message.Values[1].FloatValue, 0, 1, -foodBounds, foodBounds);
-        var newFoodZ = scale(message.Values[2].FloatValue, 0, 1, -foodBounds, foodBounds);
-        Vector3 newFood = new Vector3(newFoodX, newFoodY, newFoodZ);
-        OscFood.Add(newFood);
-        if (OscFood.Count < foodSize)
-        {
-            var random = new System.Random();
-            int index = random.Next(OscFood.Count);
-            GenerateFood(OscFood[index]);
 
-        }
+        var newNumber = message.Values[0].IntValue;
+        var newFoodX = scale(message.Values[1].FloatValue, 0f, 1f, -foodBounds, foodBounds);
+        var newFoodY = scale(message.Values[2].FloatValue, 0f, 1f, -foodBounds, foodBounds);
+        var newFoodZ = scale(message.Values[3].FloatValue, 0f, 1f, -foodBounds, foodBounds);
+        Vector3 newPosition = new Vector3(newFoodX, newFoodY, newFoodZ);
+
+        var newFood = InitializeFood(newPosition, newNumber);
+        foodCount++;
+        foodAvailable.Enqueue(newFood);
+
+        if (foodCount < foodSize) { EnableFoods(1); }
 
     }
 
 
-    private void GenerateFood(Vector3 position)
+    public FoodUnit InitializeFood(Vector3 position, int index)
     {
 
         var food = Instantiate(foodUnit, position, Quaternion.identity, transform);
-        var foodScript = food.GetComponent<FoodUnit>();
-        foodScript.Death += OnFoodDeath;
-        Foods.Add(foodScript);
+        food.NumberIndex(index);
+        food.gameObject.SetActive(false);
+        food.AssignFood(this);
 
+        return food;
 
     }
 
 
-    public void OnFoodDeath(object sender, FoodDeathEventArgs e)
+
+    public void EnableFoods(int number)
     {
 
-        Foods.Remove(e.FoodObject);
-
-
-        if (ecosystem.season == "spring" || ecosystem.season == "summer")
+        for (int i = 0; i < number; i++)
         {
-            var random = new System.Random();
-            int index = random.Next(OscFood.Count);
-            GenerateFood(OscFood[index]);
+            FoodUnit newFood = foodAvailable.Dequeue();
+            newFood.food.SetActive(true);
+            Foods.Add(newFood);
         }
+
     }
+
+
+
+    //public void OnFoodDeath(object sender, FoodDeathEventArgs e)
+    //{
+
+    //    Foods.Remove(e.FoodObject);
+
+
+    //    if (ecosystem.season == "spring" || ecosystem.season == "summer")
+    //    {
+    //        //var random = new System.Random();
+    //        //int index = random.Next(OscFood.Count);
+    //        //GenerateFood(OscFood[index]);
+    //    }
+    //}
 
 
 

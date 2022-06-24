@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using extOSC;
 
 public class Ecosystem : MonoBehaviour
 {
@@ -10,14 +12,21 @@ public class Ecosystem : MonoBehaviour
     [SerializeField] private Food food;
     [SerializeField] private World world;
 
+    public Boolean initialized = false;
+
+
     public int worldDay = 0;
     public int worldYear = 0;
     public string season = "spring";
+
+    [Header("OSC Properties")]
+    public OSCTransmitter transmitter;
 
 
     // Start is called before the first frame update
     void Start()
     {
+
         StartCoroutine(CountWorldTime());
         setSeason("spring");
     }
@@ -27,6 +36,7 @@ public class Ecosystem : MonoBehaviour
     {
 
     }
+
 
     private IEnumerator CountWorldTime()
     {
@@ -59,6 +69,8 @@ public class Ecosystem : MonoBehaviour
         {
             case "spring":
                 season = "spring";
+                //if (food.Foods.Count < 1)
+                //if (food.initialized) food.EnableFoods(food.foodSize);
                 //world.ground.CurrentMaterial = world.ground.SpringMaterial;
                 world.ground.colorStart = world.ground.ColorSpring;
                 world.ground.colorEnd = world.ground.ColorSummer;
@@ -67,6 +79,8 @@ public class Ecosystem : MonoBehaviour
 
             case "summer":
                 season = "summer";
+
+                food.EnableFoods(15);
                 //world.ground.CurrentMaterial = world.ground.SummerMaterial;
                 world.ground.colorStart = world.ground.ColorSummer;
                 world.ground.colorEnd = world.ground.ColorFall;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 using extOSC;
 
 public class FoodUnit : MonoBehaviour
@@ -9,17 +10,20 @@ public class FoodUnit : MonoBehaviour
 
 
 
-    [SerializeField] private GameObject food;
+    [SerializeField] public GameObject food;
+    [SerializeField] public ObjectPool<FoodUnit> myPool;
 
+    public Food assignedFood;
     public float health;
     private float radius;
     public float mass;
     public Boolean meal = false;
 
-    public event EventHandler<FoodDeathEventArgs> Death;
+    //public event EventHandler<FoodDeathEventArgs> Death;
 
     [Header("OSC Properties")]
     public OSCReceiver oscReceiver;
+    public int oscIndex;
 
 
     public Vector3 position
@@ -38,6 +42,19 @@ public class FoodUnit : MonoBehaviour
         StartCoroutine(FoodSize());
     }
 
+    public void NumberIndex(int index)
+    {
+        oscIndex = index;
+    }
+
+    public void SetPool(ObjectPool<FoodUnit> pool) => myPool = pool;
+
+
+    public void AssignFood(Food food)
+    {
+        assignedFood = food;
+    }
+
 
     private IEnumerator FoodSize()
     {
@@ -53,6 +70,8 @@ public class FoodUnit : MonoBehaviour
             //myTransform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
         }
     }
+
+
 
 
     //public Vector3 Attract(Vector3 targetPosition)
@@ -81,9 +100,14 @@ public class FoodUnit : MonoBehaviour
         if (health < 10)
         {
             // Reseed();
-            Death?.Invoke(this, new FoodDeathEventArgs { FoodObject = gameObject.GetComponent<FoodUnit>() });
-            Destroy(this, 0.5f);
-            Destroy(gameObject, 0.5f);
+            //Death?.Invoke(this, new FoodDeathEventArgs { FoodObject = gameObject.GetComponent<FoodUnit>() });
+            //Destroy(this, 0.5f);
+            //Destroy(gameObject, 0.5f);
+
+            //myPool.Release(this);
+            food.SetActive(false);
+            assignedFood.Foods.Remove(this);
+            assignedFood.foodAvailable.Enqueue(this);
         }
     }
 
@@ -106,7 +130,7 @@ public class FoodUnit : MonoBehaviour
 }
 
 
-public class FoodDeathEventArgs : EventArgs
-{
-    public FoodUnit FoodObject { get; set; }
-}
+//public class FoodDeathEventArgs : EventArgs
+//{
+//    public FoodUnit FoodObject { get; set; }
+//}

@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 0
+  startAmount: 5
   spawnRadius: 1
   flockUnitPrefab: {fileID: 291065812254269404, guid: 864b62f02d0804ddbbae5f2efc9dbeb7,
     type: 3}
@@ -523,9 +523,9 @@ MonoBehaviour:
   food: {fileID: 1876838923}
   Carnivore: 1
   Herbivore: 1
-  Reproduce: 0
+  Reproduce: 1
   Builder: 1
-  Living: 0
+  Living: 1
   maxAge: 800
   eatAge: 5
   huntStrength: 1
@@ -959,14 +959,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 16
+  startAmount: 5
   spawnRadius: 1
   flockUnitPrefab: {fileID: 1190195829, guid: c717f817a496cf247a92b830b355a407, type: 3}
   EnemyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
-  Carnivore: 0
+  Carnivore: 1
   Herbivore: 1
-  Reproduce: 0
+  Reproduce: 1
   Builder: 1
   Living: 1
   maxAge: 800
@@ -995,7 +995,7 @@ GameObject:
   - component: {fileID: 1576914202}
   - component: {fileID: 1576914201}
   - component: {fileID: 1576914204}
-  - component: {fileID: 1576914203}
+  - component: {fileID: 1576914205}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1015,6 +1015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8281506532104e09bbae74460c6d5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialized: 0
   flockSize: 16
   buildProb: 0.1
   respawnTime: 2
@@ -1038,7 +1039,7 @@ MonoBehaviour:
   driftX: 0
   driftY: 0
   driftZ: 0
-  transmitter: {fileID: 1576914203}
+  transmitter: {fileID: 1576914205}
   oscReceiver: {fileID: 1576914204}
 --- !u!4 &1576914202
 Transform:
@@ -1055,7 +1056,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1576914203
+--- !u!114 &1576914204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576914200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbba286dc10e549b2bdec947ef8dbd3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localHost: 192.168.2.22
+  _localPort: 7001
+--- !u!114 &1576914205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1079,25 +1099,6 @@ MonoBehaviour:
   _remoteHost: 192.168.2.22
   _remotePort: 8821
   _useBundle: 0
---- !u!114 &1576914204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576914200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbba286dc10e549b2bdec947ef8dbd3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localHost: 192.168.2.22
-  _localPort: 7001
 --- !u!1 &1646289878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1146,9 +1147,11 @@ MonoBehaviour:
   ShadowFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
   world: {fileID: 1924572749}
+  initialized: 0
   worldDay: 0
   worldYear: 0
   season: spring
+  transmitter: {fileID: 0}
 --- !u!1 &1686695737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,11 +1488,11 @@ MonoBehaviour:
   foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
     type: 3}
   Foods: []
-  FoodsIndex: 
-  OscFood: []
   oscReceiver: {fileID: 1876838922}
   foodSize: 16
   foodBounds: 75
+  foodReceived: 0
+  initialized: 0
 --- !u!4 &1876838924
 Transform:
   m_ObjectHideFlags: 0

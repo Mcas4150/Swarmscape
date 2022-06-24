@@ -49,7 +49,7 @@ public class FlockUnit : MonoBehaviour
 
     [Header("Health Values")]
 
-    public float age;
+    public int age;
     public float health;
     public float starterHealth;
     public float foodEaten;
@@ -59,6 +59,8 @@ public class FlockUnit : MonoBehaviour
     public float averageVelocity;
     public float totalAgility;
     public float totalSpeed;
+    public int foodMeal;
+    public int boidMeal;
 
     [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
@@ -129,6 +131,8 @@ public class FlockUnit : MonoBehaviour
     public OSCMessage healthMessage;
     public OSCMessage midiNoteMessage;
     public OSCMessage midiPlayMessage;
+    public OSCMessage foodMealMessage;
+    public OSCMessage ageMessage;
     public OSCTransmitter transmitter;
 
     DNAboid dna;
@@ -164,6 +168,10 @@ public class FlockUnit : MonoBehaviour
         healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
 
         velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+
+        foodMealMessage = new OSCMessage("/" + breed + "/foodMeal/" + oscNumber, OSCValue.Int(-1));
+
+        ageMessage = new OSCMessage("/" + breed + "/age/" + oscNumber, OSCValue.Int(0));
 
         TrailRenderer Trail = gameObject.GetComponent<TrailRenderer>();
 
@@ -230,15 +238,17 @@ public class FlockUnit : MonoBehaviour
             //yield return new WaitForSeconds(respawnTime * UnityEngine.Random.Range(0f, 3f));
             yield return new WaitForSeconds(0.5f);
 
-            if (assignedFlock.Reproduce && health > starterHealth * 1.25)
+
+            var allUnits = assignedFlock.Boids;
+            spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            var breedChance = UnityEngine.Random.Range(0f, 1f);
+
+            if (allUnits.Count < flockSize)
             {
 
-                var allUnits = assignedFlock.Boids;
 
-                if (allUnits.Count < flockSize)
+                if (assignedFlock.Reproduce && health > starterHealth * 1.25)
                 {
-                    spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-                    var breedChance = UnityEngine.Random.Range(0f, 1f);
 
                     if (assignedFlock.Builder)
                     {
@@ -261,7 +271,16 @@ public class FlockUnit : MonoBehaviour
 
 
                     health *= 0.5f;
+
                 }
+
+
+
+            }
+
+            else if (allUnits.Count == flockSize && assignedFlock.Builder && assignedFlock.EnemyFlock.Boids.Count < 6)
+            {
+                assignedFlock.EnemyFlock.GenerateAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
             }
         }
     }
@@ -284,6 +303,8 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
             age += 1;
+            ageMessage.Values[0] = OSCValue.Int(age);
+            transmitter.Send(ageMessage);
         }
 
     }
@@ -332,29 +353,30 @@ public class FlockUnit : MonoBehaviour
                 message_newPositionXYZ.Values[0] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[1] = OSCValue.Float(0);
                 message_newPositionXYZ.Values[2] = OSCValue.Float(0);
-
-
                 transmitter.Send(message_newPositionXYZ);
 
                 velocityMessage.Values[0] = OSCValue.Float(0);
-
                 transmitter.Send(velocityMessage);
+
                 //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
                 //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
 
                 //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
                 midiPlayMessage.Values[0] = OSCValue.Float(0);
-
-
+                transmitter.Send(midiPlayMessage);
 
 
 
                 //transmitter.Send(midiNoteMessage);
-                transmitter.Send(midiPlayMessage);
+
                 //transmitter.Send(healthMessage);
 
+                foodMealMessage.Values[0] = OSCValue.Int(-1);
+                transmitter.Send(foodMealMessage);
 
+                ageMessage.Values[0] = OSCValue.Int(0);
+                transmitter.Send(ageMessage);
 
 
                 Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
@@ -532,20 +554,23 @@ public class FlockUnit : MonoBehaviour
 
         foreach (FoodUnit prey in allPrey)
         {
+
             var currentUnit = prey;
+
+            //if (prey.gameObject.activeInHierarchy)
             //if (currentUnit != this && currentUnit != null)
+
+            float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
+
+            //if (currentPreyDistanceSqr <= ((preyDistance * preyDistance * generalWeight) + (dnaPreyDistance * dnaPreyDistance * dnaWeight)))
+            if (currentPreyDistanceSqr <= CalculateTotalParam(preyDistance * preyDistance, dnaPreyDistance * dnaPreyDistance))
             {
-                float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
-
-                //if (currentPreyDistanceSqr <= ((preyDistance * preyDistance * generalWeight) + (dnaPreyDistance * dnaPreyDistance * dnaWeight)))
-                if (currentPreyDistanceSqr <= CalculateTotalParam(preyDistance * preyDistance, dnaPreyDistance * dnaPreyDistance))
-                {
-                    foodNeighbors.Add(currentUnit);
+                foodNeighbors.Add(currentUnit);
 
 
 
-                }
             }
+
         }
     }
 
@@ -557,6 +582,8 @@ public class FlockUnit : MonoBehaviour
         foreach (FlockUnit prey in allPrey)
         {
             var currentUnit = prey;
+
+            if (currentUnit.age > 10)
             //if (currentUnit != this && currentUnit != null)
             {
                 float currentPreyDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
@@ -568,6 +595,7 @@ public class FlockUnit : MonoBehaviour
 
                 }
             }
+
         }
     }
 
@@ -819,6 +847,8 @@ public class FlockUnit : MonoBehaviour
 
                 prey.Eaten();
                 prey.meal = true;
+
+                foodMeal = prey.oscIndex;
                 health += 0.25f;
 
                 foodEaten += 0.25f;
@@ -836,6 +866,9 @@ public class FlockUnit : MonoBehaviour
     {
         midiPlayMessage.Values[0] = OSCValue.Float(1);
         transmitter.Send(midiPlayMessage);
+
+        foodMealMessage.Values[0] = OSCValue.Int(foodMeal);
+        transmitter.Send(foodMealMessage);
 
         await Task.Delay(200);
 
@@ -858,6 +891,8 @@ public class FlockUnit : MonoBehaviour
             {
                 //health += 5 * Time.deltaTime;
                 prey.Eaten();
+
+                boidMeal = prey.oscNumber;
                 health += 0.25f;
 
                 sendEat();
