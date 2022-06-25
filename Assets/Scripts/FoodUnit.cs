@@ -36,9 +36,10 @@ public class FoodUnit : MonoBehaviour
     {
         food = gameObject;
         health = UnityEngine.Random.Range(50, 100);
-        radius = health / 50f;
-        food.transform.localScale = 2 * radius * Vector3.one;
-        mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
+        CalcFoodSize();
+        //radius = health / 50f;
+        //food.transform.localScale = 2 * radius * Vector3.one;
+        //mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
         StartCoroutine(FoodSize());
     }
 
@@ -62,17 +63,19 @@ public class FoodUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
 
-            radius = health / 50f;
-            mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
-            food.transform.localScale = 2 * radius * Vector3.one;
-
-            //var healthRatio = health * 0.025f;
-            //myTransform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
+            CalcFoodSize();
         }
     }
 
+    public void CalcFoodSize()
+    {
+        radius = health / 50f;
+        mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
+        food.transform.localScale = 2 * radius * Vector3.one;
+    }
 
 
+    //public void Calc
 
     //public Vector3 Attract(Vector3 targetPosition)
     //{

@@ -19,8 +19,14 @@ public class Ecosystem : MonoBehaviour
     public int worldYear = 0;
     public string season = "spring";
 
+    [Header("Season Properties")]
+    public int bloomMax;
+    public float bloomTime;
+
     [Header("OSC Properties")]
     public OSCTransmitter transmitter;
+
+
 
 
     // Start is called before the first frame update
@@ -28,6 +34,7 @@ public class Ecosystem : MonoBehaviour
     {
 
         StartCoroutine(CountWorldTime());
+        //StartCoroutine(Bloom());
         setSeason("spring");
     }
 
@@ -36,6 +43,39 @@ public class Ecosystem : MonoBehaviour
     {
 
     }
+
+
+    private IEnumerator Bloom()
+    {
+        while (true)
+        {
+
+            yield return new WaitForSeconds(bloomTime);
+
+
+            if (food.Foods.Count < bloomMax && food.foodAvailable.Count != 0)
+            {
+                food.EnableFoods(1);
+            }
+
+        }
+    }
+
+    //private IEnumerator Bloom()
+    //{
+    //    while (true)
+    //    {
+
+    //        //yield return new WaitForSeconds(respawnTime * UnityEngine.Random.Range(0f, 3f));
+    //        yield return new WaitForSeconds(0.5f);
+
+    //        Debug.Log("bloom");
+    //        if (food.Foods.Count < bloomMax && food.foodAvailable.Count != 0) food.EnableFoods(1);
+
+
+
+    //    }
+    //}
 
 
     private IEnumerator CountWorldTime()
@@ -71,6 +111,10 @@ public class Ecosystem : MonoBehaviour
                 season = "spring";
                 //if (food.Foods.Count < 1)
                 //if (food.initialized) food.EnableFoods(food.foodSize);
+                bloomTime = 0.5f;
+                //StartCoroutine(Bloom(0.5f));
+                StartCoroutine(Bloom());
+                //StartCoroutine(Bloom());
                 //world.ground.CurrentMaterial = world.ground.SpringMaterial;
                 world.ground.colorStart = world.ground.ColorSpring;
                 world.ground.colorEnd = world.ground.ColorSummer;
@@ -80,7 +124,10 @@ public class Ecosystem : MonoBehaviour
             case "summer":
                 season = "summer";
 
-                food.EnableFoods(15);
+                bloomTime = 3;
+                //food.EnableFoods(15);
+                //StopCoroutine(Bloom(0.5f));
+                //StartCoroutine(Bloom(5f));
                 //world.ground.CurrentMaterial = world.ground.SummerMaterial;
                 world.ground.colorStart = world.ground.ColorSummer;
                 world.ground.colorEnd = world.ground.ColorFall;
@@ -89,6 +136,10 @@ public class Ecosystem : MonoBehaviour
 
             case "fall":
                 season = "fall";
+
+                StopCoroutine(Bloom());
+                ShadowFlock.Carnivore = true;
+                //StopCoroutine(Bloom(5f));
                 //world.ground.CurrentMaterial = world.ground.FallMaterial;
                 world.ground.colorStart = world.ground.ColorFall;
                 world.ground.colorEnd = world.ground.ColorWinter;

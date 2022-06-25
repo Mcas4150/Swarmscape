@@ -46,6 +46,8 @@ public class FlockUnit : MonoBehaviour
     public int oscNumber;
     Boolean initialized = false;
 
+    public Color myColor;
+
 
     [Header("Health Values")]
 
@@ -61,6 +63,8 @@ public class FlockUnit : MonoBehaviour
     public float totalSpeed;
     public int foodMeal;
     public int boidMeal;
+
+    public bool Carnivore;
 
     [Header("Neighbors")]
     public List<FlockUnit> cohesionNeighbors = new List<FlockUnit>();
@@ -441,14 +445,16 @@ public class FlockUnit : MonoBehaviour
         Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
         Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
         Alignment = CalculateAlignment(alignmentNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
-        FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
 
+        CalculateSwarm();
+
+        FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
         FlowfieldMultiplier = new Vector3(flowfieldStrength * 0.01f, flowfieldStrength * 0.01f, flowfieldStrength * 0.01f);
         FlowfieldVector = Vector3.Scale(FlowfieldVector, FlowfieldMultiplier);
 
         BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
 
-        if (assignedFlock.Carnivore == true)
+        if (assignedFlock.Carnivore == true || this.Carnivore == true)
         {
             HuntVector = CalculatePreyVector(preyNeighbors, huntAgility) * CalculateTotalParam(assignedFlock.huntStrength, dnaHuntStrength) * hunger;
             EatPrey(preyNeighbors);
@@ -508,6 +514,7 @@ public class FlockUnit : MonoBehaviour
         //averageVelocity = currentVelocity.magnitude * (Time.deltaTime * totalSpeed);
         //var newVel = Vector3.SmoothDamp(currentMoveVector, totalVelocity, ref smoothVelocity, 0.1f);
         //averageVelocity = smoothVelocity.magnitude;
+
         CheckBounds(moveVector);
         CalculateBoundaries(transform.position);
 
@@ -716,6 +723,15 @@ public class FlockUnit : MonoBehaviour
         return force;
     }
 
+    private void CalculateSwarm()
+    {
+        if (cohesionNeighbors.Count >= 5)
+        {
+            totalSpeed *= 2;
+            Carnivore = true;
+        }
+
+    }
 
     private Vector3 CalculateBoundsVector()
     {

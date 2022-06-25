@@ -25,6 +25,7 @@ public class Flock : MonoBehaviour
 
     public Queue<FlockUnit> agentsAvailable = new Queue<FlockUnit>();
 
+    public Color breedColor;
 
     public bool Carnivore;
     public bool Herbivore;
@@ -193,6 +194,8 @@ public class Flock : MonoBehaviour
         rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
 
         var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation, transform);
+        newAgent.GetComponent<MeshRenderer>().material.color = breedColor;
+
         newAgent.gameObject.SetActive(false);
         newAgent.AssignFlock(agentFlock);
         newAgent.breed = agentBreed;

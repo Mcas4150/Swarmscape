@@ -19,7 +19,7 @@ public class Food : MonoBehaviour
     public ObjectPool<FoodUnit> foodPool;
     public OSCReceiver oscReceiver;
 
-    public int foodSize = 25;
+    public int foodSize;
     public int foodBounds = 75;
     public int foodReceived = 50;
     public int foodCount = 0;
@@ -92,6 +92,8 @@ public class Food : MonoBehaviour
         for (int i = 0; i < number; i++)
         {
             FoodUnit newFood = foodAvailable.Dequeue();
+            newFood.health = UnityEngine.Random.Range(50, 100);
+            newFood.CalcFoodSize();
             newFood.food.SetActive(true);
             Foods.Add(newFood);
         }
