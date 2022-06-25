@@ -227,6 +227,7 @@ public class Flock : MonoBehaviour
         newAgent.setDNA(childDNA);
         newAgent.AssignFlock(agentFlock);
         newAgent.breed = agentBreed;
+        newAgent.health = UnityEngine.Random.Range(50, 100);
 
         newAgent.gameObject.transform.position = spawnPosition;
         newAgent.gameObject.transform.rotation = rotation;

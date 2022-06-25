@@ -124,7 +124,7 @@ public class Ecosystem : MonoBehaviour
             case "summer":
                 season = "summer";
 
-                bloomTime = 3;
+                bloomTime = 2;
                 //food.EnableFoods(15);
                 //StopCoroutine(Bloom(0.5f));
                 //StartCoroutine(Bloom(5f));
