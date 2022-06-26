@@ -98,20 +98,24 @@ public class FoodUnit : MonoBehaviour
     public void Eaten()
     {
         //include foodsize only when eaten?
+        food.SetActive(false);
+        assignedFood.Foods.Remove(this);
+        assignedFood.foodAvailable.Enqueue(this);
 
-        health -= 5;
-        if (health < 10)
-        {
-            // Reseed();
-            //Death?.Invoke(this, new FoodDeathEventArgs { FoodObject = gameObject.GetComponent<FoodUnit>() });
-            //Destroy(this, 0.5f);
-            //Destroy(gameObject, 0.5f);
 
-            //myPool.Release(this);
-            food.SetActive(false);
-            assignedFood.Foods.Remove(this);
-            assignedFood.foodAvailable.Enqueue(this);
-        }
+        //health -= 5;
+        //if (health < 10)
+        //{
+        //    // Reseed();
+        //    //Death?.Invoke(this, new FoodDeathEventArgs { FoodObject = gameObject.GetComponent<FoodUnit>() });
+        //    //Destroy(this, 0.5f);
+        //    //Destroy(gameObject, 0.5f);
+
+        //    //myPool.Release(this);
+        //    food.SetActive(false);
+        //    assignedFood.Foods.Remove(this);
+        //    assignedFood.foodAvailable.Enqueue(this);
+        //}
     }
 
 

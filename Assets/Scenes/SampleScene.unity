@@ -363,6 +363,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 409584481}
+  - component: {fileID: 409584482}
   m_Layer: 0
   m_Name: Species
   m_TagString: Untagged
@@ -382,13 +383,30 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1773032421}
+  - {fileID: 826144467}
   - {fileID: 1229929644}
   - {fileID: 551930388}
-  - {fileID: 826144467}
-  - {fileID: 1773032421}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409584482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409584480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b739ab5c7234779b92440bdc74104d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  organics: {fileID: 1229929646}
+  shadows: {fileID: 551930389}
+  second: {fileID: 826144466}
+  third: {fileID: 1773032423}
+  allSpecies: []
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,12 +548,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551930387}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.6192284, y: -38.110596, z: -310.95953}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 409584481}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &551930389
 MonoBehaviour:
@@ -554,16 +572,24 @@ MonoBehaviour:
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
-  EnemyFlock: {fileID: 1229929646}
+  EnemyFlock: {fileID: 826144466}
+  PredatorFlock: {fileID: 1229929646}
+  PreyFlock: {fileID: 1773032423}
   food: {fileID: 1876838923}
   breedColor: {r: 0.14509805, g: 0.21960784, b: 1, a: 0}
   Carnivore: 0
-  Herbivore: 1
+  Herbivore: 0
   Reproduce: 1
-  Builder: 1
+  Builder: 0
   Living: 1
   maxAge: 800
   eatAge: 5
+  tier: 0
+  extinct: 0
+  speciesAge: 0
+  extinctionAge: 0
+  extinctionResetAge: 30
+  reproduceAge: 10
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
@@ -804,7 +830,7 @@ GameObject:
   - component: {fileID: 826144466}
   - component: {fileID: 826144465}
   m_Layer: 0
-  m_Name: Third
+  m_Name: Second
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -851,16 +877,24 @@ MonoBehaviour:
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
-  EnemyFlock: {fileID: 551930389}
+  EnemyFlock: {fileID: 1229929646}
+  PredatorFlock: {fileID: 1773032423}
+  PreyFlock: {fileID: 1229929646}
   food: {fileID: 1876838923}
   breedColor: {r: 0.5754717, g: 0.111294046, b: 0.56841856, a: 0}
   Carnivore: 0
-  Herbivore: 1
+  Herbivore: 0
   Reproduce: 1
-  Builder: 1
+  Builder: 0
   Living: 1
   maxAge: 800
   eatAge: 5
+  tier: 2
+  extinct: 0
+  speciesAge: 0
+  extinctionAge: 0
+  extinctionResetAge: 30
+  reproduceAge: 10
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
@@ -887,7 +921,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 409584481}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
@@ -1048,12 +1082,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229929643}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.6192284, y: -38.110596, z: -310.95953}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 409584481}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1229929645
 MonoBehaviour:
@@ -1097,15 +1131,23 @@ MonoBehaviour:
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
   EnemyFlock: {fileID: 551930389}
+  PredatorFlock: {fileID: 826144466}
+  PreyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
   breedColor: {r: 0.972549, g: 0.972549, b: 0.14117648, a: 0}
   Carnivore: 0
   Herbivore: 1
   Reproduce: 1
-  Builder: 1
+  Builder: 0
   Living: 1
   maxAge: 800
   eatAge: 5
+  tier: 1
+  extinct: 0
+  speciesAge: 0
+  extinctionAge: 0
+  extinctionResetAge: 30
+  reproduceAge: 10
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1
@@ -1159,12 +1201,14 @@ MonoBehaviour:
   smoothDamp: 1
   trailTime: 0.5
   agility: 0.3
+  borderForce: 0.3
   boundsDistance: 100
   cohesionDistance: 75
   separationDistance: 30
   alignmentDistance: 75
   preyDistance: 75
-  boundsWeight: 1
+  predatorDistance: 16
+  boundsWeight: 4
   cohesionWeight: 3
   separationWeight: 10
   alignmentWeight: 5
@@ -1174,7 +1218,6 @@ MonoBehaviour:
   driftX: 0
   driftY: 0
   driftZ: 0
-  transmitter: {fileID: 1576914205}
   oscReceiver: {fileID: 1576914204}
 --- !u!4 &1576914202
 Transform:
@@ -1584,7 +1627,7 @@ GameObject:
   - component: {fileID: 1773032423}
   - component: {fileID: 1773032422}
   m_Layer: 0
-  m_Name: Fourth
+  m_Name: Third
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1603,7 +1646,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 409584481}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1773032422
 MonoBehaviour:
@@ -1646,16 +1689,24 @@ MonoBehaviour:
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
-  EnemyFlock: {fileID: 551930389}
+  EnemyFlock: {fileID: 826144466}
+  PredatorFlock: {fileID: 551930389}
+  PreyFlock: {fileID: 826144466}
   food: {fileID: 1876838923}
   breedColor: {r: 0.38431373, g: 0.7294118, b: 0.8862745, a: 0}
   Carnivore: 0
-  Herbivore: 1
+  Herbivore: 0
   Reproduce: 1
-  Builder: 1
+  Builder: 0
   Living: 1
   maxAge: 800
   eatAge: 5
+  tier: 3
+  extinct: 0
+  speciesAge: 0
+  extinctionAge: 0
+  extinctionResetAge: 30
+  reproduceAge: 10
   huntStrength: 1
   fleeStrength: 1
   foodStrength: 1

@@ -21,6 +21,8 @@ public class Flock : MonoBehaviour
     [SerializeField] public float spawnRadius = 1f;
     [SerializeField] private FlockUnit flockUnitPrefab;
     public Flock EnemyFlock;
+    public Flock PredatorFlock;
+    public Flock PreyFlock;
     public Food food;
 
     public Queue<FlockUnit> agentsAvailable = new Queue<FlockUnit>();
@@ -34,6 +36,13 @@ public class Flock : MonoBehaviour
     public bool Living;
     public float maxAge;
     public float eatAge;
+
+    public int tier;
+    public bool extinct;
+    public int speciesAge;
+    public int extinctionAge;
+    public int extinctionResetAge = 30;
+    public int reproduceAge = 10;
 
     [Header("Eating")]
     public float huntStrength = 1f;
@@ -85,6 +94,8 @@ public class Flock : MonoBehaviour
 
         StartCoroutine(OSCReset());
         StopCoroutine(OSCReset());
+
+        StartCoroutine(CheckFlock());
 
         InitializeAgents();
 
@@ -159,6 +170,38 @@ public class Flock : MonoBehaviour
         yield return null;
     }
 
+
+    private IEnumerator CheckFlock()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+
+
+            if (Boids.Count == 0)
+            {
+                extinct = true;
+                speciesAge = 0;
+                extinctionAge += 1;
+            }
+            else
+            {
+                extinct = false;
+                speciesAge += 1;
+                extinctionAge = 0;
+            }
+
+            if (extinctionAge == extinctionResetAge)
+            {
+                for (int i = 0; i < startAmount; i++)
+                {
+                    SpawnAgent();
+                }
+            }
+
+        }
+    }
+
     //private void InitializeFlockParam()
 
     private void InitializeLifeState(int flockSize)
@@ -174,9 +217,15 @@ public class Flock : MonoBehaviour
         {
             var halfBounds = boundsDistance;
             var randomPosition1 = UnityEngine.Random.Range(-halfBounds, halfBounds);
-            var randomPosition2 = UnityEngine.Random.Range(-halfBounds, halfBounds);
             var randomPosition3 = UnityEngine.Random.Range(-halfBounds, halfBounds);
-            var randomVector = new Vector3(randomPosition1, randomPosition2, randomPosition3);
+            var randomPositionY = tier switch
+            {
+                3 => UnityEngine.Random.Range(boundsDistance * 0.33f, boundsDistance - 5),
+                2 => UnityEngine.Random.Range(-boundsDistance * 0.33f, boundsDistance * 0.33f),
+                1 => UnityEngine.Random.Range(-boundsDistance + 5, -boundsDistance * 0.33f),
+                _ => UnityEngine.Random.Range(-boundsDistance + 5, boundsDistance - 5),
+            };
+            var randomVector = new Vector3(randomPosition1, randomPositionY, randomPosition3);
             var spawnPosition = randomVector + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
 
             InitializeAgent(this, breed, BoidsIndex, randomVector, starterDna);
@@ -190,10 +239,11 @@ public class Flock : MonoBehaviour
         DNAboid childDNA = parentDNA.copy();
         childDNA.mutate(0.2f);
 
-        var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
+
+        //var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
         rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
 
-        var newAgent = Instantiate(flockUnitPrefab, spawnPosition, rotation, transform);
+        var newAgent = Instantiate(flockUnitPrefab, position, rotation, transform);
         newAgent.GetComponent<MeshRenderer>().material.color = breedColor;
 
         newAgent.gameObject.SetActive(false);
@@ -248,10 +298,10 @@ public class Flock : MonoBehaviour
         Boids.Add(newAgent);
     }
 
-    public void OnBoidDeath(object sender, BoidDeathEventArgs e)
-    {
-        Boids.Remove(e.BoidObject);
-    }
+    //public void OnBoidDeath(object sender, BoidDeathEventArgs e)
+    //{
+    //    Boids.Remove(e.BoidObject);
+    //}
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
