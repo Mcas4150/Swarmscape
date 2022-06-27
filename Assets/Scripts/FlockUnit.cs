@@ -24,6 +24,8 @@ public class FlockUnit : MonoBehaviour
     [SerializeField] public float alignmentWeight => GameManager.Instance.alignmentWeight;
     [SerializeField] public float separationWeight => GameManager.Instance.separationWeight;
 
+    [SerializeField] public float wanderWeight => GameManager.Instance.wanderWeight;
+
     [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
     [SerializeField] public float globalWeight => GameManager.Instance.globalWeight;
 
@@ -83,6 +85,7 @@ public class FlockUnit : MonoBehaviour
     public Vector3 Separation;
     public Vector3 Alignment;
     public Vector3 BoundsVector;
+    public Vector3 wander;
 
     [Header("Feeding")]
     public Vector3 FoodVector;
@@ -101,6 +104,8 @@ public class FlockUnit : MonoBehaviour
     public Vector3 totalVelocity;
     public Vector3 smoothVelocity;
     public Vector3 smoothFixedVelocity;
+
+    public Vector3 wanderPosition;
 
     [Header("DNA")]
     public float dnaSpeed;
@@ -458,12 +463,12 @@ public class FlockUnit : MonoBehaviour
 
     ///
 
-    public float AverageVelocity(Vector3 velocity)
-    {
-        var averageVelocity = (Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) * 0.33f;
+    //public float AverageVelocity(Vector3 velocity)
+    //{
+    //    var averageVelocity = (Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) * 0.33f;
 
-        return averageVelocity;
-    }
+    //    return averageVelocity;
+    //}
 
     public bool Dead()
     {
@@ -509,10 +514,11 @@ public class FlockUnit : MonoBehaviour
 
         CalculateSwarm();
         CalculateHunger();
+        wander = CalculateWander() * wanderWeight;
 
-        FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
-        FlowfieldMultiplier = new Vector3(flowfieldStrength * 0.01f, flowfieldStrength * 0.01f, flowfieldStrength * 0.01f);
-        FlowfieldVector = Vector3.Scale(FlowfieldVector, FlowfieldMultiplier);
+        //FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
+        //FlowfieldMultiplier = new Vector3(flowfieldStrength * 0.01f, flowfieldStrength * 0.01f, flowfieldStrength * 0.01f);
+        //FlowfieldVector = Vector3.Scale(FlowfieldVector, FlowfieldMultiplier);
 
         BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
 
@@ -540,7 +546,6 @@ public class FlockUnit : MonoBehaviour
             FleeVector = Vector3.zero;
         }
 
-
         if (assignedFlock.Herbivore == true)
         {
             FindFood();
@@ -556,7 +561,7 @@ public class FlockUnit : MonoBehaviour
         var flockVector = Cohesion + Alignment + Separation;
         var eatVector = FoodVector + HuntVector + FleeVector;
 
-        var moveVector = flockVector + eatVector + BoundsVector;
+        var moveVector = flockVector + eatVector + wander + BoundsVector;
 
 
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
@@ -566,7 +571,6 @@ public class FlockUnit : MonoBehaviour
         //transform.forward = moveVector;
 
         moveVector = CheckBounds(moveVector);
-        //moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
 
         //currentMoveVector = CheckBounds(moveVector);
         currentMoveVector = moveVector;
@@ -584,23 +588,7 @@ public class FlockUnit : MonoBehaviour
         //finalMoveVector = CheckBounds(totalVelocity);
         //BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
         //totalVelocity = currentMoveVector;
-        //totalVelocity = (currentMoveVector + driftVector) * Time.deltaTime * totalSpeed;
-        //deltaSpeed = (Time.deltaTime * totalSpeed * 10);
-        //transform.position += totalVelocity;
-        //averageVelocity = totalVelocity.magnitude * 100;
-        //var myVelocity = currentVelocity * totalSpeed;
-        //averageVelocity = myVelocity.magnitude;
 
-        //averageVelocity = currentVelocity.magnitude;
-
-        //averageVelocity = totalVelocity.magnitude;
-        //averageVelocity = Time.deltaTime;
-        //averageVelocity = totalVelocity.magnitude;
-
-
-        //averageVelocity = currentVelocity.magnitude * (Time.deltaTime * totalSpeed);
-        //var newVel = Vector3.SmoothDamp(currentMoveVector, totalVelocity, ref smoothVelocity, 0.1f);
-        //averageVelocity = smoothVelocity.magnitude;
 
     }
 
@@ -894,9 +882,12 @@ public class FlockUnit : MonoBehaviour
         //if(health)
     }
 
-    private void CalculateWander()
+    private Vector3 CalculateWander()
     {
-        var wanderTarget = UnityEngine.Random.onUnitSphere + transform.position;
+        var wanderTarget = UnityEngine.Random.onUnitSphere;
+        //wanderPosition = wanderTarget + transform.position;
+        return wanderTarget;
+
     }
 
 

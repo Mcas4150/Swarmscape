@@ -46,12 +46,6 @@ public class Ecosystem : MonoBehaviour
         setSeason("spring");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
     private IEnumerator Bloom()
     {
@@ -67,21 +61,6 @@ public class Ecosystem : MonoBehaviour
 
         }
     }
-
-    //private IEnumerator Bloom()
-    //{
-    //    while (true)
-    //    {
-
-    //        //yield return new WaitForSeconds(respawnTime * UnityEngine.Random.Range(0f, 3f));
-    //        yield return new WaitForSeconds(0.5f);
-
-    //        Debug.Log("bloom");
-    //        if (food.Foods.Count < bloomMax && food.foodAvailable.Count != 0) food.EnableFoods(1);
-
-    //    }
-    //}
-
 
     private IEnumerator CountWorldTime()
     {
