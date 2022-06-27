@@ -89,8 +89,6 @@ public class Flock : MonoBehaviour
 
     private void Start()
     {
-        //_minSpeed = 6f;
-        //_maxSpeed = 50f;
 
         StartCoroutine(OSCReset());
         StopCoroutine(OSCReset());
@@ -107,11 +105,6 @@ public class Flock : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-
-
-    }
 
     private IEnumerator OSCReset()
     {
@@ -170,7 +163,6 @@ public class Flock : MonoBehaviour
         yield return null;
     }
 
-
     private IEnumerator CheckFlock()
     {
         while (true)
@@ -202,13 +194,9 @@ public class Flock : MonoBehaviour
         }
     }
 
-    //private void InitializeFlockParam()
-
-    private void InitializeLifeState(int flockSize)
-    {
-
-    }
-
+    //************************************************************************************************************************************
+    //Initialization
+    //************************************************************************************************************************************
 
     private void InitializeAgents()
     {
@@ -262,7 +250,9 @@ public class Flock : MonoBehaviour
 
     }
 
-
+    //************************************************************************************************************************************
+    //Spawning
+    //************************************************************************************************************************************
 
     public void SpawnAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
     {
@@ -298,10 +288,10 @@ public class Flock : MonoBehaviour
         Boids.Add(newAgent);
     }
 
-    //public void OnBoidDeath(object sender, BoidDeathEventArgs e)
-    //{
-    //    Boids.Remove(e.BoidObject);
-    //}
+
+    //************************************************************************************************************************************
+    //Utilities
+    //************************************************************************************************************************************
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
@@ -325,8 +315,6 @@ public class Flock : MonoBehaviour
 
         return indexValue;
     }
-
-
 
     void OnApplicationQuit()
     {

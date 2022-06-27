@@ -1193,7 +1193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialized: 0
-  flockSize: 16
+  flockSize: 32
   buildProb: 0.1
   respawnTime: 2
   deathMultiplier: 1
@@ -1201,14 +1201,14 @@ MonoBehaviour:
   smoothDamp: 1
   trailTime: 0.5
   agility: 0.3
-  borderForce: 0.3
+  borderForce: 1
   boundsDistance: 100
   cohesionDistance: 75
   separationDistance: 30
   alignmentDistance: 75
-  preyDistance: 75
+  preyDistance: 16
   predatorDistance: 16
-  boundsWeight: 4
+  boundsWeight: 7.42
   cohesionWeight: 3
   separationWeight: 10
   alignmentWeight: 5
