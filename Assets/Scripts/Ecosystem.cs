@@ -32,14 +32,6 @@ public class Ecosystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //var transmitter = gameObject.AddComponent<OSCTransmitter>();
-        //transmitter.RemoteHost = "127.0.0.1";
-        //// Set remote port;
-        //transmitter.RemotePort = 8111;
-        ////resetMessage = new OSCMessage("/play/", OSCValue.Int(1));
-        //OSCMessage resetMessage = new("/organic/lifestate/1", OSCValue.Float(1));
-        //Debug.Log("play");
-        //transmitter.Send(resetMessage);
 
         StartCoroutine(CountWorldTime());
         //StartCoroutine(Bloom());

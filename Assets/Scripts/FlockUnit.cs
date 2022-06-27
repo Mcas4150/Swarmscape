@@ -9,40 +9,40 @@ using System.Threading.Tasks;
 public class FlockUnit : MonoBehaviour
 {
 
-    [SerializeField] public int flockSize => GameManager.Instance.flockSize;
-    [SerializeField] public float buildProb => GameManager.Instance.buildProb;
-    [SerializeField] public float respawnTime => GameManager.Instance.respawnTime;
-    [SerializeField] public float deathMultiplier => GameManager.Instance.deathMultiplier;
+    public int flockSize => GameManager.Instance.flockSize;
+    public float buildProb => GameManager.Instance.buildProb;
+    public float respawnTime => GameManager.Instance.respawnTime;
+    public float deathMultiplier => GameManager.Instance.deathMultiplier;
 
-    [SerializeField] public float cohesionDistance => GameManager.Instance.cohesionDistance;
-    [SerializeField] public float alignmentDistance => GameManager.Instance.alignmentDistance;
-    [SerializeField] public float separationDistance => GameManager.Instance.separationDistance;
-    [SerializeField] public float preyDistance => GameManager.Instance.preyDistance;
-    [SerializeField] public float predatorDistance => GameManager.Instance.preyDistance;
+    public float cohesionDistance => GameManager.Instance.cohesionDistance;
+    public float alignmentDistance => GameManager.Instance.alignmentDistance;
+    public float separationDistance => GameManager.Instance.separationDistance;
+    public float preyDistance => GameManager.Instance.preyDistance;
+    public float predatorDistance => GameManager.Instance.preyDistance;
 
-    [SerializeField] public float cohesionWeight => GameManager.Instance.cohesionWeight;
-    [SerializeField] public float alignmentWeight => GameManager.Instance.alignmentWeight;
-    [SerializeField] public float separationWeight => GameManager.Instance.separationWeight;
+    public float cohesionWeight => GameManager.Instance.cohesionWeight;
+    public float alignmentWeight => GameManager.Instance.alignmentWeight;
+    public float separationWeight => GameManager.Instance.separationWeight;
 
-    [SerializeField] public float wanderWeight => GameManager.Instance.wanderWeight;
+    public float wanderWeight => GameManager.Instance.wanderWeight;
 
-    [SerializeField] public float dnaWeight => GameManager.Instance.dnaWeight;
-    [SerializeField] public float globalWeight => GameManager.Instance.globalWeight;
+    public float dnaWeight => GameManager.Instance.dnaWeight;
+    public float globalWeight => GameManager.Instance.globalWeight;
 
-    [SerializeField] public float masterSpeed => GameManager.Instance.masterSpeed;
+    public float masterSpeed => GameManager.Instance.masterSpeed;
 
-    [SerializeField] public float borderForce => GameManager.Instance.borderForce;
-    [SerializeField] public float agility => GameManager.Instance.agility;
+    public float borderForce => GameManager.Instance.borderForce;
+    public float agility => GameManager.Instance.agility;
 
-    [SerializeField] public float smoothDamp => GameManager.Instance.smoothDamp;
+    public float smoothDamp => GameManager.Instance.smoothDamp;
 
-    [SerializeField] public float driftX => GameManager.Instance.driftX;
-    [SerializeField] public float driftY => GameManager.Instance.driftY;
-    [SerializeField] public float driftZ => GameManager.Instance.driftZ;
+    public float driftX => GameManager.Instance.driftX;
+    public float driftY => GameManager.Instance.driftY;
+    public float driftZ => GameManager.Instance.driftZ;
 
-    [SerializeField] public float trailTime => GameManager.Instance.trailTime;
+    public float trailTime => GameManager.Instance.trailTime;
 
-    [SerializeField] public float flowfieldStrength => GameManager.Instance.flowfieldStrength;
+    public float flowfieldStrength => GameManager.Instance.flowfieldStrength;
 
 
     public Flock assignedFlock;
@@ -51,7 +51,6 @@ public class FlockUnit : MonoBehaviour
     Boolean initialized = false;
 
     public Color myColor;
-
 
     [Header("Health Values")]
 
@@ -148,8 +147,6 @@ public class FlockUnit : MonoBehaviour
 
     DNAboid dna;
 
-    //public event EventHandler<BoidDeathEventArgs> Death;
-
     private void Awake()
     {
         health = UnityEngine.Random.Range(10, 100);
@@ -226,21 +223,16 @@ public class FlockUnit : MonoBehaviour
             message_newPositionXYZ.Values[1] = OSCValue.Float(transform.position.y);
             message_newPositionXYZ.Values[2] = OSCValue.Float(transform.position.z);
 
-            //midiPlayMessage.Values[0] = (OSCValue.Float(eatingState));
-            //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
-
-            //healthMessage.AddValue(OSCValue.Float(health));
-
             velocityMessage.Values[0] = OSCValue.Float(averageVelocity);
 
+            //midiNoteMessage.AddValue(OSCValue.Float(midiNote));
+            //healthMessage.AddValue(OSCValue.Float(health));
+
             transmitter.Send(message_newPositionXYZ);
+            transmitter.Send(velocityMessage);
 
             //transmitter.Send(midiNoteMessage);
-            //transmitter.Send(midiPlayMessage);
             //transmitter.Send(healthMessage);
-
-
-            transmitter.Send(velocityMessage);
 
         }
     }
@@ -297,18 +289,6 @@ public class FlockUnit : MonoBehaviour
             }
         }
     }
-
-    //private IEnumerator HealthSize()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(0.25f);
-
-    //        var healthRatio = health * 0.025f;
-    //        //myTransform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
-
-    //    }
-    //}
 
     private IEnumerator CountAge()
     {
@@ -461,15 +441,6 @@ public class FlockUnit : MonoBehaviour
 
     }
 
-    ///
-
-    //public float AverageVelocity(Vector3 velocity)
-    //{
-    //    var averageVelocity = (Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) * 0.33f;
-
-    //    return averageVelocity;
-    //}
-
     public bool Dead()
     {
         if (health <= 0)
@@ -514,7 +485,7 @@ public class FlockUnit : MonoBehaviour
 
         CalculateSwarm();
         CalculateHunger();
-        wander = CalculateWander() * wanderWeight;
+        wander = CalculateWander(agility) * wanderWeight;
 
         //FlowfieldVector = CalculateFlowfield(assignedFlock.flowfield);
         //FlowfieldMultiplier = new Vector3(flowfieldStrength * 0.01f, flowfieldStrength * 0.01f, flowfieldStrength * 0.01f);
@@ -584,11 +555,6 @@ public class FlockUnit : MonoBehaviour
 
         transform.position += finalMoveVector;
         CalculateBoundaries(transform.position);
-
-        //finalMoveVector = CheckBounds(totalVelocity);
-        //BoundsVector = CalculateBoundsVector() * assignedFlock.boundsWeight;
-        //totalVelocity = currentMoveVector;
-
 
     }
 
@@ -676,11 +642,9 @@ public class FlockUnit : MonoBehaviour
         }
     }
 
-
     //************************************************************************************************************************************
     // Flocking
     //************************************************************************************************************************************
-
 
     private Vector3 CalculateCohesionVector(List<FlockUnit> neighbors, float forceMagnitude)
     {
@@ -761,6 +725,15 @@ public class FlockUnit : MonoBehaviour
         return force;
     }
 
+    private Vector3 CalculateWander(float forceMagnitude)
+    {
+        var wanderTarget = UnityEngine.Random.onUnitSphere;
+        wanderTarget *= totalSpeed;
+        wanderTarget -= currentMoveVector;
+        var force = Vector3.ClampMagnitude(wanderTarget, forceMagnitude);
+        return force;
+
+    }
 
     //************************************************************************************************************************************
     // Predator Prey
@@ -854,9 +827,6 @@ public class FlockUnit : MonoBehaviour
         return force;
     }
 
-
-
-
     private void CalculateSwarm()
     {
         if (cohesionNeighbors.Count >= 3)
@@ -882,19 +852,9 @@ public class FlockUnit : MonoBehaviour
         //if(health)
     }
 
-    private Vector3 CalculateWander()
-    {
-        var wanderTarget = UnityEngine.Random.onUnitSphere;
-        //wanderPosition = wanderTarget + transform.position;
-        return wanderTarget;
-
-    }
-
-
     //************************************************************************************************************************************
     // Borders + Boundaries
     //************************************************************************************************************************************
-
 
     private Vector3 CalculateBoundsVector()
     {
@@ -953,29 +913,6 @@ public class FlockUnit : MonoBehaviour
         }
 
     }
-
-    //private Vector3 CalculateBorders() {
-
-    //    var offsetToCenter = assignedFlock.transform.position - transform.position;
-    //    float distanceFromCenter = offsetToCenter.magnitude;
-    //    bool isNearCenter = (distanceFromCenter >= assignedFlock.boundsDistance * 0.95f);
-
-
-    //    //Vector3 neighborDir = (neighbors[i].transform.position - transform.position);
-    //    //float neighborDist = neighborDir.magnitude;
-    //    neighborDir = CustomNormalize(neighborDir);
-    //    // weight the vector by the distance squared
-    //    neighborDir /= (Mathf.Pow(neighborDist, 2f));
-    //    force += neighborDir;
-
-
-    //    force = CustomNormalize(force);
-    //    force *= totalSpeed;
-    //    force -= currentMoveVector;
-    //    force = Vector3.ClampMagnitude(force, forceMagnitude);
-    //    return isNearCenter ? offsetToCenter.normalized : Vector3.zero;
-    //}
-
 
     // ************************************************************************************************************************************
     // Eating
@@ -1071,21 +1008,6 @@ public class FlockUnit : MonoBehaviour
         return Vector3.Angle(transform.forward, position - transform.position) <= FOVAngle;
     }
 
-    //public Vector3 Attract(Vector3 targetPosition, float maxForce)
-    //{
-    //    Vector3 force = myTransform.position - targetPosition;
-    //    float distance = force.magnitude;
-    //    distance = Mathf.Clamp(distance, 2f, 25f);
-    //    //force.Normalize();
-    //    force = CustomNormalize(force);
-
-    //    float strength = G * (boidMass * boidMass) / (distance * distance);
-    //    force *= strength;
-    //    force = Vector3.ClampMagnitude(force, maxForce);
-    //    return force;
-    //}
-
-
     // ************************************************************************************************************************************
     // Utility
     //************************************************************************************************************************************
@@ -1120,12 +1042,6 @@ public class FlockUnit : MonoBehaviour
             return Vector3.zero;
     }
 }
-
-//public class BoidDeathEventArgs : EventArgs
-//{
-//    public FlockUnit BoidObject { get; set; }
-//    public string BreedObject { get; set; }
-//}
 
 public class DNAboid
 {
@@ -1163,14 +1079,3 @@ public class DNAboid
 }
 
 
-//public class ExtensionMethods
-//{
-//    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
-//    {
-
-//        float OldRange = (OldMax - OldMin);
-//        float NewRange = (NewMax - NewMin);
-//        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-
-//        return (NewValue);
-//    }
