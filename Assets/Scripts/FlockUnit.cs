@@ -547,8 +547,11 @@ public class FlockUnit : MonoBehaviour
         currentMoveVector = moveVector;
 
         totalVelocity = (currentMoveVector + driftVector) * (Time.deltaTime * totalSpeed);
+
+
         smoothFixedVelocity = Time.fixedDeltaTime * totalSpeed * (currentMoveVector + driftVector);
         averageVelocity = smoothFixedVelocity.magnitude * 10;
+
 
         //finalMoveVector = CheckBounds(totalVelocity);
         finalMoveVector = totalVelocity;
@@ -890,20 +893,20 @@ public class FlockUnit : MonoBehaviour
 
         if (transform.position.x == assignedFlock.boundsDistance || transform.position.x == -assignedFlock.boundsDistance)
         {
-            Debug.Log(breed + oscNumber + "x exceeded");
+            //Debug.Log(breed + oscNumber + "x exceeded");
 
             return new Vector3(currentVelocity.x * -1.0f, currentVelocity.y, currentVelocity.z);
 
         }
         else if (transform.position.y == assignedFlock.boundsDistance || transform.position.y == -assignedFlock.boundsDistance)
         {
-            Debug.Log(breed + oscNumber + "y exceeded");
+            //Debug.Log(breed + oscNumber + "y exceeded");
             return new Vector3(currentVelocity.x, currentVelocity.y * -1.0f, currentVelocity.z);
 
         }
         else if (transform.position.z == assignedFlock.boundsDistance || transform.position.z == -assignedFlock.boundsDistance)
         {
-            Debug.Log(breed + oscNumber + "z exceeded");
+            //Debug.Log(breed + oscNumber + "z exceeded");
             return new Vector3(currentVelocity.x, currentVelocity.y, currentVelocity.z * -1.0f);
 
         }
