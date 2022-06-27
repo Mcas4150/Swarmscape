@@ -91,20 +91,15 @@ public class FlockUnit : MonoBehaviour
     public Vector3 HuntVector;
     public Vector3 FleeVector;
 
-    [Header("Flowfield")]
-    public Vector3 FlowfieldVector;
-    public Vector3 FlowfieldMultiplier;
-
     [Header("Position")]
-    public Vector3 spawnPosition;
-    public Vector3 currentVelocity;
-    public Vector3 currentMoveVector;
-    public Vector3 finalMoveVector;
     public Vector3 totalVelocity;
-    public Vector3 smoothVelocity;
-    public Vector3 smoothFixedVelocity;
 
-    public Vector3 wanderPosition;
+    private Vector3 spawnPosition;
+    private Vector3 currentVelocity;
+
+    //[Header("Flowfield")]
+    //public Vector3 FlowfieldVector;
+    //public Vector3 FlowfieldMultiplier;
 
     [Header("DNA")]
     public float dnaSpeed;
@@ -463,7 +458,7 @@ public class FlockUnit : MonoBehaviour
     {
         MoveUnit();
         //needed?
-        transform.localRotation = Quaternion.LookRotation(currentMoveVector, Vector3.up);
+        transform.localRotation = Quaternion.LookRotation(totalVelocity, Vector3.up);
     }
 
     public void MoveUnit()
@@ -532,31 +527,21 @@ public class FlockUnit : MonoBehaviour
         var flockVector = Cohesion + Alignment + Separation;
         var eatVector = FoodVector + HuntVector + FleeVector;
 
-        var moveVector = flockVector + eatVector + wander + BoundsVector;
+        var acceleration = flockVector + eatVector + wander + BoundsVector;
 
 
-        moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref currentVelocity, smoothDamp);
+        var moveVector = Vector3.SmoothDamp(transform.forward, acceleration, ref currentVelocity, smoothDamp);
 
-        //if (moveVector == Vector3.zero)
-        //    moveVector = transform.forward;
-        //transform.forward = moveVector;
-
-        moveVector = CheckBounds(moveVector);
 
         //currentMoveVector = CheckBounds(moveVector);
-        currentMoveVector = moveVector;
+        totalVelocity += moveVector;
 
-        totalVelocity = (currentMoveVector + driftVector) * (Time.deltaTime * totalSpeed);
+        totalVelocity = (totalVelocity + driftVector) * (Time.deltaTime * totalSpeed);
 
-
-        smoothFixedVelocity = Time.fixedDeltaTime * totalSpeed * (currentMoveVector + driftVector);
+        var smoothFixedVelocity = Time.fixedDeltaTime * totalSpeed * (moveVector + driftVector);
         averageVelocity = smoothFixedVelocity.magnitude * 10;
 
-
-        //finalMoveVector = CheckBounds(totalVelocity);
-        finalMoveVector = totalVelocity;
-
-        transform.position += finalMoveVector;
+        transform.position += totalVelocity;
         CalculateBoundaries(transform.position);
 
     }
@@ -668,7 +653,7 @@ public class FlockUnit : MonoBehaviour
         force /= neighbors.Count;
         force -= transform.position;
         force = CustomNormalize(force);
-        force -= currentMoveVector;
+        force -= totalVelocity;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.green);
         return force;
@@ -693,7 +678,7 @@ public class FlockUnit : MonoBehaviour
         //alignmentVector /= neighborsInFOV;
         force = CustomNormalize(force);
         force *= totalSpeed;
-        force -= currentMoveVector;
+        force -= totalVelocity;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.blue);
         return force;
@@ -721,7 +706,7 @@ public class FlockUnit : MonoBehaviour
         //avoidanceVector /= neighborsInFOV;
         force = CustomNormalize(force);
         force *= totalSpeed;
-        force -= currentMoveVector;
+        force -= totalVelocity;
         //Debug.DrawLine(force, transform.position, Color.red);
         force = Vector3.ClampMagnitude(force, forceMagnitude);
 
@@ -732,7 +717,7 @@ public class FlockUnit : MonoBehaviour
     {
         var wanderTarget = UnityEngine.Random.onUnitSphere;
         wanderTarget *= totalSpeed;
-        wanderTarget -= currentMoveVector;
+        wanderTarget -= totalVelocity;
         var force = Vector3.ClampMagnitude(wanderTarget, forceMagnitude);
         return force;
 
@@ -766,7 +751,7 @@ public class FlockUnit : MonoBehaviour
 
         force = CustomNormalize(force);
         force *= totalSpeed;
-        force -= currentMoveVector;
+        force -= totalVelocity;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
 
         return force;
@@ -796,7 +781,7 @@ public class FlockUnit : MonoBehaviour
 
         force = CustomNormalize(force);
         force *= totalSpeed;
-        force -= currentMoveVector;
+        force -= totalVelocity;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
 
         return force;
@@ -824,7 +809,7 @@ public class FlockUnit : MonoBehaviour
         //avoidanceVector /= neighborsInFOV;
         force = CustomNormalize(force);
         force = force * totalSpeed;
-        force = force - currentMoveVector;
+        force -= totalVelocity;
         force = Vector3.ClampMagnitude(force, forceMagnitude);
         //Debug.DrawLine(transform.position, force, Color.red);
         return force;
@@ -996,15 +981,15 @@ public class FlockUnit : MonoBehaviour
     // Flowfield + FOV
     //************************************************************************************************************************************
 
-    private Vector3 CalculateFlowfield(Flowfield flow)
-    {
-        Vector3 desiredVelocity = flow.Lookup(transform.position);
-        desiredVelocity = CustomNormalize(desiredVelocity);
-        desiredVelocity *= totalSpeed;
-        Vector3 steerVelocity = desiredVelocity - currentMoveVector; // Steering is desired minus velocity
-        Vector3.ClampMagnitude(steerVelocity, assignedFlock.flowForce);
-        return steerVelocity;
-    }
+    //private Vector3 CalculateFlowfield(Flowfield flow)
+    //{
+    //    Vector3 desiredVelocity = flow.Lookup(transform.position);
+    //    desiredVelocity = CustomNormalize(desiredVelocity);
+    //    desiredVelocity *= totalSpeed;
+    //    Vector3 steerVelocity = desiredVelocity - totalVelocity; // Steering is desired minus velocity
+    //    Vector3.ClampMagnitude(steerVelocity, assignedFlock.flowForce);
+    //    return steerVelocity;
+    //}
 
     private bool IsInFOV(Vector3 position)
     {
