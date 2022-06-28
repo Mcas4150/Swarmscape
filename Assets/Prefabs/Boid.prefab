@@ -54,7 +54,7 @@ MonoBehaviour:
   age: 0
   health: 100
   starterHealth: 0
-  foodEaten: 0
+  preyEaten: 0
   eatingState: 0
   hunger: 0
   FOVAngle: 270
@@ -64,32 +64,30 @@ MonoBehaviour:
   foodMeal: 0
   boidMeal: 0
   Carnivore: 0
+  allNeighbors: []
   cohesionNeighbors: []
   alignmentNeighbors: []
   separationNeighbors: []
   foodNeighbors: []
   preyNeighbors: []
+  predatorNeighbors: []
   Cohesion: {x: 0, y: 0, z: 0}
   Separation: {x: 0, y: 0, z: 0}
   Alignment: {x: 0, y: 0, z: 0}
-  BoundsVector: {x: 0, y: 0, z: 0}
+  boundaryVector: {x: 0, y: 0, z: 0}
+  wander: {x: 0, y: 0, z: 0}
   FoodVector: {x: 0, y: 0, z: 0}
   HuntVector: {x: 0, y: 0, z: 0}
   FleeVector: {x: 0, y: 0, z: 0}
-  FlowfieldVector: {x: 0, y: 0, z: 0}
-  FlowfieldMultiplier: {x: 0, y: 0, z: 0}
-  spawnPosition: {x: 0, y: 0, z: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
-  currentMoveVector: {x: 0, y: 0, z: 0}
   totalVelocity: {x: 0, y: 0, z: 0}
-  smoothVelocity: {x: 0, y: 0, z: 0}
-  smoothFixedVelocity: {x: 0, y: 0, z: 0}
-  deltaSpeed: 0
+  preTimeVelocity: {x: 0, y: 0, z: 0}
+  noSpeedVelocity: {x: 0, y: 0, z: 0}
   dnaSpeed: 0
   dnaCohesionDist: 0
   dnaAlignmentDist: 0
   dnaSeparationDist: 0
   dnaPreyDistance: 0
+  dnaPredatorDistance: 0
   dnaCohesionWeight: 0
   dnaAlignmentWeight: 0
   dnaSeparationWeight: 0
@@ -103,6 +101,8 @@ MonoBehaviour:
   midiNote: 0
   oscAddress_positionXYZ: 
   transmitter: {fileID: 0}
+  trailMaterial: {fileID: 2100000, guid: f06567d0f2f2b4d1ea77072856cf6099, type: 2}
+  rend: {fileID: 0}
 --- !u!33 &3938710232965532401
 MeshFilter:
   m_ObjectHideFlags: 0

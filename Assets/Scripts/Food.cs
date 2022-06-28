@@ -43,8 +43,6 @@ public class Food : MonoBehaviour
         oscReceiver.Bind("/flucoma/xyz", SeedFood);
     }
 
-
-
     private void Start()
     {
 
@@ -85,7 +83,6 @@ public class Food : MonoBehaviour
     }
 
 
-
     public void EnableFoods(int number)
     {
 
@@ -99,8 +96,6 @@ public class Food : MonoBehaviour
         }
 
     }
-
-
 
     //public void OnFoodDeath(object sender, FoodDeathEventArgs e)
     //{

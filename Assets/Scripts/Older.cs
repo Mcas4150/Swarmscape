@@ -9,6 +9,15 @@ public class Older : MonoBehaviour
     //public event EventHandler<BoidDeathEventArgs> Death;
 
 
+
+
+
+
+
+
+
+
+
     //var transmitter = gameObject.AddComponent<OSCTransmitter>();
     //transmitter.RemoteHost = "127.0.0.1";
     //// Set remote port;
@@ -30,6 +39,39 @@ public class Older : MonoBehaviour
 
     //    }
     //}
+
+
+
+    ////code with FOV
+
+    //private Vector3 CalculateSeparation(List<FlockUnit> neighbors, float forceMagnitude)
+    //{
+    //    var force = Vector3.zero;
+    //    //if (neighbors.Count == 0)
+    //    //    return Vector3.zero;
+    //    //int neighborsInFOV = 0;
+    //    for (int i = 0; i < neighbors.Count; i++)
+    //    {
+    //        //if (IsInFOV(avoidanceNeighbors[i].transform.position))
+    //        //{
+    //        //neighborsInFOV++;
+    //        force += Avoid(neighbors[i].transform.position);
+    //        //}
+    //    }
+
+    //    //avoidanceVector /= neighborsInFOV;
+    //    force = ApplyForce(force, forceMagnitude);
+    //    //Debug.DrawLine(force, transform.position, Color.red);
+    //    return force;
+    //}
+
+
+
+
+
+
+
+
 
     //private Vector3 CalculateWander()
     //{

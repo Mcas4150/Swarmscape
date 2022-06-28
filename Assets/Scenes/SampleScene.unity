@@ -568,7 +568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -873,7 +873,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: third
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -1126,7 +1126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -1202,22 +1202,28 @@ MonoBehaviour:
   trailTime: 0.5
   agility: 0.3
   borderForce: 1
+  allNeighbors: 0
+  allNeighborsDistance: 35
   boundsDistance: 100
   cohesionDistance: 75
   separationDistance: 30
   alignmentDistance: 75
   preyDistance: 16
   predatorDistance: 16
+  boundaryRadius: 97
+  boundaryWeight: 3
   boundsWeight: 7.42
-  cohesionWeight: 3
-  separationWeight: 10
-  alignmentWeight: 5
+  cohesionWeight: 2
+  separationWeight: 2
+  alignmentWeight: 2
+  wanderWeight: 1
   flowfieldStrength: 1
   dnaWeight: 1
   globalWeight: 1
   driftX: 0
   driftY: 0
   driftZ: 0
+  edgeWrap: 0
   oscReceiver: {fileID: 1576914204}
 --- !u!4 &1576914202
 Transform:
@@ -1685,7 +1691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: Fourth
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
