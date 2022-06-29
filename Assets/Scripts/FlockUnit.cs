@@ -46,7 +46,7 @@ public class FlockUnit : MonoBehaviour
 
     public float trailTime => GameManager.Instance.trailTime;
 
-    public float flowfieldStrength => GameManager.Instance.flowfieldStrength;
+    //public float flowfieldStrength => GameManager.Instance.flowfieldStrength;
 
     public bool edgeWrap => GameManager.Instance.edgeWrap;
 
@@ -164,6 +164,7 @@ public class FlockUnit : MonoBehaviour
         myTrailMaterial = new Material(trailMaterial);
         TrailRenderer myTrailRenderer = GetComponent<TrailRenderer>();
         myTrailRenderer.material = myTrailMaterial;
+
     }
 
     private void Start()
@@ -197,15 +198,16 @@ public class FlockUnit : MonoBehaviour
         if (Trail != null)
             Trail.time = trailTime;
 
+        var healthRatio = health * 0.1f;
+        transform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
+
 
         StartCoroutine(OSCBirth());
         StartCoroutine(OSCSender());
         StartCoroutine(Respawn());
-        //StartCoroutine(HealthSize());
-        StartCoroutine(CountAge());
+        StartCoroutine(CalcObject());
         StartCoroutine(CheckAgent());
-        StartCoroutine(CalcSlowStats());
-        StartCoroutine(TrailColor());
+
 
     }
 
@@ -257,75 +259,11 @@ public class FlockUnit : MonoBehaviour
             //yield return new WaitForSeconds(respawnTime * UnityEngine.Random.Range(0f, 3f));
             yield return new WaitForSeconds(0.5f);
 
-
-            var allUnits = assignedFlock.Boids;
-            spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            var breedChance = UnityEngine.Random.Range(0f, 1f);
-
-            if (allUnits.Count < flockSize)
-            {
-
-
-                if (assignedFlock.Reproduce && health > starterHealth * 1.25 && age > assignedFlock.reproduceAge)
-                {
-
-                    if (assignedFlock.Builder)
-                    {
-
-                        if (breedChance <= buildProb)
-                        {
-                            assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
-                        }
-                        else if (breedChance > buildProb && assignedFlock.Reproduce)
-                        {
-                            assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
-                        }
-                    }
-
-                    if (assignedFlock.Reproduce && assignedFlock.Builder == false)
-                    {
-                        assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
-                    }
-
-
-                    health *= 0.5f;
-
-                }
-
-
-
-            }
-
-            else if (allUnits.Count == flockSize && assignedFlock.Builder && assignedFlock.EnemyFlock.Boids.Count < 6)
-            {
-                assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
-            }
-        }
-    }
-
-    private IEnumerator CountAge()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1f);
-            age += 1;
-            ageMessage.Values[0] = OSCValue.Int(age);
-            transmitter.Send(ageMessage);
-        }
-
-    }
-
-    private IEnumerator CalcSlowStats()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.05f);
-
-            //averageVelocity = AverageVelocity(totalVelocity);
-            //averageVelocity = totalVelocity.magnitude * 100;
+            Reproduce();
 
         }
     }
+
 
     private IEnumerator CheckAgent()
     {
@@ -333,79 +271,28 @@ public class FlockUnit : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (assignedFlock.Living)
-            {
-                health -= deathMultiplier * Time.deltaTime;
-            }
-
-
-            if (Dead())
-            {
-                message_lifeState.Values[0] = OSCValue.Float(0);
-                transmitter.Send(message_lifeState);
-
-
-                message_newPositionXYZ.Values[0] = OSCValue.Float(0);
-                message_newPositionXYZ.Values[1] = OSCValue.Float(0);
-                message_newPositionXYZ.Values[2] = OSCValue.Float(0);
-                transmitter.Send(message_newPositionXYZ);
-
-                velocityMessage.Values[0] = OSCValue.Float(0);
-                transmitter.Send(velocityMessage);
-
-                //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
-                //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
-                //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
-
-                //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
-                midiPlayMessage.Values[0] = OSCValue.Float(0);
-                transmitter.Send(midiPlayMessage);
-
-
-
-                //transmitter.Send(midiNoteMessage);
-
-                //transmitter.Send(healthMessage);
-
-                foodMealMessage.Values[0] = OSCValue.Int(-1);
-                transmitter.Send(foodMealMessage);
-
-                ageMessage.Values[0] = OSCValue.Int(0);
-                transmitter.Send(ageMessage);
-
-                //Death?.Invoke(this, new BoidDeathEventArgs { BoidObject = gameObject.GetComponent<FlockUnit>(), BreedObject = breed });
-
-                gameObject.SetActive(false);
-                assignedFlock.Boids.Remove(this);
-                //assignedFlock.BoidsIndex.Remove(oscNumber);
-                assignedFlock.agentsAvailable.Enqueue(this);
-
-                //Destroy(this, 0.05f);
-                //Destroy(gameObject, 0.05f);
-
-            }
+            CheckHealth();
         }
     }
 
-    private IEnumerator TrailColor()
+    private IEnumerator CalcObject()
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
 
-            var lerp = scale(hunger, 0f, 2f, 0f, 1f);
-            var colorStart = Color.green;
-            var colorEnd = Color.red;
-            //rend.material.SetColor("_EmissionColor", Color.Lerp(colorStart, colorEnd, lerp));
-            myTrailMaterial.SetColor("_EmissionColor", Color.Lerp(colorStart, colorEnd, lerp));
-
+            CalcAge();
+            CalcTrailColor();
+            CalcBoidSize();
         }
     }
+
 
 
     //************************************************************************************************************************************
     //Initialization
     //************************************************************************************************************************************
+
 
     public void AssignFlock(Flock flock)
     {
@@ -417,6 +304,52 @@ public class FlockUnit : MonoBehaviour
         oscNumber = number;
 
 
+    }
+
+    public void Reproduce()
+    {
+        var allUnits = assignedFlock.Boids;
+        spawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        var breedChance = UnityEngine.Random.Range(0f, 1f);
+
+        if (allUnits.Count < flockSize)
+        {
+
+
+            if (assignedFlock.Reproduce && health > starterHealth * 1.25 && age > assignedFlock.reproduceAge)
+            {
+
+                if (assignedFlock.Builder)
+                {
+
+                    if (breedChance <= buildProb)
+                    {
+                        assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
+                    }
+                    else if (breedChance > buildProb && assignedFlock.Reproduce)
+                    {
+                        assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
+                    }
+                }
+
+                if (assignedFlock.Reproduce && assignedFlock.Builder == false)
+                {
+                    assignedFlock.SpawnAgent(assignedFlock, assignedFlock.Boids, assignedFlock.BoidsIndex, breed, spawnPosition, dna);
+                }
+
+
+                health *= 0.5f;
+
+            }
+
+
+
+        }
+
+        else if (allUnits.Count == flockSize && assignedFlock.Builder && assignedFlock.EnemyFlock.Boids.Count < 6)
+        {
+            assignedFlock.EnemyFlock.SpawnAgent(assignedFlock.EnemyFlock, assignedFlock.EnemyFlock.Boids, assignedFlock.EnemyFlock.BoidsIndex, assignedFlock.EnemyFlock.breed, spawnPosition, dna);
+        }
     }
 
     public void setDNA(DNAboid newDNA)
@@ -469,6 +402,20 @@ public class FlockUnit : MonoBehaviour
 
     }
 
+    public void CheckHealth()
+    {
+        if (assignedFlock.Living)
+        {
+            health -= deathMultiplier * Time.deltaTime;
+        }
+
+        if (Dead())
+        {
+            onDeath();
+
+        }
+    }
+
     public bool Dead()
     {
         if (health <= 0)
@@ -481,10 +428,68 @@ public class FlockUnit : MonoBehaviour
 
     public void onDeath()
     {
+        message_lifeState.Values[0] = OSCValue.Float(0);
+        transmitter.Send(message_lifeState);
+
+
+        message_newPositionXYZ.Values[0] = OSCValue.Float(0);
+        message_newPositionXYZ.Values[1] = OSCValue.Float(0);
+        message_newPositionXYZ.Values[2] = OSCValue.Float(0);
+        transmitter.Send(message_newPositionXYZ);
+
+        velocityMessage.Values[0] = OSCValue.Float(0);
+        transmitter.Send(velocityMessage);
+
+        //OSCMessage midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber, OSCValue.Float(0));
+        //OSCMessage midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
+        //OSCMessage healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber, OSCValue.Float(0));
+
+        //OSCMessage velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
+        midiPlayMessage.Values[0] = OSCValue.Float(0);
+        transmitter.Send(midiPlayMessage);
+
+
+
+        //transmitter.Send(midiNoteMessage);
+
+        //transmitter.Send(healthMessage);
+
+        foodMealMessage.Values[0] = OSCValue.Int(-1);
+        transmitter.Send(foodMealMessage);
+
+        ageMessage.Values[0] = OSCValue.Int(0);
+        transmitter.Send(ageMessage);
+
         gameObject.SetActive(false);
         assignedFlock.Boids.Remove(this);
         //assignedFlock.BoidsIndex.Remove(oscNumber);
         assignedFlock.agentsAvailable.Enqueue(this);
+    }
+
+    public void CalcAge()
+    {
+        age += 1;
+        ageMessage.Values[0] = OSCValue.Int(age);
+        transmitter.Send(ageMessage);
+    }
+
+    public void CalcTrailColor()
+    {
+        var trailColor = hunger switch
+        {
+            2 => Color.red,
+            1 => Color.yellow,
+            0 => Color.green,
+            _ => Color.green,
+        };
+
+        myTrailMaterial.SetColor("_EmissionColor", trailColor);
+    }
+
+    public void CalcBoidSize()
+    {
+        var healthRatio = health * 0.1f;
+        transform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
     }
 
     void Update()

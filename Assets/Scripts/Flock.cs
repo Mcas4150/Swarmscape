@@ -13,7 +13,7 @@ public class Flock : MonoBehaviour
     [SerializeField] public int flockSize => GameManager.Instance.flockSize;
 
     [SerializeField] public float boundsDistance => GameManager.Instance.boundsDistance;
-    [SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
+    //[SerializeField] public float boundsWeight => GameManager.Instance.boundsWeight;
 
     [Header("Spawn Setup")]
     [SerializeField] public string breed;
