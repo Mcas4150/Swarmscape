@@ -1217,7 +1217,7 @@ MonoBehaviour:
   PredatorFlock: {fileID: 826144466}
   PreyFlock: {fileID: 551930389}
   food: {fileID: 1876838923}
-  breedColor: {r: 0.972549, g: 0.972549, b: 0.14117648, a: 0}
+  breedColor: {r: 0.35264707, g: 0.7735849, b: 0.010946936, a: 0}
   Carnivore: 0
   Herbivore: 1
   Reproduce: 1
@@ -1328,7 +1328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialized: 0
-  flockSize: 32
+  flockSize: 16
   buildProb: 0.1
   respawnTime: 2
   deathMultiplier: 1

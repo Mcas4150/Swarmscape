@@ -25,11 +25,20 @@ public class FoodUnit : MonoBehaviour
     public OSCReceiver oscReceiver;
     public int oscIndex;
 
+    private Vector3 randomVector;
+
+
 
     public Vector3 position
     {
         get { return transform.position; }
         set { transform.position = value; }
+    }
+
+    private void Awake()
+    {
+        var random = UnityEngine.Random.Range(-1f, 1f);
+        randomVector = new Vector3(random, random, random);
     }
 
     void Start()
@@ -41,6 +50,13 @@ public class FoodUnit : MonoBehaviour
         //food.transform.localScale = 2 * radius * Vector3.one;
         //mass = (4f / 3f) * Mathf.PI * radius * radius * radius;
         StartCoroutine(FoodSize());
+    }
+
+    private void Update()
+    {
+
+        transform.Rotate(Time.deltaTime * (randomVector * 30f));
+        //transform.localRotation = Quaternion.LookRotation(totalVelocity, Vector3.up);
     }
 
     public void NumberIndex(int index)
