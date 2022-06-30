@@ -16,7 +16,7 @@ public class Foods : MonoBehaviour
     public int foodBounds = 75;
 
     public float BorderBoundary = 100;
-    // Start is called before the first frame update
+
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
     {
@@ -36,16 +36,6 @@ public class Foods : MonoBehaviour
         allFoods = new List<Food> { Food1, Food2, Food3 };
     }
 
-    //void Start()
-    //{
-
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 
     private void TotalFood(OSCMessage message)
     {
@@ -63,24 +53,9 @@ public class Foods : MonoBehaviour
 
         var FoodHeight = scale(message.Values[2].FloatValue, 0f, 1f, -BorderBoundary, BorderBoundary);
 
-        //int FoodTier;
-        //if (FoodHeight >= BorderBoundary * 0.33f) { FoodTier = 3; }
-        //if (FoodHeight < BorderBoundary * 0.33f && FoodHeight >= BorderBoundary * -0.33f) { FoodTier = 2; }
-        //if (FoodHeight < BorderBoundary * -0.33f) { FoodTier = 1; }
-
 
         if (FoodHeight >= BorderBoundary * 0.33f) { Food3.InitializeFood(newPosition, newNumber); }
         if (FoodHeight < BorderBoundary * 0.33f && FoodHeight >= BorderBoundary * -0.33f) { Food2.InitializeFood(newPosition, newNumber); }
         if (FoodHeight < BorderBoundary * -0.33f) { Food1.InitializeFood(newPosition, newNumber); }
-
-
-
-
-
-        //var newFood = InitializeFood(newPosition, newNumber);
-        //foodCount++;
-        //foodAvailable.Enqueue(newFood);
-
-        //if (foodCount < foodSize) { EnableFoods(1); }
     }
 }
