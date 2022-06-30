@@ -176,6 +176,57 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &37027893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37027895}
+  - component: {fileID: 37027894}
+  m_Layer: 0
+  m_Name: Food2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &37027894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37027893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4140e1bd3bc834d05ac20d7654bc404d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ecosystem: {fileID: 1646289880}
+  foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
+    type: 3}
+  Foods: []
+  foodSize: 25
+  foodCount: 0
+  initialized: 0
+--- !u!4 &37027895
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37027893}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.40547574, y: -84.104256, z: 351.18338}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1774255832}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &174783419
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,7 +962,7 @@ MonoBehaviour:
   EnemyFlock: {fileID: 1229929646}
   PredatorFlock: {fileID: 1773032423}
   PreyFlock: {fileID: 1229929646}
-  food: {fileID: 1876838923}
+  food: {fileID: 37027894}
   breedColor: {r: 0.5754717, g: 0.111294046, b: 0.56841856, a: 0}
   Carnivore: 0
   Herbivore: 0
@@ -1192,6 +1243,57 @@ MonoBehaviour:
   BoidsIndex: 
   transmitter: {fileID: 1229929645}
   flowfield: {fileID: 19178329}
+--- !u!1 &1342103920
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1342103922}
+  - component: {fileID: 1342103921}
+  m_Layer: 0
+  m_Name: Food3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1342103921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342103920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4140e1bd3bc834d05ac20d7654bc404d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ecosystem: {fileID: 1646289880}
+  foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
+    type: 3}
+  Foods: []
+  foodSize: 25
+  foodCount: 0
+  initialized: 0
+--- !u!4 &1342103922
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342103920}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.40547574, y: -84.104256, z: 351.18338}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1774255832}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1576914200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1228,7 +1330,7 @@ MonoBehaviour:
   buildProb: 0.1
   respawnTime: 2
   deathMultiplier: 1
-  masterSpeed: 5
+  masterSpeed: 10.04
   smoothDamp: 1
   trailTime: 0.5
   agility: 0.3
@@ -1239,8 +1341,8 @@ MonoBehaviour:
   cohesionDistance: 100
   separationDistance: 100
   alignmentDistance: 100
-  preyDistance: 15
-  predatorDistance: 5
+  preyDistance: 50
+  predatorDistance: 30
   boundaryRadius: 97
   boundaryWeight: 2
   cohesionWeight: 2
@@ -1728,7 +1830,7 @@ MonoBehaviour:
   EnemyFlock: {fileID: 826144466}
   PredatorFlock: {fileID: 551930389}
   PreyFlock: {fileID: 826144466}
-  food: {fileID: 1876838923}
+  food: {fileID: 1342103921}
   breedColor: {r: 0.38431373, g: 0.7294118, b: 0.8862745, a: 0}
   Carnivore: 0
   Herbivore: 0
@@ -1756,7 +1858,7 @@ MonoBehaviour:
   BoidsIndex: 
   transmitter: {fileID: 1773032422}
   flowfield: {fileID: 19178329}
---- !u!1 &1876838921
+--- !u!1 &1774255829
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1764,23 +1866,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1876838924}
-  - component: {fileID: 1876838923}
-  - component: {fileID: 1876838922}
+  - component: {fileID: 1774255832}
+  - component: {fileID: 1774255831}
+  - component: {fileID: 1774255830}
   m_Layer: 0
-  m_Name: Food
+  m_Name: Foods
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1876838922
+--- !u!114 &1774255830
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876838921}
+  m_GameObject: {fileID: 1774255829}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbba286dc10e549b2bdec947ef8dbd3b, type: 3}
@@ -1793,6 +1895,61 @@ MonoBehaviour:
   _localHostMode: 1
   _localHost: 127.0.0.1
   _localPort: 5121
+--- !u!114 &1774255831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774255829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff92f2d6e73b7436a8c1da19c994198d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Food1: {fileID: 1876838923}
+  Food2: {fileID: 37027894}
+  Food3: {fileID: 1342103921}
+  allFoods: []
+  oscReceiver: {fileID: 1774255830}
+  foodReceived: 50
+  foodBounds: 75
+  BorderBoundary: 100
+--- !u!4 &1774255832
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774255829}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.40547574, y: 84.104256, z: -351.18338}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1876838924}
+  - {fileID: 37027895}
+  - {fileID: 1342103922}
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1876838921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1876838924}
+  - component: {fileID: 1876838923}
+  m_Layer: 0
+  m_Name: Food1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!114 &1876838923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1809,10 +1966,7 @@ MonoBehaviour:
   foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
     type: 3}
   Foods: []
-  oscReceiver: {fileID: 1876838922}
   foodSize: 25
-  foodBounds: 75
-  foodReceived: 0
   foodCount: 0
   initialized: 0
 --- !u!4 &1876838924
@@ -1822,13 +1976,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876838921}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.40547574, y: -84.104256, z: 351.18338}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 1774255832}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1924572747
 GameObject:
