@@ -9,7 +9,7 @@ public class Ecosystem : MonoBehaviour
 
     [SerializeField] private Flock OrganicFlock;
     [SerializeField] private Flock ShadowFlock;
-    [SerializeField] private Food food;
+    [SerializeField] private Foods foods;
     [SerializeField] private World world;
 
     public Boolean initialized = false;
@@ -46,9 +46,12 @@ public class Ecosystem : MonoBehaviour
 
             yield return new WaitForSeconds(bloomTime);
 
-            if (food.Foods.Count < bloomMax && food.foodAvailable.Count != 0)
+            foreach (Food food in foods.allFoods)
             {
-                food.EnableFoods(1);
+                if (food.Foods.Count < bloomMax && food.foodAvailable.Count != 0)
+                {
+                    food.EnableFoods(1);
+                }
             }
 
         }

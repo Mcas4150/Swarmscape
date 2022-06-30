@@ -757,7 +757,7 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += neighbors[i].transform.position;
-            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.blue);
+            //Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.blue);
         }
 
         force /= neighbors.Count;
@@ -779,7 +779,7 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += neighbors[i].transform.forward;
-            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.red);
+            //Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.red);
 
         }
         //alignmentVector /= neighborsInFOV;
@@ -795,7 +795,7 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += Avoid(neighbors[i].transform.position);
-            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.magenta);
+            //Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.magenta);
         }
 
         //avoidanceVector /= neighborsInFOV;

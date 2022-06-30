@@ -209,6 +209,7 @@ MonoBehaviour:
   foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
     type: 3}
   Foods: []
+  foodColor: {r: 0.41094705, g: 0, b: 0.7735849, a: 0}
   foodSize: 25
   foodCount: 0
   initialized: 0
@@ -965,7 +966,7 @@ MonoBehaviour:
   food: {fileID: 37027894}
   breedColor: {r: 0.5754717, g: 0.111294046, b: 0.56841856, a: 0}
   Carnivore: 0
-  Herbivore: 0
+  Herbivore: 1
   Reproduce: 1
   Builder: 0
   Living: 1
@@ -1276,6 +1277,7 @@ MonoBehaviour:
   foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
     type: 3}
   Foods: []
+  foodColor: {r: 0.63105255, g: 1, b: 0.24056602, a: 0}
   foodSize: 25
   foodCount: 0
   initialized: 0
@@ -1461,7 +1463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OrganicFlock: {fileID: 1229929646}
   ShadowFlock: {fileID: 551930389}
-  food: {fileID: 1876838923}
+  foods: {fileID: 1774255831}
   world: {fileID: 1924572749}
   initialized: 0
   worldDay: 0
@@ -1833,7 +1835,7 @@ MonoBehaviour:
   food: {fileID: 1342103921}
   breedColor: {r: 0.38431373, g: 0.7294118, b: 0.8862745, a: 0}
   Carnivore: 0
-  Herbivore: 0
+  Herbivore: 1
   Reproduce: 1
   Builder: 0
   Living: 1
@@ -1966,6 +1968,7 @@ MonoBehaviour:
   foodUnit: {fileID: -7396735003816161318, guid: 0b5cbea1c2e2d46ffa6f4b190822815e,
     type: 3}
   Foods: []
+  foodColor: {r: 0.8962264, g: 0.37237245, b: 0.080322154, a: 0}
   foodSize: 25
   foodCount: 0
   initialized: 0
