@@ -1170,7 +1170,7 @@ MonoBehaviour:
   Herbivore: 1
   Reproduce: 1
   Builder: 0
-  Living: 1
+  Living: 0
   maxAge: 800
   eatAge: 5
   tier: 1
@@ -1236,17 +1236,18 @@ MonoBehaviour:
   allNeighbors: 0
   allNeighborsDistance: 35
   boundsDistance: 100
-  cohesionDistance: 75
-  separationDistance: 30
-  alignmentDistance: 75
-  preyDistance: 16
-  predatorDistance: 16
+  cohesionDistance: 100
+  separationDistance: 100
+  alignmentDistance: 100
+  preyDistance: 15
+  predatorDistance: 5
   boundaryRadius: 97
-  boundaryWeight: 3
+  boundaryWeight: 2
   cohesionWeight: 2
   separationWeight: 2
   alignmentWeight: 2
-  wanderWeight: 1
+  wanderWeight: 1.5
+  swarmWeight: 2
   dnaWeight: 1
   globalWeight: 1
   driftX: 0

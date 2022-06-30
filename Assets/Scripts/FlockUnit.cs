@@ -27,6 +27,8 @@ public class FlockUnit : MonoBehaviour
     public float alignmentWeight => GameManager.Instance.alignmentWeight;
     public float separationWeight => GameManager.Instance.separationWeight;
 
+    public float swarmMultiplier => GameManager.Instance.swarmWeight;
+
     public float boundaryWeight => GameManager.Instance.boundaryWeight;
     public float wanderWeight => GameManager.Instance.wanderWeight;
 
@@ -57,6 +59,7 @@ public class FlockUnit : MonoBehaviour
     Boolean initialized = false;
 
     public Color myColor;
+    public Color unitNeighborColor;
 
     [Header("Health Values")]
 
@@ -65,6 +68,7 @@ public class FlockUnit : MonoBehaviour
     public float starterHealth;
     public float preyEaten;
     public int eatingState;
+    private float swarmWeight;
     public float hunger;
     public float FOVAngle;
     public float averageVelocity;
@@ -154,6 +158,8 @@ public class FlockUnit : MonoBehaviour
     private Material myTrailMaterial;
     public Renderer rend;
 
+
+
     DNAboid dna;
 
     private void Awake()
@@ -165,6 +171,8 @@ public class FlockUnit : MonoBehaviour
         TrailRenderer myTrailRenderer = GetComponent<TrailRenderer>();
         myTrailRenderer.material = myTrailMaterial;
 
+        unitNeighborColor = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+
     }
 
     private void Start()
@@ -172,7 +180,6 @@ public class FlockUnit : MonoBehaviour
         transmitter = assignedFlock.transmitter;
 
 
-        transform.localScale = new Vector3(3, 3, 3);
 
         oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
 
@@ -286,8 +293,6 @@ public class FlockUnit : MonoBehaviour
             CalcBoidSize();
         }
     }
-
-
 
     //************************************************************************************************************************************
     //Initialization
@@ -504,26 +509,41 @@ public class FlockUnit : MonoBehaviour
         ///  Calculate Flock
         ///************************************************************************************************************
 
+
+
+
         if (allNeighborsOn) { FindAllNeighbors(); } else { FindNeighbors(); }
 
 
         //
 
-        totalSpeed = CalculateTotalParam(masterSpeed, dnaSpeed);
+        totalSpeed = CalculateTotalParam(masterSpeed, dnaSpeed, swarmWeight);
+
+        Cohesion = Vector3.zero;
+        Separation = Vector3.zero;
+        Alignment = Vector3.zero;
+        wander = Vector3.zero;
+        boundaryVector = Vector3.zero;
 
         if (allNeighborsOn)
         {
 
-            Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
-            Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
-            Alignment = CalculateAlignment(alignmentNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
-        }
-        else
-        {
             Cohesion = CalculateCohesionVector(allNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight);
             Separation = CalculateSeparation(allNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
             Alignment = CalculateAlignment(allNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
         }
+        else
+        {
+
+            Cohesion = CalculateCohesionVector(cohesionNeighbors, agility) * CalculateTotalParam(cohesionWeight, dnaCohesionWeight, swarmWeight);
+            Separation = CalculateSeparation(separationNeighbors, agility) * CalculateTotalParam(separationWeight, dnaSeparationWeight);
+            Alignment = CalculateAlignment(alignmentNeighbors, agility) * CalculateTotalParam(alignmentWeight, dnaAlignmentWeight);
+        }
+
+
+        //Debug.DrawLine(transform.position, transform.position + Cohesion, Color.magenta);
+        //Debug.DrawLine(transform.position, transform.position + Separation, Color.green);
+        //Debug.DrawLine(transform.position, transform.position + Alignment, Color.cyan);
 
         CalculateSwarm();
 
@@ -547,7 +567,7 @@ public class FlockUnit : MonoBehaviour
         {
             if (preyNeighbors.Count != 0)
             {
-                HuntVector = CalculatePredatorVector(preyNeighbors, huntAgility) * CalculateTotalParam(assignedFlock.huntStrength, dnaHuntStrength) * hunger;
+                HuntVector = CalculatePredatorVector(preyNeighbors, huntAgility) * CalculateTotalParam(assignedFlock.huntStrength, dnaHuntStrength, swarmWeight) * hunger;
                 EatPrey(preyNeighbors);
             }
             else
@@ -569,7 +589,7 @@ public class FlockUnit : MonoBehaviour
         if (assignedFlock.Herbivore == true)
         {
             FindFood();
-            FoodVector = CalculateFoodVector(foodNeighbors, foodAgility) * CalculateTotalParam(assignedFlock.foodStrength, dnaFoodStrength) * hunger;
+            FoodVector = CalculateFoodVector(foodNeighbors, foodAgility) * CalculateTotalParam(assignedFlock.foodStrength, dnaFoodStrength, swarmWeight) * hunger;
             EatFood(foodNeighbors);
         }
         else
@@ -629,14 +649,14 @@ public class FlockUnit : MonoBehaviour
         foreach (FlockUnit boid in allUnits)
         {
             var currentUnit = boid;
-            //if (currentUnit != this && currentUnit != null)
-            {
-                if (currentUnit == this) return;
-                float currentNeighborDistanceSqr = Vector3.SqrMagnitude(currentUnit.transform.position - transform.position);
 
-                //  Color linecolor(string breed) => breed == "shadow" ? Color.cyan : Color.magenta;
-                // Debug.DrawLine(myTransform.position, currentUnit.myTransform.position, linecolor(breed));
-                if (currentNeighborDistanceSqr <= CalculateTotalParam(cohesionDistance * cohesionDistance, dnaCohesionDist * dnaCohesionDist))
+            if (currentUnit != this)
+            {
+
+                float currentNeighborDistanceSqr = Vector3.SqrMagnitude(transform.position - currentUnit.transform.position);
+                var maxCohesionDist = CalculateTotalParam(cohesionDistance * cohesionDistance, dnaCohesionDist * dnaCohesionDist);
+
+                if (currentNeighborDistanceSqr <= maxCohesionDist)
                 {
                     cohesionNeighbors.Add(currentUnit);
                 }
@@ -651,6 +671,8 @@ public class FlockUnit : MonoBehaviour
             }
         }
     }
+
+
 
     private void FindAllNeighbors()
     {
@@ -735,11 +757,12 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += neighbors[i].transform.position;
-
+            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.blue);
         }
 
         force /= neighbors.Count;
         force -= transform.position;
+
 
         force = ApplyForce(force, forceMagnitude);
         return force;
@@ -756,6 +779,7 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += neighbors[i].transform.forward;
+            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.red);
 
         }
         //alignmentVector /= neighborsInFOV;
@@ -771,6 +795,7 @@ public class FlockUnit : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             force += Avoid(neighbors[i].transform.position);
+            Debug.DrawLine(transform.position, neighbors[i].transform.position, Color.magenta);
         }
 
         //avoidanceVector /= neighborsInFOV;
@@ -782,7 +807,9 @@ public class FlockUnit : MonoBehaviour
     private Vector3 CalculateWander(float forceMagnitude)
     {
         var wanderTarget = UnityEngine.Random.onUnitSphere;
+
         wanderTarget *= totalSpeed;
+        //Debug.DrawLine(transform.position, transform.position + wanderTarget, Color.white);
         wanderTarget -= totalVelocity;
         var force = Vector3.ClampMagnitude(wanderTarget, forceMagnitude);
         return force;
@@ -840,12 +867,15 @@ public class FlockUnit : MonoBehaviour
     {
         if (cohesionNeighbors.Count >= 3)
         {
-            hunger = 2;
-            totalSpeed *= 2f;
+
+            swarmWeight = swarmMultiplier;
+            //hunger = 2;
+            //totalSpeed *= 2f;
             //Carnivore = true;
         }
         else
         {
+            swarmWeight = 1;
             //Carnivore = false;
         }
 
@@ -1128,6 +1158,11 @@ public class FlockUnit : MonoBehaviour
     private float CalculateTotalParam(float flockParam, float dnaParam)
     {
         return (flockParam * globalWeight) + (dnaParam * dnaWeight);
+    }
+
+    private float CalculateTotalParam(float flockParam, float dnaParam, float swarmWeight)
+    {
+        return (flockParam * globalWeight) + (dnaParam * dnaWeight) * swarmWeight;
     }
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
