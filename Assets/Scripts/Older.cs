@@ -147,4 +147,17 @@ public class Older : MonoBehaviour
     //    }
 
 
+
+    //public int FindOpenIndex(List<int> indexList, int listSize)
+    //{
+    //    int indexValue;
+    //    int a = indexList.OrderBy(x => x).First();
+    //    int b = indexList.OrderBy(x => x).Last();
+    //    List<int> myList2 = Enumerable.Range(1, listSize).ToList();
+    //    List<int> remaining = myList2.Except(indexList).ToList();
+    //    indexValue = remaining.First();
+    //    indexValue = Math.Clamp(indexValue, 1, listSize);
+
+    //    return indexValue;
+    //}
 }

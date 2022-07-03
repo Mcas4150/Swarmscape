@@ -99,12 +99,16 @@ public class Flock : MonoBehaviour
 
         for (int i = 0; i < startAmount; i++)
         {
-            SpawnAgent();
+            BirthAgent();
         }
 
 
     }
 
+    void OnApplicationQuit()
+    {
+        OSC_Init();
+    }
     //************************************************************************************************************************************
     //Coroutines
     //************************************************************************************************************************************
@@ -112,56 +116,7 @@ public class Flock : MonoBehaviour
     private IEnumerator OSCReset()
     {
 
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage lifeStateMessage = new("/" + this.breed + "/lifestate/" + i, OSCValue.Float(0));
-            transmitter.Send(lifeStateMessage);
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
-            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
-            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
-            message_resetPositionXYZ.AddValue(OSCValue.Float(0));
-            transmitter.Send(message_resetPositionXYZ);
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage velocityMessage = new("/" + breed + "/velocity/" + i, OSCValue.Float(0));
-            transmitter.Send(velocityMessage);
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage healthMessage = new("/" + breed + "/health/" + i, OSCValue.Float(0));
-            transmitter.Send(healthMessage);
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + i, OSCValue.Float(0));
-            OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + i, OSCValue.Float(0));
-
-            transmitter.Send(midiNoteMessage);
-            transmitter.Send(midiPlayMessage);
-
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage ageMessage = new("/" + breed + "/age/" + i, OSCValue.Int(0));
-            transmitter.Send(ageMessage);
-        }
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage foodMealMessage = new("/" + breed + "/foodMeal/" + i, OSCValue.Int(-1));
-            transmitter.Send(foodMealMessage);
-
-        }
-
+        OSC_Init();
 
         yield return null;
     }
@@ -190,7 +145,7 @@ public class Flock : MonoBehaviour
             {
                 for (int i = 0; i < startAmount; i++)
                 {
-                    SpawnAgent();
+                    BirthAgent();
                 }
             }
 
@@ -198,134 +153,15 @@ public class Flock : MonoBehaviour
     }
 
     //************************************************************************************************************************************
-    //Initialization
+    //OSC
     //************************************************************************************************************************************
 
-    private void InitializeAgents()
+
+    public void OSC_Init()
     {
-        //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 1; i <= flockSize; i++)
         {
-            var halfBounds = boundsDistance;
-            var randomPosition1 = UnityEngine.Random.Range(-halfBounds, halfBounds);
-            var randomPosition3 = UnityEngine.Random.Range(-halfBounds, halfBounds);
-            var randomPositionY = tier switch
-            {
-                3 => UnityEngine.Random.Range(boundsDistance * 0.33f, boundsDistance - 5),
-                2 => UnityEngine.Random.Range(-boundsDistance * 0.33f, boundsDistance * 0.33f),
-                1 => UnityEngine.Random.Range(-boundsDistance + 5, -boundsDistance * 0.33f),
-                _ => UnityEngine.Random.Range(-boundsDistance + 5, boundsDistance - 5),
-            };
-            var randomVector = new Vector3(randomPosition1, randomPositionY, randomPosition3);
-            var spawnPosition = randomVector + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
-
-            InitializeAgent(this, breed, BoidsIndex, randomVector, starterDna);
-        }
-
-    }
-
-    public void InitializeAgent(Flock agentFlock, string agentBreed, List<int> unitIndex, Vector3 position, DNAboid parentDNA)
-    {
-
-        DNAboid childDNA = parentDNA.copy();
-        childDNA.mutate(0.2f);
-
-
-        //var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
-        rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
-
-        var newAgent = Instantiate(flockUnitPrefab, position, rotation, transform);
-        newAgent.GetComponent<MeshRenderer>().material.color = breedColor;
-
-        newAgent.gameObject.SetActive(false);
-        newAgent.AssignFlock(agentFlock);
-        newAgent.breed = agentBreed;
-        newAgent.setDNA(childDNA);
-
-        var agentNumber = FindOpenIndex(unitIndex, flockSize);
-        newAgent.NumberParticle(agentNumber);
-        unitIndex.Add(agentNumber);
-        agentsAvailable.Enqueue(newAgent);
-
-        //OSCMessage lifeStateMessage = new("/" + agentBreed + "/lifestate/" + agentNumber, OSCValue.Float(1));
-        //transmitter.Send(lifeStateMessage);
-        //agentFlockList.Add(newAgent);
-
-    }
-
-    //************************************************************************************************************************************
-    //Spawning
-    //************************************************************************************************************************************
-
-    public void SpawnAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 position, DNAboid parentDNA)
-    {
-
-        var spawnPosition = position + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
-        rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
-
-        var newAgent = agentsAvailable.Dequeue();
-
-        DNAboid childDNA = parentDNA.copy();
-        childDNA.mutate(0.2f);
-        newAgent.setDNA(childDNA);
-        newAgent.AssignFlock(agentFlock);
-        newAgent.breed = agentBreed;
-        newAgent.health = UnityEngine.Random.Range(50, 100);
-
-        newAgent.gameObject.transform.position = spawnPosition;
-        newAgent.gameObject.transform.rotation = rotation;
-        newAgent.gameObject.SetActive(true);
-        agentFlockList.Add(newAgent);
-
-        // birth message here
-        //unitIndex.Add(agentNumber);
-        //OSCMessage lifeStateMessage = new("/" + agentBreed + "/lifestate/" + agentNumber, OSCValue.Float(1));
-        //transmitter.Send(lifeStateMessage);
-
-    }
-
-    public void SpawnAgent()
-    {
-        var newAgent = agentsAvailable.Dequeue();
-        newAgent.gameObject.SetActive(true);
-        Boids.Add(newAgent);
-    }
-
-
-    //************************************************************************************************************************************
-    //Utilities
-    //************************************************************************************************************************************
-
-    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
-    {
-
-        float OldRange = (OldMax - OldMin);
-        float NewRange = (NewMax - NewMin);
-        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-
-        return (NewValue);
-    }
-
-    public int FindOpenIndex(List<int> indexList, int listSize)
-    {
-        int indexValue;
-        int a = indexList.OrderBy(x => x).First();
-        int b = indexList.OrderBy(x => x).Last();
-        List<int> myList2 = Enumerable.Range(1, listSize).ToList();
-        List<int> remaining = myList2.Except(indexList).ToList();
-        indexValue = remaining.First();
-        indexValue = Math.Clamp(indexValue, 1, listSize);
-
-        return indexValue;
-    }
-
-    void OnApplicationQuit()
-    {
-
-
-        for (int i = 1; i <= flockSize; i++)
-        {
-            OSCMessage lifeStateMessage = new("/" + this.breed + "/lifestate/" + i, OSCValue.Float(0));
+            OSCMessage lifeStateMessage = new("/" + breed + "/lifestate/" + i, OSCValue.Float(0));
             transmitter.Send(lifeStateMessage);
         }
 
@@ -355,7 +191,6 @@ public class Flock : MonoBehaviour
             OSCMessage midiNoteMessage = new("/" + breed + "/midi/note/" + i, OSCValue.Float(0));
             OSCMessage midiPlayMessage = new("/" + breed + "/midi/play/" + i, OSCValue.Float(0));
 
-
             transmitter.Send(midiNoteMessage);
             transmitter.Send(midiPlayMessage);
 
@@ -373,6 +208,113 @@ public class Flock : MonoBehaviour
             transmitter.Send(foodMealMessage);
 
         }
+    }
+
+
+    //************************************************************************************************************************************
+    //Initialization
+    //************************************************************************************************************************************
+
+    private void InitializeAgents()
+    {
+        //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
+        for (int i = 1; i <= flockSize; i++)
+        {
+
+            var randomVector = getRandomPositionTiered(boundsDistance);
+
+            InitializeAgent(this, breed, i, randomVector, starterDna);
+        }
+
+    }
+
+
+    public void InitializeAgent(Flock agentFlock, string agentBreed, int unitIndex, Vector3 position, DNAboid parentDNA)
+    {
+
+        var newAgent = Instantiate(flockUnitPrefab, position, getRandomRotation(), transform);
+
+
+        newAgent.gameObject.SetActive(false);
+
+        newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
+        newAgent.AssignID(unitIndex, breedColor);
+
+
+        agentsAvailable.Enqueue(newAgent);
+
+
+    }
+
+    //************************************************************************************************************************************
+    //Spawning
+    //************************************************************************************************************************************
+
+    public void SpawnAgent(Flock agentFlock, List<FlockUnit> agentFlockList, List<int> unitIndex, string agentBreed, Vector3 parentPosition, DNAboid parentDNA)
+    {
+
+        var newAgent = agentsAvailable.Dequeue();
+
+        newAgent.AssignPosition(getSpawnPosition(parentPosition), getRandomRotation());
+        newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
+
+        newAgent.gameObject.SetActive(true);
+        //newAgent.OSC_Birth();
+        agentFlockList.Add(newAgent);
+
+
+    }
+
+    public void BirthAgent()
+    {
+        var newAgent = agentsAvailable.Dequeue();
+
+        newAgent.gameObject.SetActive(true);
+        //newAgent.OSC_Birth();
+        Boids.Add(newAgent);
+
+    }
+
+
+    //************************************************************************************************************************************
+    //Utilities
+    //************************************************************************************************************************************
+
+    public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
+    {
+
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
+    }
+
+
+    public Quaternion getRandomRotation()
+    {
+        return Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
+    }
+
+    public Vector3 getSpawnPosition(Vector3 parentPosition)
+    {
+        return parentPosition + (UnityEngine.Random.insideUnitSphere.normalized * spawnRadius);
+    }
+
+
+    public Vector3 getRandomPositionTiered(float boundsDistance)
+    {
+        var halfBounds = boundsDistance;
+        var randomPosition1 = UnityEngine.Random.Range(-halfBounds, halfBounds);
+        var randomPosition3 = UnityEngine.Random.Range(-halfBounds, halfBounds);
+        var randomPositionY = tier switch
+        {
+            3 => UnityEngine.Random.Range(boundsDistance * 0.33f, boundsDistance - 5),
+            2 => UnityEngine.Random.Range(-boundsDistance * 0.33f, boundsDistance * 0.33f),
+            1 => UnityEngine.Random.Range(-boundsDistance + 5, -boundsDistance * 0.33f),
+            _ => UnityEngine.Random.Range(-boundsDistance + 5, boundsDistance - 5),
+        };
+        return new Vector3(randomPosition1, randomPositionY, randomPosition3);
     }
 
 }

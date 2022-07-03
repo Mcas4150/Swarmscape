@@ -210,7 +210,7 @@ MonoBehaviour:
     type: 3}
   Foods: []
   foodColor: {r: 0.41094705, g: 0, b: 0.7735849, a: 0}
-  foodSize: 25
+  foodSize: 5
   foodCount: 0
   initialized: 0
 --- !u!4 &37027895
@@ -270,9 +270,8 @@ GameObject:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585550}
   - component: {fileID: 330585549}
-  - component: {fileID: 330585551}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -371,6 +370,20 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0483d66d03e89412ab44e07c8b9093d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,21 +391,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0483d66d03e89412ab44e07c8b9093d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isDefaultListener: 1
-  listenerId: 0
---- !u!114 &330585550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 825869b2bd8584d26af8d1c67f4e5997, type: 3}
   m_Name: 
@@ -407,36 +406,6 @@ MonoBehaviour:
     positionOffset: {x: 0, y: 0, z: 0}
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
---- !u!114 &330585551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24b03e7543c5a449b9a356fe05ee2def, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triggerList: f7e1664c
-  useOtherObject: 0
-  actionOnEventType: 0
-  curveInterpolation: 4
-  enableActionOnEvent: 0
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: 6267a34c924c64f81884ddb7d7621537,
-      type: 2}
-  useCallbacks: 0
-  Callbacks: []
-  playingId: 0
-  soundEmitterObject: {fileID: 0}
-  transitionDuration: 0
-  eventIdInternal: 0
-  valueGuidInternal: 
-  m_callbackDataInternal: {fileID: 0}
 --- !u!1 &409584480
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: shadow
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -664,7 +633,7 @@ MonoBehaviour:
   Herbivore: 0
   Reproduce: 1
   Builder: 0
-  Living: 1
+  Living: 0
   maxAge: 800
   eatAge: 5
   tier: 0
@@ -955,7 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  breed: third
+  breed: second
   startAmount: 5
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
@@ -1080,7 +1049,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976051491}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 017c2342d07754d4fa6629f2654e3185, type: 3}
   m_Name: 
@@ -1121,7 +1090,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976051491}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30b2b3ee1d9994a73935185bf9cdba6c, type: 3}
   m_Name: 
@@ -1209,7 +1178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 5
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -1223,7 +1192,7 @@ MonoBehaviour:
   Reproduce: 1
   Builder: 0
   Living: 0
-  maxAge: 800
+  maxAge: 150
   eatAge: 5
   tier: 1
   extinct: 0
@@ -1278,7 +1247,7 @@ MonoBehaviour:
     type: 3}
   Foods: []
   foodColor: {r: 0.63105255, g: 1, b: 0.24056602, a: 0}
-  foodSize: 25
+  foodSize: 5
   foodCount: 0
   initialized: 0
 --- !u!4 &1342103922
@@ -1352,6 +1321,7 @@ MonoBehaviour:
   alignmentWeight: 2
   wanderWeight: 1.5
   swarmWeight: 2
+  hunger: 3
   dnaWeight: 1
   globalWeight: 1
   driftX: 0
@@ -1824,8 +1794,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  breed: Fourth
-  startAmount: 5
+  breed: third
+  startAmount: 3
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -1838,7 +1808,7 @@ MonoBehaviour:
   Herbivore: 1
   Reproduce: 1
   Builder: 0
-  Living: 1
+  Living: 0
   maxAge: 800
   eatAge: 5
   tier: 3
@@ -1969,7 +1939,7 @@ MonoBehaviour:
     type: 3}
   Foods: []
   foodColor: {r: 0.8962264, g: 0.37237245, b: 0.080322154, a: 0}
-  foodSize: 25
+  foodSize: 5
   foodCount: 0
   initialized: 0
 --- !u!4 &1876838924
