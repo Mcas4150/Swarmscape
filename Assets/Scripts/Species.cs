@@ -25,18 +25,13 @@ public class Species : MonoBehaviour
 
         Debug.Log("Species Start");
 
-        //for (int i = 0; i < allSpecies.Count; i++)
-        //{
-        //    allSpecies[i].OSC_Init();
-        //}
+
         foreach (Flock flock in allSpecies)
         {
 
             flock.OSC_Init();
 
         }
-
-        //organics.OSC_Init();
 
         foreach (Flock flock in allSpecies)
         {
@@ -58,9 +53,5 @@ public class Species : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
 }

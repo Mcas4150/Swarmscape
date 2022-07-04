@@ -128,10 +128,7 @@ public class Flock : MonoBehaviour
 
             if (extinctionAge == extinctionResetAge)
             {
-                for (int i = 0; i < startAmount; i++)
-                {
-                    BirthAgent();
-                }
+                BirthAgents();
             }
 
         }
@@ -228,7 +225,6 @@ public class Flock : MonoBehaviour
 
         newAgent.AssignID(unitIndex, breedColor);
 
-
         agentsAvailable.Enqueue(newAgent);
 
 
@@ -248,8 +244,7 @@ public class Flock : MonoBehaviour
 
         newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
 
-        newAgent.Enable();
-        //newAgent.OSC_Birth();
+        BirthAgent(newAgent);
         agentFlockList.Add(newAgent);
 
 
@@ -260,22 +255,18 @@ public class Flock : MonoBehaviour
 
         for (int i = 0; i < startAmount; i++)
         {
-            BirthAgent();
+            var newAgent = agentsAvailable.Dequeue();
+            BirthAgent(newAgent);
+            Boids.Add(newAgent);
         }
 
     }
 
-    public void BirthAgent()
+    public void BirthAgent(FlockUnit newAgent)
     {
-        var newAgent = agentsAvailable.Dequeue();
 
-
-        newAgent.Enable();
         newAgent.InitializeBoid();
-        //newAgent.gameObject.SetActive(true);
         newAgent.OSC_Birth();
-        Boids.Add(newAgent);
-
     }
 
 

@@ -199,6 +199,8 @@ public class FlockUnit : MonoBehaviour
 
     public void InitializeBoid()
     {
+        Enable();
+
         OSC_AssignTransmitter();
         OSC_Start();
 
