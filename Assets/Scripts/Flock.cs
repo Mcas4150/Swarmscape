@@ -227,7 +227,6 @@ public class Flock : MonoBehaviour
 
         agentsAvailable.Enqueue(newAgent);
 
-
     }
 
 
