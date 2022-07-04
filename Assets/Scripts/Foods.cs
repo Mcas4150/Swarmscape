@@ -11,6 +11,7 @@ public class Foods : MonoBehaviour
     [SerializeField] public Food Food3;
     public List<Food> allFoods;
 
+    public OSCTransmitter transmitter;
     public OSCReceiver oscReceiver;
     public int foodReceived = 50;
     public int foodBounds = 75;
@@ -36,10 +37,23 @@ public class Foods : MonoBehaviour
         allFoods = new List<Food> { Food1, Food2, Food3 };
     }
 
+    public void InitializeFoods()
+    {
+        OSC_RequestFood();
+    }
+
 
     private void TotalFood(OSCMessage message)
     {
         foodReceived = message.Values[0].IntValue;
+    }
+
+
+    public void OSC_RequestFood()
+    {
+        OSCMessage requestMessage = new OSCMessage("/food/request", OSCValue.Int(1));
+        Debug.Log("food requested");
+        transmitter.Send(requestMessage);
     }
 
     protected void SeedFood(OSCMessage message)

@@ -174,7 +174,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &37027893
 GameObject:
@@ -402,7 +402,7 @@ Transform:
   - {fileID: 1229929644}
   - {fileID: 542902475}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &409584482
 MonoBehaviour:
@@ -1197,8 +1197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b701591797b04fbb81accf31d2255a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  species: {fileID: 409584482}
   transmitter: {fileID: 1410815914}
+  species: {fileID: 409584482}
+  foods: {fileID: 1774255831}
 --- !u!4 &1410815916
 Transform:
   m_ObjectHideFlags: 0
@@ -1212,7 +1213,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1576914200
 GameObject:
@@ -1366,7 +1367,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1646289880
 MonoBehaviour:
@@ -1790,6 +1791,7 @@ GameObject:
   - component: {fileID: 1774255832}
   - component: {fileID: 1774255831}
   - component: {fileID: 1774255830}
+  - component: {fileID: 1774255833}
   m_Layer: 0
   m_Name: Foods
   m_TagString: Untagged
@@ -1832,6 +1834,7 @@ MonoBehaviour:
   Food2: {fileID: 37027894}
   Food3: {fileID: 1342103921}
   allFoods: []
+  transmitter: {fileID: 1774255833}
   oscReceiver: {fileID: 1774255830}
   foodReceived: 50
   foodBounds: 75
@@ -1852,8 +1855,32 @@ Transform:
   - {fileID: 37027895}
   - {fileID: 1342103922}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1774255833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774255829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 192.168.2.22
+  _localPort: 7000
+  _remoteHost: 127.0.0.1
+  _remotePort: 8820
+  _useBundle: 0
 --- !u!1 &1876838921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,7 +1966,7 @@ Transform:
   - {fileID: 174783420}
   - {fileID: 2091694376}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1924572749
 MonoBehaviour:
