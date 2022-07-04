@@ -248,7 +248,7 @@ public class Flock : MonoBehaviour
 
         newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
 
-        newAgent.gameObject.SetActive(true);
+        newAgent.Enable();
         //newAgent.OSC_Birth();
         agentFlockList.Add(newAgent);
 
@@ -273,7 +273,7 @@ public class Flock : MonoBehaviour
         newAgent.Enable();
         newAgent.InitializeBoid();
         //newAgent.gameObject.SetActive(true);
-        //newAgent.OSC_Birth();
+        newAgent.OSC_Birth();
         Boids.Add(newAgent);
 
     }
