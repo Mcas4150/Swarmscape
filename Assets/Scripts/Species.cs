@@ -14,10 +14,47 @@ public class Species : MonoBehaviour
     private void Awake()
     {
         allSpecies = new List<Flock> { organics, shadows, second, third };
+
+
+
+
     }
     // Start is called before the first frame update
     void Start()
     {
+
+        Debug.Log("Species Start");
+
+        //for (int i = 0; i < allSpecies.Count; i++)
+        //{
+        //    allSpecies[i].OSC_Init();
+        //}
+        foreach (Flock flock in allSpecies)
+        {
+
+            flock.OSC_Init();
+
+        }
+
+        //organics.OSC_Init();
+
+        foreach (Flock flock in allSpecies)
+        {
+            flock.InitializeAgents();
+        }
+
+        foreach (Flock flock in allSpecies)
+        {
+            flock.InitializeFlock();
+
+        }
+
+        foreach (Flock flock in allSpecies)
+        {
+            flock.BirthAgents();
+        }
+
+
 
     }
 

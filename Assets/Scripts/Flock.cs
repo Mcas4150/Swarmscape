@@ -27,6 +27,8 @@ public class Flock : MonoBehaviour
 
     public Queue<FlockUnit> agentsAvailable = new Queue<FlockUnit>();
 
+    //public List<FlockUnit> queueList;
+
     public Color breedColor;
 
     public bool Carnivore;
@@ -84,25 +86,15 @@ public class Flock : MonoBehaviour
     {
         starterDna = new DNAboid();
         BoidsIndex = new List<int>() { 0 };
+        //queueList = agentsAvailable.ToList();
 
     }
 
-    private void Start()
+
+    public void InitializeFlock()
     {
 
-        StartCoroutine(OSCReset());
-        StopCoroutine(OSCReset());
-
         StartCoroutine(CheckFlock());
-
-        InitializeAgents();
-
-        for (int i = 0; i < startAmount; i++)
-        {
-            BirthAgent();
-        }
-
-
     }
 
     void OnApplicationQuit()
@@ -113,13 +105,6 @@ public class Flock : MonoBehaviour
     //Coroutines
     //************************************************************************************************************************************
 
-    private IEnumerator OSCReset()
-    {
-
-        OSC_Init();
-
-        yield return null;
-    }
 
     private IEnumerator CheckFlock()
     {
@@ -159,12 +144,14 @@ public class Flock : MonoBehaviour
 
     public void OSC_Init()
     {
+
+
         for (int i = 1; i <= flockSize; i++)
         {
             OSCMessage lifeStateMessage = new("/" + breed + "/lifestate/" + i, OSCValue.Float(0));
             transmitter.Send(lifeStateMessage);
-        }
 
+        }
         for (int i = 1; i <= flockSize; i++)
         {
             OSCMessage message_resetPositionXYZ = new("/" + breed + "/position/" + i);
@@ -215,7 +202,7 @@ public class Flock : MonoBehaviour
     //Initialization
     //************************************************************************************************************************************
 
-    private void InitializeAgents()
+    public void InitializeAgents()
     {
         //Debug.Log($"StarterDna: {JsonUtility.ToJson(starterDna)}");
         for (int i = 1; i <= flockSize; i++)
@@ -238,6 +225,7 @@ public class Flock : MonoBehaviour
         newAgent.gameObject.SetActive(false);
 
         newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
+
         newAgent.AssignID(unitIndex, breedColor);
 
 
@@ -245,6 +233,7 @@ public class Flock : MonoBehaviour
 
 
     }
+
 
     //************************************************************************************************************************************
     //Spawning
@@ -256,6 +245,7 @@ public class Flock : MonoBehaviour
         var newAgent = agentsAvailable.Dequeue();
 
         newAgent.AssignPosition(getSpawnPosition(parentPosition), getRandomRotation());
+
         newAgent.AssignStats(agentFlock, agentBreed, parentDNA);
 
         newAgent.gameObject.SetActive(true);
@@ -265,11 +255,24 @@ public class Flock : MonoBehaviour
 
     }
 
+    public void BirthAgents()
+    {
+
+        for (int i = 0; i < startAmount; i++)
+        {
+            BirthAgent();
+        }
+
+    }
+
     public void BirthAgent()
     {
         var newAgent = agentsAvailable.Dequeue();
 
-        newAgent.gameObject.SetActive(true);
+
+        newAgent.Enable();
+        newAgent.InitializeBoid();
+        //newAgent.gameObject.SetActive(true);
         //newAgent.OSC_Birth();
         Boids.Add(newAgent);
 

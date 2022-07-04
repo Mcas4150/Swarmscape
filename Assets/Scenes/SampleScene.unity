@@ -174,7 +174,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &37027893
 GameObject:
@@ -270,8 +270,6 @@ GameObject:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585549}
-  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -370,42 +368,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &330585548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0483d66d03e89412ab44e07c8b9093d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isDefaultListener: 1
-  listenerId: 0
---- !u!114 &330585549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 825869b2bd8584d26af8d1c67f4e5997, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_listeners:
-    initialListenerList: []
-    useDefaultListeners: 1
-  isEnvironmentAware: 0
-  isStaticObject: 0
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
 --- !u!1 &409584480
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +400,7 @@ Transform:
   - {fileID: 1773032421}
   - {fileID: 826144467}
   - {fileID: 1229929644}
-  - {fileID: 551930388}
+  - {fileID: 542902475}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -455,7 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   organics: {fileID: 1229929646}
-  shadows: {fileID: 551930389}
+  shadows: {fileID: 542902477}
   second: {fileID: 826144466}
   third: {fileID: 1773032423}
   allSpecies: []
@@ -574,7 +536,7 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
---- !u!1 &551930387
+--- !u!1 &542902474
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -582,9 +544,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 551930388}
-  - component: {fileID: 551930389}
-  - component: {fileID: 551930390}
+  - component: {fileID: 542902475}
+  - component: {fileID: 542902477}
+  - component: {fileID: 542902478}
   m_Layer: 0
   m_Name: Shadows
   m_TagString: Untagged
@@ -592,13 +554,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &551930388
+--- !u!4 &542902475
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551930387}
+  m_GameObject: {fileID: 542902474}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -607,13 +569,13 @@ Transform:
   m_Father: {fileID: 409584481}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &551930389
+--- !u!114 &542902477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551930387}
+  m_GameObject: {fileID: 542902474}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4ead6d5096f4186a593065ca1be39f, type: 3}
@@ -628,7 +590,7 @@ MonoBehaviour:
   PredatorFlock: {fileID: 1229929646}
   PreyFlock: {fileID: 1773032423}
   food: {fileID: 1876838923}
-  breedColor: {r: 0.14509805, g: 0.21960784, b: 1, a: 0}
+  breedColor: {r: 0.14509803, g: 0.21689397, b: 1, a: 0}
   Carnivore: 0
   Herbivore: 0
   Reproduce: 1
@@ -653,15 +615,15 @@ MonoBehaviour:
   _maxSpeed: 52
   Boids: []
   BoidsIndex: 
-  transmitter: {fileID: 551930390}
+  transmitter: {fileID: 542902478}
   flowfield: {fileID: 19178329}
---- !u!114 &551930390
+--- !u!114 &542902478
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551930387}
+  m_GameObject: {fileID: 542902474}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
@@ -880,7 +842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 826144467}
   - component: {fileID: 826144466}
-  - component: {fileID: 826144465}
+  - component: {fileID: 826144468}
   m_Layer: 0
   m_Name: Second
   m_TagString: Untagged
@@ -888,30 +850,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &826144465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826144464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localPortMode: 2
-  _localReceiver: {fileID: 0}
-  _localHost: 169.254.54.0
-  _localPort: 7000
-  _remoteHost: 127.0.0.1
-  _remotePort: 7121
-  _useBundle: 0
 --- !u!114 &826144466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,7 +863,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: second
-  startAmount: 5
+  startAmount: 4
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
@@ -958,7 +896,7 @@ MonoBehaviour:
   _maxSpeed: 52.8
   Boids: []
   BoidsIndex: 
-  transmitter: {fileID: 826144465}
+  transmitter: {fileID: 826144468}
   flowfield: {fileID: 19178329}
 --- !u!4 &826144467
 Transform:
@@ -975,6 +913,30 @@ Transform:
   m_Father: {fileID: 409584481}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &826144468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826144464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 192.168.2.22
+  _localPort: 7000
+  _remoteHost: 127.0.0.1
+  _remotePort: 7121
+  _useBundle: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,90 +986,6 @@ Transform:
   m_Father: {fileID: 1729901934}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &976051491
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 976051493}
-  - component: {fileID: 976051492}
-  - component: {fileID: 976051494}
-  m_Layer: 0
-  m_Name: WwiseGlobal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &976051492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 976051491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 017c2342d07754d4fa6629f2654e3185, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InitializationSettings: {fileID: 11400000, guid: 5d627579ce9f24e87a6072e3719e29a5,
-    type: 2}
-  basePath: 
-  language: 
-  defaultPoolSize: 0
-  lowerPoolSize: 0
-  streamingPoolSize: 0
-  memoryCutoffThreshold: 0
-  monitorPoolSize: 0
-  monitorQueuePoolSize: 0
-  callbackManagerBufferSize: 0
-  spatialAudioPoolSize: 0
-  maxSoundPropagationDepth: 0
-  engineLogging: 0
---- !u!4 &976051493
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 976051491}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &976051494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 976051491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b2b3ee1d9994a73935185bf9cdba6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triggerList: f7e1664c
-  useOtherObject: 0
-  data:
-    idInternal: 0
-    valueGuidInternal: 
-    WwiseObjectReference: {fileID: 11400000, guid: ccdff6c57ec24489a835739e278fbaf9,
-      type: 2}
-  decodeBank: 0
-  loadAsynchronous: 0
-  saveDecodedBank: 0
-  unloadTriggerList: 958ca0ea
-  bankNameInternal: 
-  valueGuidInternal: 
 --- !u!1 &1229929643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,7 +996,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1229929644}
   - component: {fileID: 1229929646}
-  - component: {fileID: 1229929645}
+  - component: {fileID: 1229929647}
   m_Layer: 0
   m_Name: Organics
   m_TagString: Untagged
@@ -1141,30 +1019,6 @@ Transform:
   m_Father: {fileID: 409584481}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1229929645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1229929643}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localPortMode: 2
-  _localReceiver: {fileID: 0}
-  _localHost: 169.254.54.0
-  _localPort: 7000
-  _remoteHost: 127.0.0.1
-  _remotePort: 7121
-  _useBundle: 0
 --- !u!114 &1229929646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1178,13 +1032,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: organic
-  startAmount: 3
+  startAmount: 4
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
-  EnemyFlock: {fileID: 551930389}
+  EnemyFlock: {fileID: 826144466}
   PredatorFlock: {fileID: 826144466}
-  PreyFlock: {fileID: 551930389}
+  PreyFlock: {fileID: 542902477}
   food: {fileID: 1876838923}
   breedColor: {r: 0.35264707, g: 0.7735849, b: 0.010946936, a: 0}
   Carnivore: 0
@@ -1211,8 +1065,32 @@ MonoBehaviour:
   _maxSpeed: 52.8
   Boids: []
   BoidsIndex: 
-  transmitter: {fileID: 1229929645}
+  transmitter: {fileID: 1229929647}
   flowfield: {fileID: 19178329}
+--- !u!114 &1229929647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229929643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 192.168.2.22
+  _localPort: 7000
+  _remoteHost: 127.0.0.1
+  _remotePort: 7121
+  _useBundle: 0
 --- !u!1 &1342103920
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OrganicFlock: {fileID: 1229929646}
-  ShadowFlock: {fileID: 551930389}
+  ShadowFlock: {fileID: 0}
   foods: {fileID: 1774255831}
   world: {fileID: 1924572749}
   initialized: 0
@@ -1735,7 +1613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1773032421}
   - component: {fileID: 1773032423}
-  - component: {fileID: 1773032422}
+  - component: {fileID: 1773032424}
   m_Layer: 0
   m_Name: Third
   m_TagString: Untagged
@@ -1758,30 +1636,6 @@ Transform:
   m_Father: {fileID: 409584481}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1773032422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1773032420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _autoConnect: 1
-  _closeOnPause: 0
-  _mapBundle: {fileID: 0}
-  _workInEditor: 0
-  _localHostMode: 0
-  _localPortMode: 2
-  _localReceiver: {fileID: 0}
-  _localHost: 169.254.54.0
-  _localPort: 7000
-  _remoteHost: 127.0.0.1
-  _remotePort: 7121
-  _useBundle: 0
 --- !u!114 &1773032423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1795,12 +1649,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breed: third
-  startAmount: 3
+  startAmount: 4
   spawnRadius: 1
   flockUnitPrefab: {fileID: -4717224558519435621, guid: 22d57fbc4d308490e8dcc3c65b3c9934,
     type: 3}
   EnemyFlock: {fileID: 826144466}
-  PredatorFlock: {fileID: 551930389}
+  PredatorFlock: {fileID: 542902477}
   PreyFlock: {fileID: 826144466}
   food: {fileID: 1342103921}
   breedColor: {r: 0.38431373, g: 0.7294118, b: 0.8862745, a: 0}
@@ -1828,8 +1682,32 @@ MonoBehaviour:
   _maxSpeed: 52.8
   Boids: []
   BoidsIndex: 
-  transmitter: {fileID: 1773032422}
+  transmitter: {fileID: 1773032424}
   flowfield: {fileID: 19178329}
+--- !u!114 &1773032424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1773032420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _autoConnect: 1
+  _closeOnPause: 0
+  _mapBundle: {fileID: 0}
+  _workInEditor: 0
+  _localHostMode: 0
+  _localPortMode: 2
+  _localReceiver: {fileID: 0}
+  _localHost: 192.168.2.22
+  _localPort: 7000
+  _remoteHost: 127.0.0.1
+  _remotePort: 7121
+  _useBundle: 0
 --- !u!1 &1774255829
 GameObject:
   m_ObjectHideFlags: 0
@@ -1990,7 +1868,7 @@ Transform:
   - {fileID: 174783420}
   - {fileID: 2091694376}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1924572749
 MonoBehaviour:
@@ -2197,7 +2075,7 @@ MeshRenderer:
     firstSubMesh: 0
     subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
+  m_ProbeAnchor: {fileID: 1646289879}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_ReceiveGI: 1

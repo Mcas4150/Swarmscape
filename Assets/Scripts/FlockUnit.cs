@@ -57,7 +57,7 @@ public class FlockUnit : MonoBehaviour
     public Flock assignedFlock;
     public string breed;
     public int oscNumber;
-    Boolean initialized = false;
+    //Boolean initialized = false;
 
     // assign from flock
     //public Color myColor;
@@ -143,8 +143,6 @@ public class FlockUnit : MonoBehaviour
 
     [Header("OSC Properties")]
 
-    public string oscAddress_positionXYZ;
-
     public OSCMessage message_lifeState;
     public OSCMessage message_newPositionXYZ;
     public OSCMessage velocityMessage;
@@ -172,54 +170,49 @@ public class FlockUnit : MonoBehaviour
         myTrailMaterial = new Material(trailMaterial);
         TrailRenderer myTrailRenderer = GetComponent<TrailRenderer>();
         myTrailRenderer.material = myTrailMaterial;
+        if (myTrailRenderer != null)
+            myTrailRenderer.time = trailTime;
 
-        //unitNeighborColor = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 
-    private void Start()
+    //private void Start()
+    //{
+
+
+    //    OSC_AssignTransmitter();
+    //    OSC_Start();
+
+
+    //    var healthRatio = health * 0.1f;
+    //    transform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
+
+    //    //OSC_Birth();
+
+    //    //StartCoroutine(OSCBirth());
+    //    StartCoroutine(OSCSender());
+    //    StartCoroutine(Respawn());
+    //    StartCoroutine(CalcObject());
+    //    StartCoroutine(CheckAgent());
+
+
+    //}
+
+    public void InitializeBoid()
     {
-        transmitter = assignedFlock.transmitter;
+        OSC_AssignTransmitter();
+        OSC_Start();
 
-        message_lifeState = new("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(0));
-
-        oscAddress_positionXYZ = "/" + breed + "/position/" + oscNumber;
-
-
-        message_newPositionXYZ = new OSCMessage(oscAddress_positionXYZ);
-        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.x));
-        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.y));
-        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.z));
-
-        //message_lifeState = new OSCMessage("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
-        midiNoteMessage = new OSCMessage("/" + breed + "/midi/note/" + oscNumber);
-        midiPlayMessage = new OSCMessage("/" + breed + "/midi/play/" + oscNumber, OSCValue.Float(0));
-        healthMessage = new OSCMessage("/" + breed + "/health/" + oscNumber);
-
-        velocityMessage = new OSCMessage("/" + breed + "/velocity/" + oscNumber, OSCValue.Float(0));
-
-        foodMealMessage = new OSCMessage("/" + breed + "/foodMeal/" + oscNumber, OSCValue.Int(-1));
-
-        ageMessage = new OSCMessage("/" + breed + "/age/" + oscNumber, OSCValue.Int(0));
-
-
-        //transmitter.Send(message_lifeState);
-
-        TrailRenderer Trail = gameObject.GetComponent<TrailRenderer>();
-
-        if (Trail != null)
-            Trail.time = trailTime;
 
         var healthRatio = health * 0.1f;
         transform.localScale = new Vector3(healthRatio, healthRatio, healthRatio);
 
+        //OSC_Birth();
 
         //StartCoroutine(OSCBirth());
         StartCoroutine(OSCSender());
         StartCoroutine(Respawn());
         StartCoroutine(CalcObject());
         StartCoroutine(CheckAgent());
-
-
     }
 
 
@@ -227,17 +220,17 @@ public class FlockUnit : MonoBehaviour
     // Coroutines
     //************************************************************************************************************************************
 
-    private IEnumerator OSCBirth()
-    {
-        while (initialized == false)
-        {
-            message_lifeState = new("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
-            transmitter.Send(message_lifeState);
-            initialized = true;
-            yield return null;
-        }
+    //private IEnumerator OSCBirth()
+    //{
+    //    while (initialized == false)
+    //    {
+    //        message_lifeState = new("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
+    //        transmitter.Send(message_lifeState);
+    //        initialized = true;
+    //        yield return null;
+    //    }
 
-    }
+    //}
 
     private IEnumerator OSCSender()
     {
@@ -291,6 +284,31 @@ public class FlockUnit : MonoBehaviour
     //************************************************************************************************************************************
 
 
+    public void OSC_AssignTransmitter()
+    {
+        transmitter = assignedFlock.transmitter;
+    }
+
+    public void OSC_Start()
+    {
+        message_lifeState = new(CreateOSCAddress("lifestate"), OSCValue.Float(0));
+
+        message_newPositionXYZ = new OSCMessage(CreateOSCAddress("position"));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.x));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.y));
+        message_newPositionXYZ.AddValue(OSCValue.Float(transform.position.z));
+
+        midiNoteMessage = new OSCMessage(CreateOSCAddress("midi/note"));
+        midiPlayMessage = new OSCMessage(CreateOSCAddress("midi/play"), OSCValue.Float(0));
+        healthMessage = new OSCMessage(CreateOSCAddress("health"));
+
+        velocityMessage = new OSCMessage(CreateOSCAddress("velocity"), OSCValue.Float(0));
+
+        foodMealMessage = new OSCMessage(CreateOSCAddress("foodMeal"), OSCValue.Int(-1));
+
+        ageMessage = new OSCMessage(CreateOSCAddress("age"), OSCValue.Int(0));
+    }
+
 
     public void OSC_Update()
     {
@@ -314,6 +332,7 @@ public class FlockUnit : MonoBehaviour
     public void OSC_Birth()
     {
         Debug.Log("birth");
+        //message_lifeState = new("/" + breed + "/lifestate/" + oscNumber, OSCValue.Float(1));
         message_lifeState.Values[0] = OSCValue.Float(1);
         transmitter.Send(message_lifeState);
     }
@@ -411,6 +430,11 @@ public class FlockUnit : MonoBehaviour
     public void AssignPosition(Vector3 newPosition, Quaternion newRotation)
     {
         transform.SetPositionAndRotation(newPosition, newRotation);
+    }
+
+    public void Enable()
+    {
+        gameObject.SetActive(true);
     }
 
     public void Reproduce()
@@ -1229,6 +1253,11 @@ public class FlockUnit : MonoBehaviour
     private float CalculateTotalParam(float flockParam, float dnaParam, float swarmWeight)
     {
         return (flockParam * globalWeight) + (dnaParam * dnaWeight) * swarmWeight;
+    }
+
+    private string CreateOSCAddress(string parameter)
+    {
+        return "/" + breed + "/" + parameter + "/" + oscNumber;
     }
 
     public float scale(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax)
